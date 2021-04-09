@@ -14,6 +14,14 @@ main関数
 */
 
 func main() {
+	s := sReader()
+	l := strings.Split(s, "")
+
+	f := l[0]
+	r := l[1:]
+
+	r = append(r, f)
+	fmt.Println(strings.Join(r, ""))
 }
 
 /*
