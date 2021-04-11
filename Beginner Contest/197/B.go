@@ -13,7 +13,37 @@ import (
 main関数
 */
 
+func isVancat(s string) bool {
+	if s == "." {
+		return true
+	} else {
+		return false
+	}
+}
+
+type Field struct {
+	data [][]string
+}
+
+func isVancatInField(f Field, H, W int) bool {
+	return isVancat(f.data[H-1][W-1])
+}
+
+func setFiled(high int) (f Field) {
+	for i := 0; i < high; i++ {
+		line := sReader()
+		l := strings.Split(line, "")
+		f.data = append(f.data, l)
+	}
+	return
+}
+
 func main() {
+	cond := isReader()
+	setFiled(cond[0])
+	var result int
+
+	fmt.Println(result)
 }
 
 /*
