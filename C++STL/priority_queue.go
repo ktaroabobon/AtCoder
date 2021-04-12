@@ -5,6 +5,9 @@ import (
 	"fmt"
 )
 
+//例題
+//ACB141-D
+
 type intHeap []int
 
 func (h intHeap) Len() int           { return len(h) }
