@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -242,4 +243,10 @@ func iisContain(intSlice []int, i int) bool {
 		}
 	}
 	return false
+}
+
+/* intSliceを逆順にして返す */
+func isReverce(data []int) []int {
+	sort.Sort(sort.Reverse(sort.IntSlice(data)))
+	return data
 }
