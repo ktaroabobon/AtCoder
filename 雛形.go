@@ -217,6 +217,10 @@ func ilcm(v1, v2 int) int {
 	return v1 * v2 / igcd(v1, v2)
 }
 
+func iswap(v1, v2 int) (int, int) {
+	return v2, v1
+}
+
 /*
 その他関数
 */

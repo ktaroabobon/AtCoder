@@ -29,6 +29,7 @@ func main() {
 /*
 標準入力の読み込み
 */
+
 const BUFSIZE = 10000000
 
 var rdr = bufio.NewReaderSize(os.Stdin, BUFSIZE)
