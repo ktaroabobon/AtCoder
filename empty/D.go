@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -217,6 +218,53 @@ func ilcm(v1, v2 int) int {
 	return v1 * v2 / igcd(v1, v2)
 }
 
+func iswap(v1, v2 int) (int, int) {
+	return v2, v1
+}
+
 /*
 その他関数
 */
+/* strSlice内に対象の文字列が存在するか*/
+func isContain(strSlice []string, s string) bool {
+	for _, v := range strSlice {
+		if s == v {
+			return true
+		}
+	}
+	return false
+}
+
+/* intSlice内に対象の数値が存在するか*/
+func iisContain(intSlice []int, i int) bool {
+	for _, v := range intSlice {
+		if i == v {
+			return true
+		}
+	}
+	return false
+}
+
+/* intSliceを逆順にして返す */
+func isReverce(data []int) []int {
+	sort.Sort(sort.Reverse(sort.IntSlice(data)))
+	return data
+}
+
+/* intHeap(優先度付きキュー) */
+type intHeap []int
+
+func (h intHeap) Len() int           { return len(h) }
+func (h intHeap) Less(i, j int) bool { return h[i] < h[j] } // 昇順
+/* func (h intHeap) Less(i, j int) bool { return h[i] > h[j] } // 降順 */
+func (h intHeap) Swap(i, j int) { h[i], h[j] = h[j], h[i] }
+func (h *intHeap) Push(x interface{}) {
+	*h = append(*h, x.(int))
+}
+func (h *intHeap) Pop() interface{} {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[0 : n-1]
+	return x
+}

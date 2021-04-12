@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"container/heap"
 	"fmt"
 	"math"
 	"os"
@@ -15,6 +16,27 @@ main関数
 */
 
 func main() {
+	cond := isReader()
+	prices := isReader()
+
+	ih := &intHeap{}
+	heap.Init(ih)
+
+	for _, v := range prices {
+		heap.Push(ih, v)
+	}
+
+	for i := 0; i < cond[1]; i++ {
+		price := heap.Pop(ih).(int)
+		heap.Push(ih, price/2)
+	}
+
+	r := 0
+	for ih.Len() > 0 {
+		r += heap.Pop(ih).(int)
+	}
+
+	fmt.Println(r)
 }
 
 /*
@@ -254,10 +276,11 @@ func isReverce(data []int) []int {
 /* intHeap(優先度付きキュー) */
 type intHeap []int
 
-func (h intHeap) Len() int           { return len(h) }
-func (h intHeap) Less(i, j int) bool { return h[i] < h[j] } // 昇順
-/* func (h intHeap) Less(i, j int) bool { return h[i] > h[j] } // 降順 */
-func (h intHeap) Swap(i, j int) { h[i], h[j] = h[j], h[i] }
+func (h intHeap) Len() int { return len(h) }
+
+/* func (h intHeap) Less(i, j int) bool { return h[i] < h[j] } // 昇順 */
+func (h intHeap) Less(i, j int) bool { return h[i] > h[j] } // 降順
+func (h intHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (h *intHeap) Push(x interface{}) {
 	*h = append(*h, x.(int))
 }
