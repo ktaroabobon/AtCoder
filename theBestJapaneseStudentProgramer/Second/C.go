@@ -15,6 +15,20 @@ main関数
 */
 
 func main() {
+	nums := isReader()
+
+	r := 1
+
+	for i := nums[0]; i < nums[1]; i++ {
+		for j := i + 1; j < nums[1]; j++ {
+			gcd := igcd(i, j)
+			if gcd > r {
+				r = gcd
+			}
+		}
+	}
+
+	fmt.Println(r)
 }
 
 /*
@@ -71,19 +85,6 @@ func splitToInt(strTargeted string) (intReturned []int, err error) {
 
 	for _, str := range strSplit {
 		intReturned = append(intReturned, s2i(str))
-	}
-
-	return
-}
-
-/*
-数値型のSliceを文字列型のSliceに変換して返す
-e.g.)
-[100 200] -> ["100" "200"]
-*/
-func splitToString(intTargeted []int) (strReturned []string, err error) {
-	for _, v := range intTargeted {
-		strReturned = append(strReturned, i2s(v))
 	}
 
 	return

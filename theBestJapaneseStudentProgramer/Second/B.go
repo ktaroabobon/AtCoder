@@ -10,11 +10,77 @@ import (
 	"strings"
 )
 
+func findUniqueNums(intTargeted1, intTargeted2 []int) (uniqueNums []int) {
+	a := intTargeted1[0]
+	b := intTargeted2[0]
+	intTargeted1 = intTargeted1[1:]
+	intTargeted2 = intTargeted2[1:]
+
+	for {
+		if a == b {
+			if len(intTargeted1) == 0 && len(intTargeted2) == 0 {
+				return
+			}
+
+			if len(intTargeted1) == 0 {
+				uniqueNums = append(uniqueNums, intTargeted2...)
+				return
+			}
+			if len(intTargeted2) == 0 {
+				uniqueNums = append(uniqueNums, intTargeted1...)
+				return
+			}
+
+			a = intTargeted1[0]
+			b = intTargeted2[0]
+
+			intTargeted1 = intTargeted1[1:]
+			intTargeted2 = intTargeted2[1:]
+
+			continue
+		}
+
+		if a < b {
+			uniqueNums = append(uniqueNums, a)
+			if len(intTargeted1) != 0 {
+				a = intTargeted1[0]
+				intTargeted1 = intTargeted1[1:]
+				continue
+			} else {
+				uniqueNums = append(uniqueNums, b)
+				uniqueNums = append(uniqueNums, intTargeted2...)
+				return
+			}
+		}
+		if b < a {
+			uniqueNums = append(uniqueNums, b)
+			if len(intTargeted2) != 0 {
+				b = intTargeted2[0]
+				intTargeted2 = intTargeted2[1:]
+				continue
+			} else {
+				uniqueNums = append(uniqueNums, a)
+				uniqueNums = append(uniqueNums, intTargeted1...)
+				return
+			}
+		}
+	}
+}
+
 /*
 main関数
 */
 
 func main() {
+	_ = isReader()
+	list_a := isReader()
+	list_b := isReader()
+
+	ans := findUniqueNums(list_a, list_b)
+
+	strAns, _ := splitToString(ans)
+
+	fmt.Println(strings.Join(strAns, " "))
 }
 
 /*
@@ -71,6 +137,21 @@ func splitToInt(strTargeted string) (intReturned []int, err error) {
 
 	for _, str := range strSplit {
 		intReturned = append(intReturned, s2i(str))
+	}
+
+	return
+}
+
+/*
+文字列型のSliceを数値型のHeapに変換して返す
+e.g.)
+["100" "200"] -> [100 200] (Heap)
+*/
+func splitToIntHeap(strTargeted string) (intReturned intHeap, err error) {
+	strSplit := splitWithoutEmpty(strTargeted)
+
+	for _, str := range strSplit {
+		intReturned.Push(s2i(str))
 	}
 
 	return
@@ -135,6 +216,19 @@ func isReader() (intSlice []int) {
 	str := readLine()
 
 	intSlice, _ = splitToInt(str)
+
+	return
+}
+
+/*
+数値型Heap、１行読み込み
+e.g.)
+100 200
+*/
+func isHeapReader() (intSlice []int) {
+	str := readLine()
+
+	intSlice, _ = splitToIntHeap(str)
 
 	return
 }

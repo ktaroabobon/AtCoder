@@ -15,6 +15,22 @@ main関数
 */
 
 func main() {
+	cond := isReader()
+
+	//x, y, z := cond[0], cond[1], cond[2]
+
+	w1 := float64(cond[1]) * float64(cond[2]) / float64(cond[0])
+	w2 := cond[1] * cond[2] / cond[0]
+
+	if w1 == float64(w2) {
+		w2 -= 1
+	}
+
+	if w2 < 0 {
+		w2 = 0
+	}
+
+	fmt.Println(w2)
 }
 
 /*
@@ -71,19 +87,6 @@ func splitToInt(strTargeted string) (intReturned []int, err error) {
 
 	for _, str := range strSplit {
 		intReturned = append(intReturned, s2i(str))
-	}
-
-	return
-}
-
-/*
-数値型のSliceを文字列型のSliceに変換して返す
-e.g.)
-[100 200] -> ["100" "200"]
-*/
-func splitToString(intTargeted []int) (strReturned []string, err error) {
-	for _, v := range intTargeted {
-		strReturned = append(strReturned, i2s(v))
 	}
 
 	return
