@@ -281,3 +281,10 @@ func (h *intHeap) Pop() interface{} {
 	*h = old[0 : n-1]
 	return x
 }
+
+// 二分探索
+// 数値型スライスのなかで対象の数値以上の初めて登場するインデックスを返す
+func lowerBound(intTarget []int, x int) (returnIndex int) {
+	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] >= x })
+	return
+}
