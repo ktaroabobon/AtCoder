@@ -23,6 +23,9 @@ func main() {
 	sort.Ints(numbers)
 
 	r := 0
+	for i := 0; i < cond[0]; i++ {
+		left_j := lowerBound(numbers, cond[1]-numbers[i])
+	}
 
 }
 
@@ -293,13 +296,25 @@ func (h *intHeap) Pop() interface{} {
 
 // 二分探索
 // 数値型スライスのなかで対象の数値以上の初めて登場するインデックスを返す
-func lowerBound(intTarget []int, x int) (returnIndex int) {
+func lowerBound(intTarget []int, x int) (returnIndex int, f bool) {
 	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] >= x })
+	if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
+		f = true
+	} else {
+		f = false
+		x = len(intTarget)
+	}
 	return
 }
 
 // 数値型スライスのなかで対象の数値以上の最後に登場するインデックスを返す
-func upperBound(intTarget []int, x int) (returnIndex int) {
+func upperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] > x }) - 1
+	if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
+		f = true
+	} else {
+		f = false
+		x = len(intTarget)
+	}
 	return
 }
