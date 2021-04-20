@@ -25,8 +25,8 @@ func main() {
 
 	probNum /= 2
 
-	minLevel := probLevels[probNum]
-	maxLevel := probLevels[probNum+1]
+	minLevel := probLevels[probNum-1]
+	maxLevel := probLevels[probNum]
 
 	if minLevel == maxLevel {
 		fmt.Println(0)

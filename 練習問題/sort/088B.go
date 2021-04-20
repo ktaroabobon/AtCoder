@@ -10,13 +10,27 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc088/tasks/abc088_b
 
 /*
 main関数
 */
 
 func main() {
+	cardNum := iReader()
+	cards := isReader()
+
+	sort.Ints(cards)
+	cards = toReverce(cards)
+
+	r := 0
+	for i := 0; 2*i < cardNum-1; i++ {
+		r += cards[2*i] - cards[2*i+1]
+	}
+	if cardNum%2 != 0 {
+		r += cards[cardNum-1]
+	}
+	fmt.Println(r)
 }
 
 /*

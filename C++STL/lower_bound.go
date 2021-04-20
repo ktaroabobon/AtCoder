@@ -12,9 +12,13 @@ func lowerBound(intTarget []int, x int) (returnIndex int) {
 	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] >= x })
 	return
 }
+func upperBound(intTarget []int, x int) (returnIndex int) {
+	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] > x }) - 1
+	return
+}
 
 func main() {
-	a := []int{1, 3, 6, 10, 15, 21, 28, 36, 45, 55}
+	a := []int{1, 3, 6, 6, 6, 6, 6, 6, 10, 15, 21, 28, 36, 45, 55}
 	x := 6
 
 	i1 := lowerBound(a, x)
@@ -24,4 +28,8 @@ func main() {
 	} else {
 		fmt.Printf("%d not found in %v\n", x, a)
 	}
+
+	i2 := upperBound(a, x)
+
+	fmt.Printf("found %d at index %d in %v\n", x, i2, a)
 }

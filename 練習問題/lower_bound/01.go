@@ -10,13 +10,20 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://qiita.com/e869120/items/702ca1c1ed6ff6770257#%E5%95%8F%E9%A1%8C%E6%A6%82%E8%A6%81-1
 
 /*
 main関数
 */
 
 func main() {
+	cond := isReader()
+	numbers := isReader()
+
+	sort.Ints(numbers)
+
+	r := 0
+
 }
 
 /*
