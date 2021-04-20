@@ -10,13 +10,18 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/agc012/tasks/agc012_a
 
 /*
 main関数
 */
 
 func main() {
+	teamNum := iReader()
+	abilities := isReader()
+
+	sort.Ints(abilities)
+	abilities =
 }
 
 /*
@@ -261,7 +266,7 @@ func iisContain(intSlice []int, i int) bool {
 }
 
 /* intSliceを逆順にして返す */
-func isReverce(data []int) []int {
+func toReverce(data []int) []int {
 	sort.Sort(sort.Reverse(sort.IntSlice(data)))
 	return data
 }
