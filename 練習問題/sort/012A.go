@@ -21,7 +21,13 @@ func main() {
 	abilities := isReader()
 
 	sort.Ints(abilities)
-	abilities =
+	abilities = toReverce(abilities)
+
+	r := 0
+	for i := 1; i <= teamNum; i++ {
+		r += abilities[2*i-1]
+	}
+	fmt.Println(r)
 }
 
 /*

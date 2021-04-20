@@ -10,13 +10,30 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc132/tasks/abc132_c
 
 /*
 main関数
 */
 
 func main() {
+	probNum := iReader()
+	probLevels := isReader()
+
+	sort.Ints(probLevels)
+	//probLevels = toReverce(probLevels)
+
+	probNum /= 2
+
+	minLevel := probLevels[probNum]
+	maxLevel := probLevels[probNum+1]
+
+	if minLevel == maxLevel {
+		fmt.Println(0)
+	} else {
+		fmt.Println(maxLevel - minLevel)
+	}
+
 }
 
 /*
