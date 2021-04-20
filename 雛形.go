@@ -286,25 +286,35 @@ func (h *intHeap) Pop() interface{} {
 
 // 二分探索
 // 数値型スライスのなかで対象の数値以上の初めて登場するインデックスを返す
-func lowerBound(intTarget []int, x int) (returnIndex int, f bool) {
+func lowerBound(intTarget []int, x int) (returnIndex int) {
 	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] >= x })
+	return
+}
+
+func designatedLowerBound(intTarget []int, x int) (returnIndex int, f bool) {
+	returnIndex = lowerBound(intTarget, x)
 	if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
 		f = true
 	} else {
 		f = false
-		x = len(intTarget)
+		returnIndex = -1
 	}
 	return
 }
 
 // 数値型スライスのなかで対象の数値以上の最後に登場するインデックスを返す
-func upperBound(intTarget []int, x int) (returnIndex int, f bool) {
+func upperBound(intTarget []int, x int) (returnIndex int) {
 	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] > x }) - 1
+	return
+}
+
+func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
+	returnIndex = upperBound(intTarget, x)
 	if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
 		f = true
 	} else {
 		f = false
-		x = len(intTarget)
+		returnIndex = -1
 	}
 	return
 }

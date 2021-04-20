@@ -24,7 +24,8 @@ func main() {
 
 	r := 0
 	for i := 0; i < cond[0]; i++ {
-		left_j := lowerBound(numbers, cond[1]-numbers[i])
+		leftJ, okL := lowerBound(numbers, cond[1]-numbers[i])
+		rightJ, okR := upperBound(numbers, cond[2]-numbers[i])
 	}
 
 }
@@ -307,7 +308,7 @@ func lowerBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// 数値型スライスのなかで対象の数値以上の最後に登場するインデックスを返す
+// 数値型スライスのなかで対象の数値の最後に登場するインデックスを返す
 func upperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] > x }) - 1
 	if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
