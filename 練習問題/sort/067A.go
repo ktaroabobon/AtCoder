@@ -10,13 +10,25 @@ import (
 	"strings"
 )
 
-// page URL:
-
 /*
 main関数
 */
 
+// page: https://atcoder.jp/contests/abc067/tasks/abc067_b
+
 func main() {
+	cond := isReader()
+	lenSlice := isReader()
+
+	sort.Ints(lenSlice)
+	lenSlice = isReverce(lenSlice)
+
+	r := 0
+	for _, v := range lenSlice[:cond[1]] {
+		r += v
+	}
+
+	fmt.Println(r)
 }
 
 /*

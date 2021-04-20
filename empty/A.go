@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+// page URL:
+
 /*
 main関数
 */
