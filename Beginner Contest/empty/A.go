@@ -310,7 +310,9 @@ func upperBound(intTarget []int, x int) (returnIndex int) {
 
 func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	returnIndex = upperBound(intTarget, x)
-	if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
+	if returnIndex == -1 {
+		f = false
+	} else if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
 		f = true
 	} else {
 		f = false

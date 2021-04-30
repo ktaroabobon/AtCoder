@@ -10,13 +10,76 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc077/tasks/arc084_a
+
+func solve01(partsSlice [][]int) (returnCount int) {
+	// 愚直に一つずつ検証する
+	for _, a := range partsSlice[0] {
+		for _, b := range partsSlice[1] {
+			if a >= b {
+				continue
+			}
+			for _, c := range partsSlice[2] {
+				if b >= c {
+					continue
+				}
+				returnCount++
+			}
+		}
+	}
+	return
+}
+
+func solve02(partsNum int, partsSlice [][]int) (returnCount int) {
+	//	位置を二分探索で特定してカウントする（下から）
+	for _, a := range partsSlice[0] {
+		bidx := lowerBound(partsSlice[1], a+1)
+		if bidx >= partsNum {
+			continue
+		}
+		for _, b := range partsSlice[1][bidx:] {
+			cidx := lowerBound(partsSlice[2], b+1)
+			if cidx >= partsNum {
+				continue
+			}
+			returnCount += partsNum - cidx
+		}
+	}
+	return
+}
+
+func solve03(partsNum int, partsSlice [][]int) (returnCount int) {
+	//	真ん中のスライスを基準にupperBoundとlowerBoundを使い分ける
+	for _, b := range partsSlice[1] {
+		aidx := upperBound(partsSlice[0], b-1)
+		cidx := lowerBound(partsSlice[2], b+1)
+
+		if aidx != -1 && cidx < partsNum {
+			returnCount += (aidx + 1) * (partsNum - cidx)
+		}
+	}
+	return
+}
 
 /*
 main関数
 */
 
 func main() {
+	partsNum := iReader()
+	partsSlice := [][]int{}
+
+	for i := 0; i < 3; i++ {
+		is := isReader()
+		if i != 1 {
+			sort.Ints(is)
+		}
+		partsSlice = append(partsSlice, is)
+	}
+
+	r := solve03(partsNum, partsSlice)
+	fmt.Println(r)
+
 }
 
 /*
@@ -310,9 +373,7 @@ func upperBound(intTarget []int, x int) (returnIndex int) {
 
 func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	returnIndex = upperBound(intTarget, x)
-	if returnIndex == -1 {
-		f = false
-	} else if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
+	if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
 		f = true
 	} else {
 		f = false

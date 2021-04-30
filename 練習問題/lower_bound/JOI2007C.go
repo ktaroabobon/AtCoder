@@ -12,19 +12,79 @@ import (
 
 // page URL: https://atcoder.jp/contests/joi2008ho/tasks/joi2008ho_c
 
+func solve01(numbers, scores []int) (returnScore int) {
+	for a := 0; a <= numbers[0]; a++ {
+		for b := a; b <= numbers[0]; b++ {
+			for c := b; c <= numbers[0]; c++ {
+				for d := c; d <= numbers[0]; d++ {
+					r := scores[a] + scores[b] + scores[c] + scores[d]
+					if r <= numbers[1] && r > returnScore {
+						returnScore = r
+					}
+				}
+			}
+		}
+	}
+	return
+}
+
+func solve02(numbers, scores []int) (returnScore int) {
+	lenScores := numbers[0] + 1
+	for a := 0; a < lenScores; a++ {
+		for b := a; b < lenScores; b++ {
+			for c := b; c < lenScores; c++ {
+				r := scores[a] + scores[b] + scores[c]
+				if r <= numbers[1] {
+					idx := lowerBound(scores, numbers[1]-r)
+					if returnScore < r+scores[idx-1] {
+						returnScore = r + scores[idx-1]
+					}
+				}
+			}
+		}
+	}
+	return
+}
+
+func solve03(numbers, scores []int) (returnScore int) {
+	halfScores := []int{}
+	lenScores := numbers[0] + 1
+	for i := 0; i < lenScores; i++ {
+		for j := i; j < lenScores; j++ {
+			halfScores = append(halfScores, scores[i]+scores[j])
+		}
+	}
+
+	sort.Ints(halfScores)
+
+	for _, v := range halfScores {
+		if v <= numbers[1] {
+			idx := lowerBound(halfScores, numbers[1]-v)
+			if returnScore < v+halfScores[idx-1] {
+				returnScore = v + halfScores[idx-1]
+			}
+		}
+	}
+	return
+}
+
 /*
 main関数
 */
 
 func main() {
-	nums := iReader()
-	parts := [][]int
-	for i := 0; i < nums; i++ {
-		is := isReader()
-		sort.Ints(is)
-		parts = append(parts, is)
+	nums := isReader()
+	scores := []int{0}
+
+	for i := 0; i < nums[0]; i++ {
+		score := iReader()
+		scores = append(scores, score)
 	}
 
+	sort.Ints(scores)
+
+	r := solve03(nums, scores)
+	fmt.Println(r)
 }
 
 /*

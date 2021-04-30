@@ -10,13 +10,16 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL:　https://atcoder.jp/contests/typical90/tasks/typical90_a
 
 /*
 main関数
 */
 
 func main() {
+	nums := isReader()
+	cutNum := iReader()
+	lenList := isReader()
 }
 
 /*
