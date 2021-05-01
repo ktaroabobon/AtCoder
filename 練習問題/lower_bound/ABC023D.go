@@ -10,49 +10,21 @@ import (
 	"strings"
 )
 
-// page URL:　https://atcoder.jp/contests/typical90/tasks/typical90_a
-
-func solve(mid, pieceNum int, nums, cutSlice []int) bool {
-	var cnt, pre int
-	for i := 0; i < nums[0]; i++ {
-		if cutSlice[i]-pre >= mid && nums[1]-cutSlice[i] >= mid {
-			cnt += 1
-			pre = cutSlice[i]
-		}
-	}
-	if cnt >= pieceNum {
-		return true
-	} else {
-		return false
-	}
-}
+// page URL: https://atcoder.jp/contests/abc023/tasks/abc023_d
 
 /*
 main関数
 */
 
 func main() {
-	// 入力
-	nums := isReader()
-	pieceNum := iReader()
-	cutSlice := isReader()
+	balloonNum := iReader()
+	balloonData := [][]int{}
 
-	//	答えで二分探索
-	left := -1
-	right := nums[1] + 1
-
-	for {
-		if right-left <= 1 {
-			break
-		}
-		mid := left + (right-left)/2
-		if !solve(mid, pieceNum, nums, cutSlice) {
-			right = mid
-		} else {
-			left = mid
-		}
+	for i := 0; i < balloonNum; i++ {
+		data := isReader()
+		balloonData = append(balloonData, data)
 	}
-	fmt.Println(left)
+
 }
 
 /*
@@ -346,7 +318,9 @@ func upperBound(intTarget []int, x int) (returnIndex int) {
 
 func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	returnIndex = upperBound(intTarget, x)
-	if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
+	if returnIndex == -1 {
+		f = false
+	} else if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
 		f = true
 	} else {
 		f = false
