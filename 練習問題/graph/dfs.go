@@ -1,3 +1,5 @@
+// 深さ優先探索
+
 package main
 
 import (
@@ -10,13 +12,110 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/zone2021/tasks/zone2021_d
+//入力情報
+//URL: https://camo.qiitausercontent.com/aba36189a40a3c60ef0b96fdfb8d7c03722ac863/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3138323936332f34393330323434332d396432622d306535642d346166362d6533306137343137323931662e706e67
+//
+//15 14
+//0 1
+//0 4
+//0 11
+//1 2
+//1 3
+//4 5
+//4 8
+//5 6
+//5 7
+//8 9
+//8 10
+//11 12
+//11 13
+//13 14
+
+type Graph = [][]int
+
+type seen = []bool
+
+func dfs(g Graph, s seen, v int) {
+	//行きがけ順
+	fmt.Println(v)
+
+	s[v] = true
+
+	for _, nextV := range g[v] {
+		if s[nextV] {
+			continue
+		}
+		dfs(g, s, nextV)
+	}
+}
+func dfsLast(g Graph, s seen, v int) {
+	//帰りがけ順
+	s[v] = true
+
+	for _, nextV := range g[v] {
+		if s[nextV] {
+			continue
+		}
+		dfsLast(g, s, nextV)
+	}
+
+	fmt.Println(v)
+}
+func dfsTS(g Graph, s seen, v, t int) int {
+	//timestampバージョン
+	fmt.Printf("No.%v %v\n", t, v)
+	t++
+
+	s[v] = true
+
+	for _, nextV := range g[v] {
+		if s[nextV] {
+			continue
+		}
+		t = dfsTS(g, s, nextV, t)
+	}
+
+	fmt.Printf("No.%v %v\n", t, v)
+	t++
+
+	return t
+}
 
 /*
 main関数
 */
 
 func main() {
+	numbers := isReader()
+	N, M := numbers[0], numbers[1]
+
+	g := make(Graph, N)
+
+	for i := 0; i < M; i++ {
+		info := isReader()
+		g[info[0]] = append(g[info[0]], info[1])
+		g[info[1]] = append(g[info[1]], info[0])
+	}
+
+	fmt.Println(g)
+
+	s := make(seen, N)
+	fmt.Println(s)
+
+	fmt.Println("DFS 行きがけ順")
+	dfs(g, s, 0)
+
+	s = make(seen, N)
+	//fmt.Println(s)
+
+	fmt.Println("DFS 帰りがけ順")
+	dfsLast(g, s, 0)
+
+	s = make(seen, N)
+	//fmt.Println(s)
+
+	fmt.Println("DFS タイムスタンプ")
+	dfsTS(g, s, 0, 0)
 }
 
 /*
@@ -330,6 +429,7 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
+// Deque
 func NewDeque() *Deque {
 	return &Deque{}
 }
@@ -338,23 +438,23 @@ type Deque struct {
 	Items []interface{}
 }
 
-func (s *Deque) AppendLeft(item interface{}) {
+func (s *Deque) Push(item interface{}) {
 	temp := []interface{}{item}
 	s.Items = append(temp, s.Items...)
 }
 
-func (s *Deque) Append(item interface{}) {
+func (s *Deque) Inject(item interface{}) {
 	s.Items = append(s.Items, item)
 }
 
-func (s *Deque) PopLeft() interface{} {
+func (s *Deque) Pop() interface{} {
 	defer func() {
 		s.Items = s.Items[1:]
 	}()
 	return s.Items[0]
 }
 
-func (s *Deque) Pop() interface{} {
+func (s *Deque) Eject() interface{} {
 	i := len(s.Items) - 1
 	defer func() {
 		s.Items = append(s.Items[:i], s.Items[i+1:]...)

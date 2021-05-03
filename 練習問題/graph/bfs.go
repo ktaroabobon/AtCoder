@@ -1,3 +1,5 @@
+// 幅優先探索
+
 package main
 
 import (
@@ -10,13 +12,96 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/zone2021/tasks/zone2021_d
+//入力情報
+//URL: https://camo.qiitausercontent.com/aba36189a40a3c60ef0b96fdfb8d7c03722ac863/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3138323936332f34393330323434332d396432622d306535642d346166362d6533306137343137323931662e706e67
+//
+//15 14
+//0 1
+//0 4
+//0 11
+//1 2
+//1 3
+//4 5
+//4 8
+//5 6
+//5 7
+//8 9
+//8 10
+//11 12
+//11 13
+//13 14
+
+// page URL: https://qiita.com/drken/items/996d80bcae64649a6580
+
+type Graph = [][]int
+
+type dist = []int
+
+func initValueSlice(s []int, v int) []int {
+	if v == 0 {
+		return s
+	}
+	s[0] = v
+
+	for i := 1; i < len(s); i *= 2 {
+		copy(s[i:], s[:i])
+	}
+	return s
+}
+
+func bfs(g Graph, d dist, q *Deque) dist {
+	d[0] = 0
+	q.Append(0)
+
+	for {
+		if q.IsEmpty() {
+			break
+		}
+		v := q.PopLeft()
+
+		for _, nextV := range g[v.(int)] {
+			if d[nextV] != -1 {
+				continue
+			}
+
+			d[nextV] = d[v.(int)] + 1
+			q.Append(nextV)
+		}
+	}
+
+	return d
+}
 
 /*
 main関数
 */
 
 func main() {
+	numbers := isReader()
+	N, M := numbers[0], numbers[1]
+
+	g := make(Graph, N)
+
+	for i := 0; i < M; i++ {
+		info := isReader()
+		g[info[0]] = append(g[info[0]], info[1])
+		g[info[1]] = append(g[info[1]], info[0])
+	}
+
+	fmt.Println(g)
+
+	d := make(dist, M)
+	q := NewDeque()
+
+	d = initValueSlice(d, -1)
+	fmt.Println(d)
+
+	d = bfs(g, d, q)
+
+	for i := 0; i < N; i++ {
+		fmt.Printf("%v: %v\n", i, d[i])
+	}
+
 }
 
 /*
@@ -330,6 +415,7 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
+// Deque
 func NewDeque() *Deque {
 	return &Deque{}
 }

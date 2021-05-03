@@ -369,7 +369,7 @@ return true
 }
 return false
 }
-package main
+å√package main
 
 import (
 	"bufio"
