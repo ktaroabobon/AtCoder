@@ -10,13 +10,27 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/zone2021/tasks/zone2021_a
 
 /*
 main関数
 */
 
 func main() {
+	s := sReader()
+	s = strings.Replace(s, "ZONe", i2s(0), -1)
+
+	sSlice := strings.Split(s, "")
+	cnt := 0
+
+	for _, v := range sSlice {
+		if v == i2s(0) {
+			cnt++
+		}
+	}
+
+	fmt.Println(cnt)
+
 }
 
 /*
@@ -261,7 +275,7 @@ func iisContain(intSlice []int, i int) bool {
 }
 
 /* intSliceを逆順にして返す */
-func toReverce(data []int) []int {
+func toReverce(data []rune) []rune {
 	sort.Sort(sort.Reverse(sort.IntSlice(data)))
 	return data
 }

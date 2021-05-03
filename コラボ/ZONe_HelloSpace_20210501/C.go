@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/zone2021/tasks/zone2021_c
 
 /*
 main関数

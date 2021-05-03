@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/zone2021/tasks/zone2021_d
 
 /*
 main関数
@@ -169,6 +169,14 @@ func i2b(i int) bool {
 	return i != 0
 }
 
+func s2r(s string) rune {
+	var r int32
+	for _, v := range s {
+		r = v
+	}
+	return r
+}
+
 /*
 int型計算式
 */
@@ -260,10 +268,11 @@ func iisContain(intSlice []int, i int) bool {
 	return false
 }
 
-/* intSliceを逆順にして返す */
-func toReverce(data []int) []int {
-	sort.Sort(sort.Reverse(sort.IntSlice(data)))
-	return data
+func toReverse(data []interface{}) []interface{} {
+	if len(data) == 0 {
+		return data
+	}
+	return append(toReverse(data[1:]), data[0])
 }
 
 /* intHeap(優先度付きキュー) */
@@ -319,4 +328,44 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 		returnIndex = -1
 	}
 	return
+}
+
+// Deque
+func NewDeque() *Deque {
+	return &Deque{}
+}
+
+type Deque struct {
+	Items []interface{}
+}
+
+func (s *Deque) Push(item interface{}) {
+	temp := []interface{}{item}
+	s.Items = append(temp, s.Items...)
+}
+
+func (s *Deque) Inject(item interface{}) {
+	s.Items = append(s.Items, item)
+}
+
+func (s *Deque) Pop() interface{} {
+	defer func() {
+		s.Items = s.Items[1:]
+	}()
+	return s.Items[0]
+}
+
+func (s *Deque) Eject() interface{} {
+	i := len(s.Items) - 1
+	defer func() {
+		s.Items = append(s.Items[:i], s.Items[i+1:]...)
+	}()
+	return s.Items[i]
+}
+
+func (s *Deque) IsEmpty() bool {
+	if len(s.Items) == 0 {
+		return true
+	}
+	return false
 }

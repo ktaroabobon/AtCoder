@@ -10,14 +10,102 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/zone2021/tasks/zone2021_d
+
+func addWord(reverse bool, sRune int32, messageTarget []rune) []rune {
+	if !reverse {
+		messageTarget = append(messageTarget, sRune)
+	} else {
+		messageTarget = append(messageTarget[:1], messageTarget[0:]...)
+		messageTarget[0] = sRune
+	}
+	return messageTarget
+}
+
+func checkWords(reverse bool, sRune int32, messageTarget []rune) (messageReturn []rune) {
+	if !reverse {
+		if messageTarget[len(messageTarget)-1] == sRune {
+			messageReturn = messageTarget[:len(messageTarget)-1]
+		} else {
+			messageReturn = addWord(reverse, sRune, messageTarget)
+		}
+	} else {
+		if messageTarget[0] == sRune {
+			messageReturn = messageTarget[1:]
+		} else {
+			messageReturn = addWord(reverse, sRune, messageTarget)
+		}
+	}
+	return
+}
 
 /*
 main関数
 */
 
 func main() {
+	cryptTarget := sReader()
+	messageTarget := []rune{}
+
+	flagReverse := s2r("R")
+
+	reverse := false
+	for _, v := range cryptTarget {
+		if v == flagReverse {
+			reverse = !reverse
+			continue
+		}
+		if len(messageTarget) >= 1 {
+			messageTarget = checkWords(reverse, v, messageTarget)
+		} else {
+			messageTarget = addWord(reverse, v, messageTarget)
+		}
+	}
+
+	if reverse {
+		messageTarget = toReverse(messageTarget)
+	}
+
+	fmt.Println(string(messageTarget))
 }
+
+//func main() {
+//	s := NewDeque()
+//
+//	flagReverse := s2r("R")
+//
+//	reverse := false
+//	for _, v := range sReader() {
+//		if v == flagReverse {
+//			reverse = !reverse
+//			continue
+//		} else if reverse {
+//			if !s.IsEmpty() && s.Items[0] == v {
+//				s.Eject()
+//			} else {
+//				s.Inject(v)
+//			}
+//		} else {
+//			if !s.IsEmpty() && s.Items[len(s.Items)-1] == v {
+//				s.Pop()
+//			} else {
+//				s.Push(v)
+//			}
+//		}
+//	}
+//
+//	if reverse {
+//		s.Items = toReverse(s.Items)
+//	}
+//
+//	ans := []rune{}
+//
+//	for _, v := range s.Items {
+//		ans = append(ans, v.(rune))
+//	}
+//
+//	fmt.Println(string(ans))
+//}
 
 /*
 標準入力の読み込み
@@ -169,6 +257,14 @@ func i2b(i int) bool {
 	return i != 0
 }
 
+func s2r(s string) rune {
+	var r int32
+	for _, v := range s {
+		r = v
+	}
+	return r
+}
+
 /*
 int型計算式
 */
@@ -260,10 +356,11 @@ func iisContain(intSlice []int, i int) bool {
 	return false
 }
 
-/* intSliceを逆順にして返す */
-func toReverce(data []int) []int {
-	sort.Sort(sort.Reverse(sort.IntSlice(data)))
-	return data
+func toReverse(data []rune) []rune {
+	if len(data) == 0 {
+		return data
+	}
+	return append(toReverse(data[1:]), data[0])
 }
 
 /* intHeap(優先度付きキュー) */
@@ -319,4 +416,44 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 		returnIndex = -1
 	}
 	return
+}
+
+// Deque
+func NewDeque() *Deque {
+	return &Deque{}
+}
+
+type Deque struct {
+	Items []interface{}
+}
+
+func (s *Deque) Push(item interface{}) {
+	temp := []interface{}{item}
+	s.Items = append(temp, s.Items...)
+}
+
+func (s *Deque) Inject(item interface{}) {
+	s.Items = append(s.Items, item)
+}
+
+func (s *Deque) Pop() interface{} {
+	defer func() {
+		s.Items = s.Items[1:]
+	}()
+	return s.Items[0]
+}
+
+func (s *Deque) Eject() interface{} {
+	i := len(s.Items) - 1
+	defer func() {
+		s.Items = append(s.Items[:i], s.Items[i+1:]...)
+	}()
+	return s.Items[i]
+}
+
+func (s *Deque) IsEmpty() bool {
+	if len(s.Items) == 0 {
+		return true
+	}
+	return false
 }

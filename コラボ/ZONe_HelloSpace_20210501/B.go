@@ -10,13 +10,36 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/zone2021/tasks/zone2021_b
 
 /*
 main関数
 */
 
 func main() {
+	nums := isReader()
+	//num := nums[0]
+	//obstacleData := [][]int{}
+	//maxHigh := 0
+	//maxDirc := 0
+	//maxIdx := 0
+	resultSlice := []float64{}
+
+	for i := 0; i < nums[0]; i++ {
+		data := isReader()
+		r := float64(nums[1]*data[1]) - float64(nums[2]*data[0])
+		if r > 0 {
+			r /= float64(nums[1] - data[0])
+		} else {
+			r = 0
+		}
+		resultSlice = append(resultSlice, r)
+	}
+
+	sort.Float64s(resultSlice)
+
+	ans := resultSlice[len(resultSlice)-1]
+	fmt.Println(ans)
 }
 
 /*
