@@ -10,16 +10,23 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/dp/tasks/dp_a
 
-func solve(N int, partsData [][]int) (cnt int) {
-	for _, v := range partsData[1] {
-		aIdx := upperBound(partsData[0], v-1)
-		cIdx := lowerBound(partsData[2], v+1)
+var N int
+var h []int
 
-		if aIdx != -1 && cIdx < N {
-			cnt += (aIdx + 1) * (N - cIdx)
-		}
+func ichmin(a *int, b int) (f bool) {
+	if *a > b {
+		*a = b
+		f = true
+	}
+	return
+}
+
+func ichmax(a *int, b int) (f bool) {
+	if *a < b {
+		*a = b
+		f = true
 	}
 	return
 }
@@ -29,19 +36,23 @@ main関数
 */
 
 func main() {
-	N := iReader()
-	partsData := make([][]int, 3)
+	N = iReader()
+	h = isReader()
 
-	for i := 0; i < 3; i++ {
-		data := isReader()
-		if i != 1 {
-			sort.Ints(data)
+	dp := make([]int, N)
+	initIS(dp, math.MaxInt64)
+
+	dp[0] = 0
+
+	for i := 1; i < N; i++ {
+		ichmin(&dp[i], dp[i-1]+iabs(h[i]-h[i-1]))
+		if i > 1 {
+			ichmin(&dp[i], dp[i-2]+iabs(h[i]-h[i-2]))
 		}
-		partsData[i] = data
 	}
 
-	r := solve(N, partsData)
-	fmt.Println(r)
+	fmt.Println(dp[N-1])
+
 }
 
 /*
@@ -293,11 +304,23 @@ func iisContain(intSlice []int, i int) bool {
 	return false
 }
 
+/*Sliceを逆順にして返す。*/
 func toReverse(data []interface{}) []interface{} {
 	if len(data) == 0 {
 		return data
 	}
 	return append(toReverse(data[1:]), data[0])
+}
+
+/*intSliceの初期化*/
+func initIS(is []int, v int) []int {
+	if cap(is) == 0 {
+		return is
+	}
+	for i := 0; i < cap(is); i++ {
+		is[i] = v
+	}
+	return is
 }
 
 /* intHeap(優先度付きキュー) */
@@ -336,7 +359,7 @@ func designatedLowerBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// 数値型スライスのなかで対象の数値以下の最後に登場するインデックスを返す
+// 数値型スライスのなかで対象の数値以上の最後に登場するインデックスを返す
 func upperBound(intTarget []int, x int) (returnIndex int) {
 	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] > x }) - 1
 	return
@@ -355,7 +378,6 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// Deque
 func NewDeque() *Deque {
 	return &Deque{}
 }
@@ -364,23 +386,23 @@ type Deque struct {
 	Items []interface{}
 }
 
-func (s *Deque) Push(item interface{}) {
+func (s *Deque) AppendLeft(item interface{}) {
 	temp := []interface{}{item}
 	s.Items = append(temp, s.Items...)
 }
 
-func (s *Deque) Inject(item interface{}) {
+func (s *Deque) Append(item interface{}) {
 	s.Items = append(s.Items, item)
 }
 
-func (s *Deque) Pop() interface{} {
+func (s *Deque) PopLeft() interface{} {
 	defer func() {
 		s.Items = s.Items[1:]
 	}()
 	return s.Items[0]
 }
 
-func (s *Deque) Eject() interface{} {
+func (s *Deque) Pop() interface{} {
 	i := len(s.Items) - 1
 	defer func() {
 		s.Items = append(s.Items[:i], s.Items[i+1:]...)

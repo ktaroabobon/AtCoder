@@ -10,18 +10,58 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/atc001/tasks/dfs_a
 
-func solve(N int, partsData [][]int) (cnt int) {
-	for _, v := range partsData[1] {
-		aIdx := upperBound(partsData[0], v-1)
-		cIdx := lowerBound(partsData[2], v+1)
+// DFSの問題です。
 
-		if aIdx != -1 && cIdx < N {
-			cnt += (aIdx + 1) * (N - cIdx)
-		}
+type Graph = [][]string
+
+type seen = []bool
+
+func initValueSlice(s [][]bool, v int) [][]bool {
+	if cap(s) == 0 {
+		return s
 	}
-	return
+	//x := make([]bool, v)
+	for i := 0; i < cap(s); i++ {
+		s = append(s, make(seen, v))
+	}
+
+	//for i := 1; i < cap(s); i *= 2 {
+	//	copy(s[i:], s[:i])
+	//}
+	//s0 := s[0][0]
+	//s1 := s[1][0]
+	//s3 := s[1][1]
+	//fmt.Printf("%v\n", &s[0][0])
+	//fmt.Printf("%v\n", &s[0][1])
+	//fmt.Printf("%v\n", &s[1][0])
+	//fmt.Printf("%v\n", &s[1][1])
+	return s
+
+}
+func solve(g Graph, s [][]bool, dx, dy []int, H, W, h, w int) [][]bool {
+	s[h][w] = true
+
+	for i := 0; i < 4; i++ {
+		nextH := h + dx[i]
+		nextW := w + dy[i]
+
+		if nextH < 0 || nextH >= H || nextW < 0 || nextW >= W {
+			continue
+		}
+
+		if g[nextH][nextW] == "#" {
+			continue
+		}
+
+		if s[nextH][nextW] {
+			continue
+		}
+
+		s = solve(g, s, dx, dy, H, W, nextH, nextW)
+	}
+	return s
 }
 
 /*
@@ -29,19 +69,47 @@ main関数
 */
 
 func main() {
-	N := iReader()
-	partsData := make([][]int, 3)
+	numbers := isReader()
+	H, W := numbers[0], numbers[1]
 
-	for i := 0; i < 3; i++ {
-		data := isReader()
-		if i != 1 {
-			sort.Ints(data)
-		}
-		partsData[i] = data
+	field := make(Graph, H)
+
+	dx := []int{1, 0, -1, 0}
+	dy := []int{0, 1, 0, -1}
+
+	for i := 0; i < H; i++ {
+		info := sReader()
+		field[i] = strings.Split(info, "")
 	}
+	// o(H)
 
-	r := solve(N, partsData)
-	fmt.Println(r)
+	var sh, sw, gh, gw int
+	for i := 0; i < H; i++ {
+		for j := 0; j < W; j++ {
+			if field[i][j] == "s" {
+				sh = i
+				sw = j
+			}
+			if field[i][j] == "g" {
+				gh = i
+				gw = j
+			}
+		}
+	}
+	// o(H*W)
+
+	s := make([][]bool, 0, H)
+
+	s = initValueSlice(s, W)
+	//	 o(logH)
+
+	r := solve(field, s, dx, dy, H, W, sh, sw)
+
+	if r[gh][gw] {
+		fmt.Println("Yes")
+	} else {
+		fmt.Println("No")
+	}
 }
 
 /*
@@ -336,7 +404,7 @@ func designatedLowerBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// 数値型スライスのなかで対象の数値以下の最後に登場するインデックスを返す
+// 数値型スライスのなかで対象の数値以上の最後に登場するインデックスを返す
 func upperBound(intTarget []int, x int) (returnIndex int) {
 	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] > x }) - 1
 	return
@@ -355,7 +423,6 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// Deque
 func NewDeque() *Deque {
 	return &Deque{}
 }
@@ -364,23 +431,23 @@ type Deque struct {
 	Items []interface{}
 }
 
-func (s *Deque) Push(item interface{}) {
+func (s *Deque) AppendLeft(item interface{}) {
 	temp := []interface{}{item}
 	s.Items = append(temp, s.Items...)
 }
 
-func (s *Deque) Inject(item interface{}) {
+func (s *Deque) Append(item interface{}) {
 	s.Items = append(s.Items, item)
 }
 
-func (s *Deque) Pop() interface{} {
+func (s *Deque) PopLeft() interface{} {
 	defer func() {
 		s.Items = s.Items[1:]
 	}()
 	return s.Items[0]
 }
 
-func (s *Deque) Eject() interface{} {
+func (s *Deque) Pop() interface{} {
 	i := len(s.Items) - 1
 	defer func() {
 		s.Items = append(s.Items[:i], s.Items[i+1:]...)

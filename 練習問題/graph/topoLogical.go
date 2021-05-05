@@ -10,13 +10,60 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/zone2021/tasks/zone2021_d
+// page URL: https://qiita.com/drken/items/996d80bcae64649a6580#3-4-%E3%83%88%E3%83%9D%E3%83%AD%E3%82%B8%E3%82%AB%E3%83%AB%E3%82%BD%E3%83%BC%E3%83%88
+
+var q *Deque
+var g [][]int
+var deg, order []int
+var N, M int
 
 /*
 main関数
 */
 
 func main() {
+	is := isReader()
+	N, M = is[0], is[1]
+
+	g = make([][]int, N)
+	deg = make([]int, N)
+
+	for i := 0; i < M; i++ {
+		is = isReader()
+		a, b := is[0], is[1]
+		g[b] = append(g[b], a)
+		deg[a]++
+	}
+
+	q = NewDeque()
+	for i := 0; i < N; i++ {
+		if deg[i] == 0 {
+			q.AppendLeft(i)
+		}
+	}
+
+	order = make([]int, 0, N)
+	for {
+		if q.IsEmpty() {
+			break
+		}
+
+		v := q.PopLeft()
+		order = append(order, v.(int))
+
+		for _, nv := range g[v.(int)] {
+			deg[nv]--
+
+			if deg[nv] == 0 {
+				q.AppendLeft(nv)
+			}
+		}
+	}
+
+	order = toReverse(order)
+	for _, v := range order {
+		fmt.Println(v)
+	}
 }
 
 /*
@@ -244,6 +291,21 @@ func ilcm(v1, v2 int) int {
 func iswap(v1, v2 int) (int, int) {
 	return v2, v1
 }
+func ichmin(a *int, b int) (f bool) {
+	if *a > b {
+		*a = b
+		f = true
+	}
+	return
+}
+
+func ichmax(a *int, b int) (f bool) {
+	if *a < b {
+		*a = b
+		f = true
+	}
+	return
+}
 
 /*
 その他関数
@@ -268,11 +330,23 @@ func iisContain(intSlice []int, i int) bool {
 	return false
 }
 
-func toReverse(data []interface{}) []interface{} {
+/*Sliceを逆順にして返す。*/
+func toReverse(data []int) []int {
 	if len(data) == 0 {
 		return data
 	}
 	return append(toReverse(data[1:]), data[0])
+}
+
+/*intSliceの初期化*/
+func initIS(is []int, v int) []int {
+	if cap(is) == 0 {
+		return is
+	}
+	for i := 0; i < cap(is); i++ {
+		is[i] = v
+	}
+	return is
 }
 
 /* intHeap(優先度付きキュー) */

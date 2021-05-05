@@ -38,7 +38,7 @@ type Graph = [][]int
 type dist = []int
 
 func initValueSlice(s []int, v int) []int {
-	if v == 0 {
+	if len(s) == 0 {
 		return s
 	}
 	s[0] = v

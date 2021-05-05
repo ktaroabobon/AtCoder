@@ -10,17 +10,60 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/code-festival-2017-qualb/tasks/code_festival_2017_qualb_c
 
-func solve(N int, partsData [][]int) (cnt int) {
-	for _, v := range partsData[1] {
-		aIdx := upperBound(partsData[0], v-1)
-		cIdx := lowerBound(partsData[2], v+1)
+type Graph [][]int
 
-		if aIdx != -1 && cIdx < N {
-			cnt += (aIdx + 1) * (N - cIdx)
+var N, M, cnt int
+
+func initDist(dist []int) []int {
+	for i := 0; i < cap(dist); i++ {
+		dist[i] = -1
+	}
+	return dist
+}
+
+func bfs(g Graph, d []int, q *Deque, s int) (returnG Graph, f bool) {
+	d[s] = 0
+	q.Append(s)
+
+	for {
+		if q.IsEmpty() {
+			break
+		}
+		v := q.PopLeft()
+
+		for _, nextV := range g[v.(int)] {
+			if d[nextV] != -1 {
+				continue
+			}
+
+			d[nextV] = d[v.(int)] + 1
+			if d[nextV] == 3 && !iisContain(g[s], nextV) {
+				cnt++
+				g[s] = append(g[s], nextV)
+				g[nextV] = append(g[nextV], s)
+				f = true
+			}
+			q.Append(nextV)
 		}
 	}
+	returnG = g
+	return
+}
+
+func solve(g Graph) (returnG Graph, f bool) {
+	var bfsF bool
+	for i := 0; i < N; i++ {
+		dist := initDist(make([]int, N))
+		q := NewDeque()
+
+		g, bfsF = bfs(g, dist, q, i)
+		if !f && bfsF {
+			f = true
+		}
+	}
+	returnG = g
 	return
 }
 
@@ -29,19 +72,28 @@ main関数
 */
 
 func main() {
-	N := iReader()
-	partsData := make([][]int, 3)
+	numbers := isReader()
+	N, M = numbers[0], numbers[1]
 
-	for i := 0; i < 3; i++ {
-		data := isReader()
-		if i != 1 {
-			sort.Ints(data)
-		}
-		partsData[i] = data
+	g := make(Graph, N)
+
+	for i := 0; i < M; i++ {
+		info := isReader()
+		v1, v2 := info[0]-1, info[1]-1
+
+		g[v1] = append(g[v1], v2)
+		g[v2] = append(g[v2], v1)
 	}
 
-	r := solve(N, partsData)
-	fmt.Println(r)
+	for {
+		var f bool
+		g, f = solve(g)
+		if !f {
+			break
+		}
+	}
+
+	fmt.Println(cnt)
 }
 
 /*
@@ -336,7 +388,7 @@ func designatedLowerBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// 数値型スライスのなかで対象の数値以下の最後に登場するインデックスを返す
+// 数値型スライスのなかで対象の数値以上の最後に登場するインデックスを返す
 func upperBound(intTarget []int, x int) (returnIndex int) {
 	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] > x }) - 1
 	return
@@ -355,7 +407,6 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// Deque
 func NewDeque() *Deque {
 	return &Deque{}
 }
@@ -364,23 +415,23 @@ type Deque struct {
 	Items []interface{}
 }
 
-func (s *Deque) Push(item interface{}) {
+func (s *Deque) AppendLeft(item interface{}) {
 	temp := []interface{}{item}
 	s.Items = append(temp, s.Items...)
 }
 
-func (s *Deque) Inject(item interface{}) {
+func (s *Deque) Append(item interface{}) {
 	s.Items = append(s.Items, item)
 }
 
-func (s *Deque) Pop() interface{} {
+func (s *Deque) PopLeft() interface{} {
 	defer func() {
 		s.Items = s.Items[1:]
 	}()
 	return s.Items[0]
 }
 
-func (s *Deque) Eject() interface{} {
+func (s *Deque) Pop() interface{} {
 	i := len(s.Items) - 1
 	defer func() {
 		s.Items = append(s.Items[:i], s.Items[i+1:]...)

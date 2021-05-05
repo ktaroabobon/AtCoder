@@ -10,13 +10,63 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/zone2021/tasks/zone2021_d
+// page URL: https://onlinejudge.u-aizu.ac.jp/problems/1160
+
+type Graph [][]int
+
+func solve(g Graph, dx, dy []int, H, W, h, w int) Graph {
+	g[h][w] = 0
+
+	for i := 0; i < 8; i++ {
+		nextH := h + dy[i]
+		nextW := w + dx[i]
+
+		if nextH < 0 || nextH >= H || nextW < 0 || nextW >= W {
+			continue
+		}
+		if g[nextH][nextW] == 0 {
+			continue
+		}
+
+		g = solve(g, dx, dy, H, W, nextH, nextW)
+	}
+	return g
+}
 
 /*
 main関数
 */
 
 func main() {
+	for {
+		numbers := isReader()
+		W, H := numbers[0], numbers[1]
+
+		if W == 0 && H == 0 {
+			break
+		}
+		g := make(Graph, H)
+
+		dx := []int{1, 1, 0, -1, -1, -1, 0, 1}
+		dy := []int{0, -1, -1, -1, 0, 1, 1, 1}
+
+		for i := 0; i < H; i++ {
+			info := isReader()
+			g[i] = info
+		}
+
+		var cnt int
+
+		for i := 0; i < H; i++ {
+			for j := 0; j < W; j++ {
+				if g[i][j] == 1 {
+					g = solve(g, dx, dy, H, W, i, j)
+					cnt++
+				}
+			}
+		}
+		fmt.Println(cnt)
+	}
 }
 
 /*

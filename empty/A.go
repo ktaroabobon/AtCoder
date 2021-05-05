@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/zone2021/tasks/zone2021_d
+// page URL:
 
 /*
 main関数
@@ -244,6 +244,21 @@ func ilcm(v1, v2 int) int {
 func iswap(v1, v2 int) (int, int) {
 	return v2, v1
 }
+func ichmin(a *int, b int) (f bool) {
+	if *a > b {
+		*a = b
+		f = true
+	}
+	return
+}
+
+func ichmax(a *int, b int) (f bool) {
+	if *a < b {
+		*a = b
+		f = true
+	}
+	return
+}
 
 /*
 その他関数
@@ -268,11 +283,23 @@ func iisContain(intSlice []int, i int) bool {
 	return false
 }
 
+/*Sliceを逆順にして返す。*/
 func toReverse(data []interface{}) []interface{} {
 	if len(data) == 0 {
 		return data
 	}
 	return append(toReverse(data[1:]), data[0])
+}
+
+/*intSliceの初期化*/
+func initIS(is []int, v int) []int {
+	if cap(is) == 0 {
+		return is
+	}
+	for i := 0; i < cap(is); i++ {
+		is[i] = v
+	}
+	return is
 }
 
 /* intHeap(優先度付きキュー) */

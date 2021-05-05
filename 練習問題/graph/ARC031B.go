@@ -10,18 +10,43 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL:https://atcoder.jp/contests/arc031/tasks/arc031_2
 
-func solve(N int, partsData [][]int) (cnt int) {
-	for _, v := range partsData[1] {
-		aIdx := upperBound(partsData[0], v-1)
-		cIdx := lowerBound(partsData[2], v+1)
+var graph [10][10]string
+var seen [10][10]bool
+var H, W, cnt, check int
+var dx, dy []int
 
-		if aIdx != -1 && cIdx < N {
-			cnt += (aIdx + 1) * (N - cIdx)
+func initSeen() {
+	for i := 0; i < cap(seen); i++ {
+		for j := 0; j < cap(seen[i]); j++ {
+			seen[i][j] = false
 		}
 	}
-	return
+}
+
+func dfs(h, w int) {
+	seen[h][w] = true
+	check++
+
+	for i := 0; i < 4; i++ {
+		nextH := h + dy[i]
+		nextW := w + dx[i]
+
+		if nextH < 0 || nextH >= H || nextW < 0 || nextW >= W {
+			continue
+		}
+
+		if graph[nextH][nextW] == "x" {
+			continue
+		}
+
+		if seen[nextH][nextW] == true {
+			continue
+		}
+
+		dfs(nextH, nextW)
+	}
 }
 
 /*
@@ -29,19 +54,39 @@ main関数
 */
 
 func main() {
-	N := iReader()
-	partsData := make([][]int, 3)
+	H, W = 10, 10
+	dx = []int{1, 0, -1, 0}
+	dy = []int{0, 1, 0, -1}
 
-	for i := 0; i < 3; i++ {
-		data := isReader()
-		if i != 1 {
-			sort.Ints(data)
+	for i := 0; i < H; i++ {
+		info := strings.Split(sReader(), "")
+		for j := 0; j < W; j++ {
+			graph[i][j] = info[j]
+			if info[j] == "o" {
+				cnt++
+			}
 		}
-		partsData[i] = data
 	}
 
-	r := solve(N, partsData)
-	fmt.Println(r)
+	cnt++
+
+	for i := 0; i < H; i++ {
+		for j := 0; j < W; j++ {
+			if graph[i][j] == "x" {
+				graph[i][j] = "o"
+				initSeen()
+				check = 0
+				dfs(i, j)
+				if check == cnt {
+					fmt.Println("YES")
+					return
+				}
+				graph[i][j] = "x"
+			}
+		}
+	}
+
+	fmt.Println("NO")
 }
 
 /*
@@ -336,7 +381,7 @@ func designatedLowerBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// 数値型スライスのなかで対象の数値以下の最後に登場するインデックスを返す
+// 数値型スライスのなかで対象の数値以上の最後に登場するインデックスを返す
 func upperBound(intTarget []int, x int) (returnIndex int) {
 	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] > x }) - 1
 	return
@@ -355,7 +400,6 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// Deque
 func NewDeque() *Deque {
 	return &Deque{}
 }
@@ -364,23 +408,23 @@ type Deque struct {
 	Items []interface{}
 }
 
-func (s *Deque) Push(item interface{}) {
+func (s *Deque) AppendLeft(item interface{}) {
 	temp := []interface{}{item}
 	s.Items = append(temp, s.Items...)
 }
 
-func (s *Deque) Inject(item interface{}) {
+func (s *Deque) Append(item interface{}) {
 	s.Items = append(s.Items, item)
 }
 
-func (s *Deque) Pop() interface{} {
+func (s *Deque) PopLeft() interface{} {
 	defer func() {
 		s.Items = s.Items[1:]
 	}()
 	return s.Items[0]
 }
 
-func (s *Deque) Eject() interface{} {
+func (s *Deque) Pop() interface{} {
 	i := len(s.Items) - 1
 	defer func() {
 		s.Items = append(s.Items[:i], s.Items[i+1:]...)

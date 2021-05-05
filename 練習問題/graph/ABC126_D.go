@@ -10,18 +10,41 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc126/tasks/abc126_d
 
-func solve(N int, partsData [][]int) (cnt int) {
-	for _, v := range partsData[1] {
-		aIdx := upperBound(partsData[0], v-1)
-		cIdx := lowerBound(partsData[2], v+1)
+type Edge struct {
+	to     int
+	weight int
+}
+type wGraph [][]Edge
 
-		if aIdx != -1 && cIdx < N {
-			cnt += (aIdx + 1) * (N - cIdx)
-		}
+type Seen []int
+
+var N int
+
+//var f bool
+
+func initCheck(s Seen, v int) Seen {
+	for i := 0; i < v; i++ {
+		s[i] = -1
 	}
-	return
+	return s
+}
+
+func dfs(g wGraph, s Seen, i, c int) Seen {
+	s[i] = c
+
+	for j := 0; j < len(g[i]); j++ {
+		if s[g[i][j].to] != -1 {
+			continue
+		}
+		nextC := c
+		if g[i][j].weight%2 == 1 {
+			nextC = (c + 1) % 2
+		}
+		s = dfs(g, s, g[i][j].to, nextC)
+	}
+	return s
 }
 
 /*
@@ -29,19 +52,30 @@ main関数
 */
 
 func main() {
-	N := iReader()
-	partsData := make([][]int, 3)
-
-	for i := 0; i < 3; i++ {
-		data := isReader()
-		if i != 1 {
-			sort.Ints(data)
-		}
-		partsData[i] = data
+	N = iReader()
+	g := make(wGraph, N)
+	for i := 0; i < N-1; i++ {
+		info := isReader()
+		v1, v2, weight := info[0]-1, info[1]-1, info[2]
+		g[v1] = append(g[v1], Edge{v2, weight})
+		g[v2] = append(g[v2], Edge{v1, weight})
 	}
 
-	r := solve(N, partsData)
-	fmt.Println(r)
+	s := make(Seen, N)
+	s = initCheck(s, N)
+
+	//for {
+	s = dfs(g, s, 0, 0)
+	//for i := 0; i < N; i++ {
+	//	if s[i] == -1 {
+	//		break
+	//	}
+	////}
+	//initCheck(s, N)
+	//}
+	for _, v := range s {
+		fmt.Println(v)
+	}
 }
 
 /*
@@ -336,7 +370,7 @@ func designatedLowerBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// 数値型スライスのなかで対象の数値以下の最後に登場するインデックスを返す
+// 数値型スライスのなかで対象の数値以上の最後に登場するインデックスを返す
 func upperBound(intTarget []int, x int) (returnIndex int) {
 	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] > x }) - 1
 	return
@@ -355,7 +389,6 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// Deque
 func NewDeque() *Deque {
 	return &Deque{}
 }
@@ -364,23 +397,23 @@ type Deque struct {
 	Items []interface{}
 }
 
-func (s *Deque) Push(item interface{}) {
+func (s *Deque) AppendLeft(item interface{}) {
 	temp := []interface{}{item}
 	s.Items = append(temp, s.Items...)
 }
 
-func (s *Deque) Inject(item interface{}) {
+func (s *Deque) Append(item interface{}) {
 	s.Items = append(s.Items, item)
 }
 
-func (s *Deque) Pop() interface{} {
+func (s *Deque) PopLeft() interface{} {
 	defer func() {
 		s.Items = s.Items[1:]
 	}()
 	return s.Items[0]
 }
 
-func (s *Deque) Eject() interface{} {
+func (s *Deque) Pop() interface{} {
 	i := len(s.Items) - 1
 	defer func() {
 		s.Items = append(s.Items[:i], s.Items[i+1:]...)

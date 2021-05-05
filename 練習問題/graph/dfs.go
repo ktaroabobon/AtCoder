@@ -32,8 +32,10 @@ import (
 //13 14
 
 type Graph = [][]int
-
 type seen = []bool
+
+var N, M int
+var depth, subTreeSz []int
 
 func dfs(g Graph, s seen, v int) {
 	//行きがけ順
@@ -81,13 +83,48 @@ func dfsTS(g Graph, s seen, v, t int) int {
 	return t
 }
 
+func dfsOnTree(g Graph, v, p, d int) {
+	//	URL: https://qiita.com/drken/items/a803d4fc4a727e02f7ba#4-4-%E6%A0%B9%E3%81%AE%E3%81%AA%E3%81%84%E6%9C%A8%E3%81%AE%E8%B5%B0%E6%9F%BB
+	//	根のない木の走査
+	/*
+		   	与えられた木の頂点 0 を根として指定した根つき木において、
+		      ・各頂点の根からの距離 (深さ (depth) といいます)
+		      ・各頂点を根とした部分木のサイズ (部分木に含まれる頂点数)
+			をそれぞれ求めてみましょう。
+	*/
+
+	// 行きがけ各頂点の深さを求める
+	depth[v] = d
+	for _, nv := range g[v] {
+		if nv == p {
+			continue
+		}
+		dfsOnTree(g, nv, v, d+1)
+	}
+
+	//	帰りがけに部分木のサイズを求める
+	subTreeSz[v] = 1
+	for _, c := range g[v] {
+		if c == p {
+			continue
+		}
+		subTreeSz[v] += subTreeSz[c]
+	}
+	/*
+		総じて、
+		・各頂点の深さ: 行きがけ順に求めた
+		・各頂点を根とした部分木のサイズ: 帰りがけ順に求めた
+		といえます。
+	*/
+}
+
 /*
 main関数
 */
 
 func main() {
 	numbers := isReader()
-	N, M := numbers[0], numbers[1]
+	N, M = numbers[0], numbers[1]
 
 	g := make(Graph, N)
 
@@ -116,6 +153,16 @@ func main() {
 
 	fmt.Println("DFS タイムスタンプ")
 	dfsTS(g, s, 0, 0)
+
+	fmt.Println("DFS 根のない木の走査")
+	root := 0
+	depth = make([]int, N)
+	subTreeSz = make([]int, N)
+	dfsOnTree(g, root, -1, 0)
+
+	for i := 0; i < N; i++ {
+		fmt.Printf("No.%v Depth:%v subTreeSz:%v\n", i, depth[i], subTreeSz[i])
+	}
 }
 
 /*
