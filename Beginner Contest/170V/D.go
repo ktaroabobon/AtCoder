@@ -10,42 +10,10 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc170/tasks/abc170_d
 
-type Edge struct {
-	to     int
-	weight int
-}
-
-var N int
-var graph [][]Edge
-var r []int
-var q Deque
-
-func bfs(x int) {
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-		c := r[v.(int)]
-		for _, nextV := range graph[v.(int)] {
-			if r[nextV.to] != -1 {
-				continue
-			}
-
-			if nextV.weight%2 == 0 {
-				r[nextV.to] = c
-			} else {
-				r[nextV.to] = (c + 1) % 2
-			}
-			q.Append(nextV.to)
-		}
-	}
-}
+var N, cnt int
+var numbers []int
 
 /*
 main関数
@@ -53,27 +21,34 @@ main関数
 
 func main() {
 	N = iReader()
-	graph = make([][]Edge, N)
+	numbers = isReader()
 
-	for i := 0; i < N-1; i++ {
-		is := isReader()
-		v1, v2, w := is[0]-1, is[1]-1, is[2]
+	sort.Ints(numbers)
 
-		graph[v1] = append(graph[v1], Edge{v2, w})
-		graph[v2] = append(graph[v2], Edge{v1, w})
+	m := make(map[int]int)
+	for _, v := range numbers {
+		m[v]++
 	}
 
-	r = make([]int, N)
-	initIS(r, -1)
-	r[0] = 0
+	dp := make([]bool, 1e6+1)
+	maxNum := numbers[len(numbers)-1]
 
-	q = *NewDeque()
-
-	bfs(0)
-
-	for _, v := range r {
-		fmt.Println(v)
+	for k, v := range m {
+		if v > 1 {
+			dp[k] = true
+		}
+		for j := 2; k*j < maxNum+1; j++ {
+			dp[k*j] = true
+		}
 	}
+
+	for k := range m {
+		if !dp[k] {
+			cnt++
+		}
+	}
+	fmt.Println(cnt)
+
 }
 
 /*

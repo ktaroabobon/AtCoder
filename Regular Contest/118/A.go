@@ -10,70 +10,17 @@ import (
 	"strings"
 )
 
-// page URL:
-
-type Edge struct {
-	to     int
-	weight int
-}
-
-var N int
-var graph [][]Edge
-var r []int
-var q Deque
-
-func bfs(x int) {
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-		c := r[v.(int)]
-		for _, nextV := range graph[v.(int)] {
-			if r[nextV.to] != -1 {
-				continue
-			}
-
-			if nextV.weight%2 == 0 {
-				r[nextV.to] = c
-			} else {
-				r[nextV.to] = (c + 1) % 2
-			}
-			q.Append(nextV.to)
-		}
-	}
-}
+// page URL: https://atcoder.jp/contests/arc118/tasks/arc118_a
+var t, N int
 
 /*
 main関数
 */
 
 func main() {
-	N = iReader()
-	graph = make([][]Edge, N)
+	is := isReader()
+	t, N = is[0], is[1]
 
-	for i := 0; i < N-1; i++ {
-		is := isReader()
-		v1, v2, w := is[0]-1, is[1]-1, is[2]
-
-		graph[v1] = append(graph[v1], Edge{v2, w})
-		graph[v2] = append(graph[v2], Edge{v1, w})
-	}
-
-	r = make([]int, N)
-	initIS(r, -1)
-	r[0] = 0
-
-	q = *NewDeque()
-
-	bfs(0)
-
-	for _, v := range r {
-		fmt.Println(v)
-	}
 }
 
 /*

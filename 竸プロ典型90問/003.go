@@ -10,20 +10,18 @@ import (
 	"strings"
 )
 
-// page URL:
-
-type Edge struct {
-	to     int
-	weight int
-}
+// page URL: https://atcoder.jp/contests/typical90/tasks/typical90_c
 
 var N int
-var graph [][]Edge
-var r []int
+var graph [][]int
+var dist []int
 var q Deque
 
-func bfs(x int) {
-	q.Append(x)
+func bfs(i int) (returnScore, returnV int) {
+	initIS(dist, -1)
+	dist[i] = 0
+	q.Append(i)
+	returnV = i
 
 	for {
 		if q.IsEmpty() {
@@ -31,20 +29,20 @@ func bfs(x int) {
 		}
 
 		v := q.PopLeft()
-		c := r[v.(int)]
+
 		for _, nextV := range graph[v.(int)] {
-			if r[nextV.to] != -1 {
+			if dist[nextV] != -1 {
 				continue
 			}
 
-			if nextV.weight%2 == 0 {
-				r[nextV.to] = c
-			} else {
-				r[nextV.to] = (c + 1) % 2
+			dist[nextV] = dist[v.(int)] + 1
+			q.Append(nextV)
+			if ichmax(&returnScore, dist[nextV]) {
+				returnV = nextV
 			}
-			q.Append(nextV.to)
 		}
 	}
+	return
 }
 
 /*
@@ -53,27 +51,32 @@ main関数
 
 func main() {
 	N = iReader()
-	graph = make([][]Edge, N)
+	graph = make([][]int, N)
 
 	for i := 0; i < N-1; i++ {
 		is := isReader()
-		v1, v2, w := is[0]-1, is[1]-1, is[2]
+		v1, v2 := is[0]-1, is[1]-1
 
-		graph[v1] = append(graph[v1], Edge{v2, w})
-		graph[v2] = append(graph[v2], Edge{v1, w})
+		graph[v1] = append(graph[v1], v2)
+		graph[v2] = append(graph[v2], v1)
 	}
-
-	r = make([]int, N)
-	initIS(r, -1)
-	r[0] = 0
 
 	q = *NewDeque()
+	dist = make([]int, N)
 
-	bfs(0)
+	var score, v int
 
-	for _, v := range r {
-		fmt.Println(v)
+	for {
+		rs, rv := bfs(v)
+		if rs == score {
+			score++
+			break
+		}
+		if ichmax(&score, rs) {
+			v = rv
+		}
 	}
+	fmt.Println(score)
 }
 
 /*

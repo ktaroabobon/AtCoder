@@ -43,15 +43,15 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 
 func main() {
 	a := []int{1, 3, 6, 6, 6, 6, 6, 6, 10, 15, 21, 28, 36, 45, 55}
-	x := 60
+	x := 6
 
 	fmt.Printf("index %d\n", len(a))
 
 	i11 := lowerBound(a, x)
 	fmt.Printf("found %d at index %d in %v\n", x, i11, a)
 
-	i1, ok := designatedLowerBound(a, x)
-	if ok {
+	i1, ok1 := designatedLowerBound(a, x)
+	if ok1 {
 		fmt.Printf("found %d at index %d in %v\n", x, i1, a)
 	} else {
 		fmt.Printf("%d not found in %v\n", x, a)
@@ -60,11 +60,19 @@ func main() {
 	i22 := upperBound(a, x)
 	fmt.Printf("found %d at index %d in %v\n", x, i22, a)
 
-	i2, ok := designatedUpperBound(a, x)
+	i2, ok2 := designatedUpperBound(a, x)
 
-	if ok {
+	if ok2 {
 		fmt.Printf("found %d at index %d in %v\n", x, i2, a)
 	} else {
 		fmt.Printf("%d not found in %v\n", x, a)
 	}
+
+	if ok1 && ok2 {
+		num := i2 - i1 + 1
+		fmt.Printf("%dは%v個ある。\n", x, num)
+	} else {
+		fmt.Printf("%dはありません。", x)
+	}
+
 }

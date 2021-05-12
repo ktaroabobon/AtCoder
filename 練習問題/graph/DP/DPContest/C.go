@@ -10,39 +10,20 @@ import (
 	"strings"
 )
 
-// page URL:
-
-type Edge struct {
-	to     int
-	weight int
-}
+// page URL: https://atcoder.jp/contests/dp/tasks/dp_c
 
 var N int
-var graph [][]Edge
-var r []int
-var q Deque
+var data, dp [][]int
 
-func bfs(x int) {
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-		c := r[v.(int)]
-		for _, nextV := range graph[v.(int)] {
-			if r[nextV.to] != -1 {
-				continue
+func solve() {
+	for i := 1; i < N+1; i++ {
+		for j := 0; j < 3; j++ {
+			for k := 0; k < 3; k++ {
+				if j == k {
+					continue
+				}
+				ichmax(&dp[i][j], dp[i-1][k]+data[i-1][j])
 			}
-
-			if nextV.weight%2 == 0 {
-				r[nextV.to] = c
-			} else {
-				r[nextV.to] = (c + 1) % 2
-			}
-			q.Append(nextV.to)
 		}
 	}
 }
@@ -53,27 +34,21 @@ main関数
 
 func main() {
 	N = iReader()
-	graph = make([][]Edge, N)
 
-	for i := 0; i < N-1; i++ {
-		is := isReader()
-		v1, v2, w := is[0]-1, is[1]-1, is[2]
-
-		graph[v1] = append(graph[v1], Edge{v2, w})
-		graph[v2] = append(graph[v2], Edge{v1, w})
+	for i := 0; i < N; i++ {
+		data = append(data, isReader())
 	}
 
-	r = make([]int, N)
-	initIS(r, -1)
-	r[0] = 0
-
-	q = *NewDeque()
-
-	bfs(0)
-
-	for _, v := range r {
-		fmt.Println(v)
+	dp = make([][]int, N+10)
+	for i := 0; i < cap(dp); i++ {
+		dp[i] = initIS(make([]int, 3), math.MinInt64)
 	}
+	dp[0] = []int{0, 0, 0}
+
+	solve()
+
+	ans := imax(dp[N]...)
+	fmt.Println(ans)
 }
 
 /*

@@ -10,70 +10,50 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://qiita.com/e869120/items/25cb52ba47be0fd418d6#3-1-bit-%E5%85%A8%E6%8E%A2%E7%B4%A2
+/*
+N 個の硬貨があります。番号 i の硬貨は Ai 円です。
+硬貨の選び方は 2^N 通りありますが、その中で合計価格が丁度 X 円となる選び方は存在するでしょうか。
+制約：1≤N≤20,1≤X,Ai≤10^8
 
-type Edge struct {
-	to     int
-	weight int
-}
+e.g.1)
+3 700
+100 200 500
 
-var N int
-var graph [][]Edge
-var r []int
-var q Deque
+e.g.2)
+4 10000000
+1 2 3 4
+*/
 
-func bfs(x int) {
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-		c := r[v.(int)]
-		for _, nextV := range graph[v.(int)] {
-			if r[nextV.to] != -1 {
-				continue
-			}
-
-			if nextV.weight%2 == 0 {
-				r[nextV.to] = c
-			} else {
-				r[nextV.to] = (c + 1) % 2
-			}
-			q.Append(nextV.to)
-		}
-	}
-}
+var N, t, cnt int
+var data []int
 
 /*
 main関数
 */
 
 func main() {
-	N = iReader()
-	graph = make([][]Edge, N)
+	is := isReader()
+	N, t = is[0], is[1]
 
-	for i := 0; i < N-1; i++ {
-		is := isReader()
-		v1, v2, w := is[0]-1, is[1]-1, is[2]
+	data = isReader()
 
-		graph[v1] = append(graph[v1], Edge{v2, w})
-		graph[v2] = append(graph[v2], Edge{v1, w})
+	ans := "No"
+
+	for bits := 0; bits < (1 << uint(N)); bits++ {
+		cnt = 0
+		for i := 0; i < N; i++ {
+			if bits>>uint64(i)&1 == 1 {
+				cnt += data[i]
+			}
+		}
+		if cnt == t {
+			ans = "Yes"
+			break
+		}
 	}
 
-	r = make([]int, N)
-	initIS(r, -1)
-	r[0] = 0
-
-	q = *NewDeque()
-
-	bfs(0)
-
-	for _, v := range r {
-		fmt.Println(v)
-	}
+	fmt.Println(ans)
 }
 
 /*
