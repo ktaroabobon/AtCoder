@@ -241,9 +241,35 @@ func ilcm(v1, v2 int) int {
 	return v1 * v2 / igcd(v1, v2)
 }
 
-func iswap(v1, v2 int) (int, int) {
-	return v2, v1
+func iswap(v1, v2 *int) {
+	*v1, *v2 = *v2, *v1
 }
+
+func imodinv(x, y int) int {
+	/*
+		mod y における逆元を求めるアルゴリズム
+		<逆元の存在条件>
+		mod p でのaの逆元が存在する条件は、pとaとが互いに素であること
+	*/
+
+	z, u, v := y, 1, 0
+	for {
+		if !i2b(z) {
+			break
+		}
+		t := x / z
+		x -= t * z
+		iswap(&x, &z)
+		u -= t * v
+		iswap(&u, &v)
+	}
+	u %= y
+	if u < 0 {
+		u += y
+	}
+	return u
+}
+
 func ichmin(a *int, b int) (f bool) {
 	if *a > b {
 		*a = b
@@ -259,6 +285,16 @@ func ichmax(a *int, b int) (f bool) {
 	}
 	return
 }
+func aCb(a, b int) (r int) {
+	r = 1
+	if a < b*2 {
+		b = a - b
+	}
+	for i := 1; i < b+1; i++ {
+		r = r * (a - i + 1) / i
+	}
+	return
+}
 
 /*
 その他関数
@@ -271,6 +307,23 @@ func isContain(strSlice []string, s string) bool {
 		}
 	}
 	return false
+}
+
+/*stringSliceの初期化*/
+func initSS(ss []string, v string) []string {
+	if cap(ss) == 0 {
+		return ss
+	}
+	if len(ss) == 0 {
+		for i := 0; i < cap(ss); i++ {
+			ss = append(ss, v)
+		}
+	} else {
+		for i := 0; i < cap(ss); i++ {
+			ss[i] = v
+		}
+	}
+	return ss
 }
 
 /* intSlice内に対象の数値が存在するか*/
@@ -296,8 +349,14 @@ func initIS(is []int, v int) []int {
 	if cap(is) == 0 {
 		return is
 	}
-	for i := 0; i < cap(is); i++ {
-		is[i] = v
+	if len(is) == 0 {
+		for i := 0; i < cap(is); i++ {
+			is = append(is, v)
+		}
+	} else {
+		for i := 0; i < cap(is); i++ {
+			is[i] = v
+		}
 	}
 	return is
 }

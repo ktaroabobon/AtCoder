@@ -10,77 +10,25 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc201/tasks/abc201_a
 
-var N, M, cnt int
-var graph [][]int
-var c []int
-var q Deque
-
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
-			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
-		}
-	}
-	return true
-}
+var ans string
+var data []int
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	N, M = is[0], is[1]
+	ans = "No"
+	data = isReader()
+	sort.Ints(data)
 
-	graph = make([][]int, N)
-
-	for i := 0; i < M; i++ {
-		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
+	if data[2]-data[1] == data[1]-data[0] {
+		ans = "Yes"
 	}
 
-	c = make([]int, N)
-	initIS(c, -1)
-	q = *NewDeque()
-
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
-			}
-		}
-
-		cnt = b*w - M
-	} else {
-		cnt = N*(N-1)/2 - M
-	}
-	fmt.Println(cnt)
+	fmt.Println(ans)
 }
 
 /*

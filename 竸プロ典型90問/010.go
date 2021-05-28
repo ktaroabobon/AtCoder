@@ -10,77 +10,42 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/typical90/tasks/typical90_j
 
-var N, M, cnt int
-var graph [][]int
-var c []int
-var q Deque
-
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
-			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
-		}
-	}
-	return true
-}
+var N, Q int
+var scores [][]int
+var ans []int
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	N, M = is[0], is[1]
-
-	graph = make([][]int, N)
-
-	for i := 0; i < M; i++ {
-		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
+	N = iReader()
+	scores = make([][]int, 2)
+	for i := 0; i < 2; i++ {
+		scores[i] = make([]int, N+10)
 	}
 
-	c = make([]int, N)
-	initIS(c, -1)
-	q = *NewDeque()
+	for i := 0; i < N; i++ {
+		is := isReader()
+		scores[is[0]-1][i+1] = scores[is[0]-1][i] + is[1]
+		scores[is[0]%2][i+1] = scores[is[0]%2][i]
+	}
 
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
-			}
+	Q = iReader()
+
+	for i := 0; i < Q; i++ {
+		ans = make([]int, 2)
+		is := isReader()
+		l, r := is[0]-1, is[1]
+
+		for j := 0; j < 2; j++ {
+			ans[j] = scores[j][r] - scores[j][l]
 		}
-
-		cnt = b*w - M
-	} else {
-		cnt = N*(N-1)/2 - M
+		s, _ := splitToString(ans)
+		fmt.Println(strings.Join(s, " "))
 	}
-	fmt.Println(cnt)
 }
 
 /*
@@ -305,9 +270,35 @@ func ilcm(v1, v2 int) int {
 	return v1 * v2 / igcd(v1, v2)
 }
 
-func iswap(v1, v2 int) (int, int) {
-	return v2, v1
+func iswap(v1, v2 *int) {
+	*v1, *v2 = *v2, *v1
 }
+
+func imodinv(x, y int) int {
+	/*
+		mod y における逆元を求めるアルゴリズム
+		<逆元の存在条件>
+		mod p でのaの逆元が存在する条件は、pとaとが互いに素であること
+	*/
+
+	z, u, v := y, 1, 0
+	for {
+		if !i2b(z) {
+			break
+		}
+		t := x / z
+		x -= t * z
+		iswap(&x, &z)
+		u -= t * v
+		iswap(&u, &v)
+	}
+	u %= y
+	if u < 0 {
+		u += y
+	}
+	return u
+}
+
 func ichmin(a *int, b int) (f bool) {
 	if *a > b {
 		*a = b

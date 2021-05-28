@@ -10,77 +10,34 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/arc105/tasks/arc105_a
 
-var N, M, cnt int
-var graph [][]int
-var c []int
-var q Deque
-
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
-			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
-		}
-	}
-	return true
-}
+var data []int
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	N, M = is[0], is[1]
+	data = isReader()
+	ans := "No"
 
-	graph = make([][]int, N)
-
-	for i := 0; i < M; i++ {
-		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
-	}
-
-	c = make([]int, N)
-	initIS(c, -1)
-	q = *NewDeque()
-
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
+	for bits := 0; bits < (1 << 4); bits++ {
+		sum := isum(data...)
+		var r int
+		for i := 0; i < 4; i++ {
+			if (bits>>uint(i))&1 == 1 {
+				r += data[i]
+				sum -= data[i]
 			}
 		}
-
-		cnt = b*w - M
-	} else {
-		cnt = N*(N-1)/2 - M
+		if r == sum {
+			ans = "Yes"
+			break
+		}
 	}
-	fmt.Println(cnt)
+
+	fmt.Println(ans)
 }
 
 /*
@@ -360,14 +317,8 @@ func initIS(is []int, v int) []int {
 	if cap(is) == 0 {
 		return is
 	}
-	if len(is) == 0 {
-		for i := 0; i < cap(is); i++ {
-			is = append(is, v)
-		}
-	} else {
-		for i := 0; i < cap(is); i++ {
-			is[i] = v
-		}
+	for i := 0; i < cap(is); i++ {
+		is[i] = v
 	}
 	return is
 }

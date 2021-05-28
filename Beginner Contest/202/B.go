@@ -10,13 +10,36 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc202/tasks/abc202_b
+
+var imap map[string]string
 
 /*
 main関数
 */
 
 func main() {
+	s := strings.Split(sReader(), "")
+	imap = map[string]string{
+		"0": "0",
+		"1": "1",
+		"6": "9",
+		"8": "8",
+		"9": "6",
+	}
+
+	s = toReverse(s)
+
+	var ans string
+
+	r := make([]string, len(s))
+
+	for i, v := range s {
+		r[i] = imap[v]
+	}
+
+	ans = strings.Join(r, "")
+	fmt.Println(ans)
 }
 
 /*
@@ -241,9 +264,35 @@ func ilcm(v1, v2 int) int {
 	return v1 * v2 / igcd(v1, v2)
 }
 
-func iswap(v1, v2 int) (int, int) {
-	return v2, v1
+func iswap(v1, v2 *int) {
+	*v1, *v2 = *v2, *v1
 }
+
+func imodinv(x, y int) int {
+	/*
+		mod y における逆元を求めるアルゴリズム
+		<逆元の存在条件>
+		mod p でのaの逆元が存在する条件は、pとaとが互いに素であること
+	*/
+
+	z, u, v := y, 1, 0
+	for {
+		if !i2b(z) {
+			break
+		}
+		t := x / z
+		x -= t * z
+		iswap(&x, &z)
+		u -= t * v
+		iswap(&u, &v)
+	}
+	u %= y
+	if u < 0 {
+		u += y
+	}
+	return u
+}
+
 func ichmin(a *int, b int) (f bool) {
 	if *a > b {
 		*a = b
@@ -284,7 +333,7 @@ func iisContain(intSlice []int, i int) bool {
 }
 
 /*Sliceを逆順にして返す。*/
-func toReverse(data []interface{}) []interface{} {
+func toReverse(data []string) []string {
 	if len(data) == 0 {
 		return data
 	}
@@ -296,8 +345,14 @@ func initIS(is []int, v int) []int {
 	if cap(is) == 0 {
 		return is
 	}
-	for i := 0; i < cap(is); i++ {
-		is[i] = v
+	if len(is) == 0 {
+		for i := 0; i < cap(is); i++ {
+			is = append(is, v)
+		}
+	} else {
+		for i := 0; i < cap(is); i++ {
+			is[i] = v
+		}
 	}
 	return is
 }

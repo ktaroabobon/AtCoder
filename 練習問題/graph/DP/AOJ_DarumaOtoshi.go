@@ -10,77 +10,49 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1611&lang=jp
 
-var N, M, cnt int
-var graph [][]int
-var c []int
-var q Deque
-
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
-			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
-		}
-	}
-	return true
-}
+var N, cnt int
+var WS []int
+var dp [][]int
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	N, M = is[0], is[1]
+	for {
+		N = iReader()
+		if N == 0 {
+			break
+		}
+		cnt = 0
+		WS = isReader()
+		WS = toReverse(WS)
 
-	graph = make([][]int, N)
+		dp = make([][]int, N)
+		dp[0] = WS
+		for i := 1; i < N; i++ {
+			if len(dp[i-1]) == 0 {
+				cnt = iabs(len(dp[i-1]) - len(dp[0]))
+				break
+			}
+			for j := 1; j < len(dp[i-1]); j++ {
+				d := iabs(dp[i-1][j] - dp[i-1][j-1])
+				if d <= 1 {
+					dp[i] = append(dp[i-1][:j-1], dp[i-1][j+1:]...)
+					break
+				}
+			}
 
-	for i := 0; i < M; i++ {
-		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
-	}
-
-	c = make([]int, N)
-	initIS(c, -1)
-	q = *NewDeque()
-
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
+			if len(dp[i]) == len(dp[i-1]) || dp[i] == nil {
+				cnt = iabs(len(dp[i-1]) - len(dp[0]))
+				break
 			}
 		}
 
-		cnt = b*w - M
-	} else {
-		cnt = N*(N-1)/2 - M
+		fmt.Println(cnt)
 	}
-	fmt.Println(cnt)
 }
 
 /*
@@ -348,7 +320,7 @@ func iisContain(intSlice []int, i int) bool {
 }
 
 /*Sliceを逆順にして返す。*/
-func toReverse(data []interface{}) []interface{} {
+func toReverse(data []int) []int {
 	if len(data) == 0 {
 		return data
 	}

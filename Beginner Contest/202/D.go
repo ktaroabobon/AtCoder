@@ -10,38 +10,29 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc202/tasks/abc202_d
 
-var N, M, cnt int
-var graph [][]int
-var c []int
-var q Deque
+var A, B, K int
+var r string
+var ss []string
+var dp [][]int
 
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
-			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
-		}
+func solve(A, B, K int) string {
+	if A == 0 {
+		ss = make([]string, B)
+		initSS(ss, "b")
+		return strings.Join(ss, "")
 	}
-	return true
+	if B == 0 {
+		ss = make([]string, A)
+		initSS(ss, "a")
+		return strings.Join(ss, "")
+	}
+	if K <= dp[A-1][B] {
+		return "a" + solve(A-1, B, K)
+	} else {
+		return "b" + solve(A, B-1, K-dp[A-1][B])
+	}
 }
 
 /*
@@ -50,37 +41,28 @@ main関数
 
 func main() {
 	is := isReader()
-	N, M = is[0], is[1]
-
-	graph = make([][]int, N)
-
-	for i := 0; i < M; i++ {
-		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
+	A, B, K = is[0], is[1], is[2]
+	dp = make([][]int, 30+1)
+	for i := 0; i <= 30; i++ {
+		dp[i] = make([]int, 30+1)
 	}
 
-	c = make([]int, N)
-	initIS(c, -1)
-	q = *NewDeque()
+	dp[0][0] = 1
 
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
+	for i := 0; i <= A; i++ {
+		for j := 0; j <= B; j++ {
+			if i > 0 {
+				dp[i][j] += dp[i-1][j]
+			}
+			if j > 0 {
+				dp[i][j] += dp[i][j-1]
 			}
 		}
-
-		cnt = b*w - M
-	} else {
-		cnt = N*(N-1)/2 - M
 	}
-	fmt.Println(cnt)
+
+	r = solve(A, B, K)
+
+	fmt.Println(r)
 }
 
 /*
@@ -305,9 +287,35 @@ func ilcm(v1, v2 int) int {
 	return v1 * v2 / igcd(v1, v2)
 }
 
-func iswap(v1, v2 int) (int, int) {
-	return v2, v1
+func iswap(v1, v2 *int) {
+	*v1, *v2 = *v2, *v1
 }
+
+func imodinv(x, y int) int {
+	/*
+		mod y における逆元を求めるアルゴリズム
+		<逆元の存在条件>
+		mod p でのaの逆元が存在する条件は、pとaとが互いに素であること
+	*/
+
+	z, u, v := y, 1, 0
+	for {
+		if !i2b(z) {
+			break
+		}
+		t := x / z
+		x -= t * z
+		iswap(&x, &z)
+		u -= t * v
+		iswap(&u, &v)
+	}
+	u %= y
+	if u < 0 {
+		u += y
+	}
+	return u
+}
+
 func ichmin(a *int, b int) (f bool) {
 	if *a > b {
 		*a = b
@@ -348,7 +356,7 @@ func iisContain(intSlice []int, i int) bool {
 }
 
 /*Sliceを逆順にして返す。*/
-func toReverse(data []interface{}) []interface{} {
+func toReverse(data []int) []int {
 	if len(data) == 0 {
 		return data
 	}
@@ -370,6 +378,23 @@ func initIS(is []int, v int) []int {
 		}
 	}
 	return is
+}
+
+/*stringSliceの初期化*/
+func initSS(ss []string, v string) []string {
+	if cap(ss) == 0 {
+		return ss
+	}
+	if len(ss) == 0 {
+		for i := 0; i < cap(ss); i++ {
+			ss = append(ss, v)
+		}
+	} else {
+		for i := 0; i < cap(ss); i++ {
+			ss[i] = v
+		}
+	}
+	return ss
 }
 
 /* intHeap(優先度付きキュー) */

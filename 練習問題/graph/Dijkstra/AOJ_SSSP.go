@@ -10,38 +10,35 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://onlinejudge.u-aizu.ac.jp/problems/GRL_1_A
 
-var N, M, cnt int
-var graph [][]int
-var c []int
+type Edge struct {
+	to     int
+	weight int
+}
+
+var V, E, sp int
+var g [][]Edge
 var q Deque
+var dist []int
 
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
+func bfs(i int) {
+	dist[i] = 0
+	q.Append(i)
 
 	for {
 		if q.IsEmpty() {
 			break
 		}
-
 		v := q.PopLeft()
 
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
+		for _, nv := range g[v.(int)] {
+			if ichmin(&dist[nv.to], dist[v.(int)]+nv.weight) {
+				q.Append(nv.to)
 			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
 		}
 	}
-	return true
+
 }
 
 /*
@@ -50,37 +47,28 @@ main関数
 
 func main() {
 	is := isReader()
-	N, M = is[0], is[1]
+	V, E, sp = is[0], is[1], is[2]
 
-	graph = make([][]int, N)
-
-	for i := 0; i < M; i++ {
+	g = make([][]Edge, V)
+	for i := 0; i < E; i++ {
 		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
+		s, t, d := is[0], is[1], is[2]
+		g[s] = append(g[s], Edge{t, d})
 	}
 
-	c = make([]int, N)
-	initIS(c, -1)
 	q = *NewDeque()
+	dist = make([]int, V)
+	initIS(dist, math.MaxInt64)
 
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
-			}
+	bfs(sp)
+
+	for i := 0; i < V; i++ {
+		if dist[i] != math.MaxInt64 {
+			fmt.Println(dist[i])
+		} else {
+			fmt.Println("INF")
 		}
-
-		cnt = b*w - M
-	} else {
-		cnt = N*(N-1)/2 - M
 	}
-	fmt.Println(cnt)
 }
 
 /*

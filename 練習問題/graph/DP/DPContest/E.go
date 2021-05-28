@@ -10,39 +10,11 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/dp/tasks/dp_e
 
-var N, M, cnt int
-var graph [][]int
-var c []int
-var q Deque
-
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
-			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
-		}
-	}
-	return true
-}
+var N, W int
+var WS, VS []int
+var dp [][]int
 
 /*
 main関数
@@ -50,37 +22,43 @@ main関数
 
 func main() {
 	is := isReader()
-	N, M = is[0], is[1]
+	N, W = is[0], is[1]
 
-	graph = make([][]int, N)
-
-	for i := 0; i < M; i++ {
+	for i := 0; i < N; i++ {
 		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
+		WS = append(WS, is[0])
+		VS = append(VS, is[1])
 	}
 
-	c = make([]int, N)
-	initIS(c, -1)
-	q = *NewDeque()
+	dp = make([][]int, N+10)
+	for i := 0; i < len(dp); i++ {
+		dp[i] = initIS(make([]int, N*1e3+10), math.MaxInt32)
+	}
+	dp[0][0] = 0
 
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
+	for i := 1; i <= N; i++ {
+		w, v := WS[i-1], VS[i-1]
+		for j := N*1e3 + 1; j >= 0; j-- {
+			// dp[i][j]: i番目の商品の中から価値jとなるように選んだときの重量の最小値
+			//if dp[i-1][j] < math.MaxInt32 {
+			ichmin(&dp[i][j], dp[i-1][j])
+			if j+v <= N*1e3+1 {
+				ichmin(&dp[i][j+v], dp[i-1][j]+w)
+				//}
 			}
 		}
-
-		cnt = b*w - M
-	} else {
-		cnt = N*(N-1)/2 - M
+		ichmin(&dp[i][v], w)
 	}
-	fmt.Println(cnt)
+
+	var ans int
+	for i := 0; i <= N*1e3+1; i++ {
+		if dp[N][i] <= W {
+			ichmax(&ans, i)
+		}
+	}
+
+	fmt.Println(ans)
+
 }
 
 /*

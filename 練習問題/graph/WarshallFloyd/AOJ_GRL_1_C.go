@@ -10,39 +10,11 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://onlinejudge.u-aizu.ac.jp/problems/GRL_1_C
 
-var N, M, cnt int
-var graph [][]int
-var c []int
+var V, E int
 var q Deque
-
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
-			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
-		}
-	}
-	return true
-}
+var dp [][]int
 
 /*
 main関数
@@ -50,37 +22,43 @@ main関数
 
 func main() {
 	is := isReader()
-	N, M = is[0], is[1]
-
-	graph = make([][]int, N)
-
-	for i := 0; i < M; i++ {
-		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
+	V, E = is[0], is[1]
+	dp = make([][]int, V)
+	for i := 0; i < V; i++ {
+		dp[i] = initIS(make([]int, V), math.MaxInt64)
 	}
 
-	c = make([]int, N)
-	initIS(c, -1)
-	q = *NewDeque()
+	for i := 0; i < E; i++ {
+		is = isReader()
+		dp[is[0]][is[1]] = is[2]
+	}
 
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
+	for k := 0; k < V; k++ {
+		for i := 0; i < V; i++ {
+			for j := 0; j < V; j++ {
+				if dp[i][k] != math.MaxInt64 && dp[k][j] != math.MaxInt64 {
+					ichmin(&dp[i][j], dp[i][k]+dp[k][j])
+				}
 			}
 		}
-
-		cnt = b*w - M
-	} else {
-		cnt = N*(N-1)/2 - M
 	}
-	fmt.Println(cnt)
+
+	for i := 0; i < V; i++ {
+		if dp[i][i] < 0 {
+			fmt.Println("NEGATIVE CYCLE")
+			return
+		} else {
+			dp[i][i] = 0
+		}
+	}
+
+	for _, v := range dp {
+		var ans string
+		ss, _ := splitToString(v)
+		ans = strings.Join(ss, " ")
+		ans = strings.Replace(ans, i2s(math.MaxInt64), "INF", -1)
+		fmt.Println(ans)
+	}
 }
 
 /*

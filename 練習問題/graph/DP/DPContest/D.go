@@ -48,6 +48,46 @@ func main() {
 }
 
 /*
+別解
+var N, W int
+var WS, VS []int
+var dp [][]int
+
+
+func main() {
+	is := isReader()
+	N, W = is[0], is[1]
+
+	for i := 0; i < N; i++ {
+		is = isReader()
+		WS = append(WS, is[0])
+		VS = append(VS, is[1])
+	}
+
+	dp = make([][]int, N+10)
+	for i := 0; i < len(dp); i++ {
+		dp[i] = initIS(make([]int, W+10), 0)
+	}
+
+	for i := 1; i <= N; i++ {
+		w, v := WS[i-1], VS[i-1]
+		for j := W + 1; j >= 0; j-- {
+			if dp[i-1][j] > 0 {
+				ichmax(&dp[i][j], dp[i-1][j])
+				if j+w <= W+1 {
+					ichmax(&dp[i][j+w], dp[i-1][j]+v)
+				}
+			}
+		}
+		ichmax(&dp[i][w], imax(dp[i-1][w], v))
+	}
+
+	fmt.Println(imax(dp[N][:W+1]...))
+}
+
+*/
+
+/*
 標準入力の読み込み
 */
 const BUFSIZE = 10000000

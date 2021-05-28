@@ -10,77 +10,86 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/typical90/tasks/typical90_l
 
-var N, M, cnt int
-var graph [][]int
-var c []int
-var q Deque
-
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
-			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
-		}
-	}
-	return true
-}
+var H, W, Q int
+var dp [][][]bool
+var graph, seen [][]bool
+var qs [][]int
+var dx, dy []int
 
 /*
 main関数
 */
 
-func main() {
-	is := isReader()
-	N, M = is[0], is[1]
+func dfs(i, h, w int) {
+	seen[h][w] = true
 
-	graph = make([][]int, N)
+	for i := 0; i < 4; i++ {
+		nh, nw := h+dy[i], w+dx[i]
 
-	for i := 0; i < M; i++ {
-		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
-	}
-
-	c = make([]int, N)
-	initIS(c, -1)
-	q = *NewDeque()
-
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
-			}
+		if nh < 0 || nh >= H || nw < 0 || nw >= W {
+			continue
 		}
 
-		cnt = b*w - M
-	} else {
-		cnt = N*(N-1)/2 - M
+		if !dp[i][nh][nw] {
+			continue
+		}
+
+		if seen[nh][nw] {
+			continue
+		}
+
+		dfs(i, nh, nw)
 	}
-	fmt.Println(cnt)
+}
+
+func main() {
+	is := isReader()
+	H, W = is[0], is[1]
+	Q = iReader()
+
+	dp = make([][][]bool, Q+10)
+	for j := 0; j < H; j++ {
+		dp[j] = make([][]bool, H)
+		for i := 0; i < H; i++ {
+			dp[j][i] = make([]bool, W)
+		}
+	}
+
+	dx = []int{0, 1, 0, -1}
+	dy = []int{1, 0, -1, 0}
+
+	qs = make([][]int, Q)
+
+	//for i := 1; i <= Q; i++ {
+	//	is := isReader()
+	//
+	//	if is[0] == 1 {
+	//		x, y := is[1]-1, is[2]-1
+	//		dp[i][x][y] = true
+	//	} else {
+	//
+	//		sh, sw, gh, gw := is[1]-1, is[2]-1, is[3]-1, is[4]-1
+	//
+	//	}
+	//}
+	//if !graph[sh][sw] || !graph[gh][gw] {
+	//	fmt.Println("No")
+	//	continue
+	//}
+	//seen = make([][]bool, H)
+	//for j := 0; j < H; j++ {
+	//	seen[j] = make([]bool, W)
+	//}
+	//
+	//dfs(sh, sw)
+	//
+	//if seen[gh][gw] {
+	//	fmt.Println("Yes")
+	//} else {
+	//	fmt.Println("No")
+	//}
 }
 
 /*
@@ -305,9 +314,35 @@ func ilcm(v1, v2 int) int {
 	return v1 * v2 / igcd(v1, v2)
 }
 
-func iswap(v1, v2 int) (int, int) {
-	return v2, v1
+func iswap(v1, v2 *int) {
+	*v1, *v2 = *v2, *v1
 }
+
+func imodinv(x, y int) int {
+	/*
+		mod y における逆元を求めるアルゴリズム
+		<逆元の存在条件>
+		mod p でのaの逆元が存在する条件は、pとaとが互いに素であること
+	*/
+
+	z, u, v := y, 1, 0
+	for {
+		if !i2b(z) {
+			break
+		}
+		t := x / z
+		x -= t * z
+		iswap(&x, &z)
+		u -= t * v
+		iswap(&u, &v)
+	}
+	u %= y
+	if u < 0 {
+		u += y
+	}
+	return u
+}
+
 func ichmin(a *int, b int) (f bool) {
 	if *a > b {
 		*a = b

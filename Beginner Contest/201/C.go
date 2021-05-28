@@ -10,76 +10,56 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc201/tasks/abc201_c
+/*
+解説ページURL
+https://blog.hamayanhamayan.com/entry/2021/05/15/235640
+*/
 
-var N, M, cnt int
-var graph [][]int
-var c []int
-var q Deque
-
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
-			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
-		}
-	}
-	return true
-}
+var cnt int
+var data []string
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	N, M = is[0], is[1]
+	var used, unused, unknown int
+	data = strings.Split(sReader(), "")
 
-	graph = make([][]int, N)
-
-	for i := 0; i < M; i++ {
-		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
+	for _, v := range data {
+		if v == "o" {
+			used++
+		} else if v == "x" {
+			unused++
+		} else {
+			unknown++
+		}
 	}
 
-	c = make([]int, N)
-	initIS(c, -1)
-	q = *NewDeque()
+	if used <= 4 || used+unknown > 0 {
+		for i := 0; i < unknown+1; i++ {
+			if used+i == 0 {
+				continue
+			}
+			if used+i > 4 {
+				continue
+			}
 
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
+			r := i + used
+
+			if r == 1 {
+				cnt += 1 * aCb(unknown, i)
+			} else if r == 2 {
+				cnt += (2*4 + aCb(4, 2)) * aCb(unknown, i)
+			} else if r == 3 {
+				cnt += (3 * 4 * 3) * aCb(unknown, i)
+			} else if r == 4 {
+				cnt += (4 * 3 * 2) * aCb(unknown, i)
 			}
 		}
-
-		cnt = b*w - M
-	} else {
-		cnt = N*(N-1)/2 - M
 	}
+
 	fmt.Println(cnt)
 }
 
@@ -320,6 +300,17 @@ func ichmax(a *int, b int) (f bool) {
 	if *a < b {
 		*a = b
 		f = true
+	}
+	return
+}
+
+func aCb(a, b int) (r int) {
+	r = 1
+	if a < b*2 {
+		b = a - b
+	}
+	for i := 1; i < b+1; i++ {
+		r = r * (a - i + 1) / i
 	}
 	return
 }

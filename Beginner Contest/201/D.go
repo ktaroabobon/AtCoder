@@ -10,38 +10,43 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc201/tasks/abc201_d
 
-var N, M, cnt int
-var graph [][]int
-var c []int
-var q Deque
+var H, W, a, b int
+var graph [][]string
+var seen [][]bool
+var dx, dy, A, B []int
 
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
+func getScore(coor []int, p int) bool {
+	x := make([]int, 2)
+	for i := 0; i < 2; i++ {
+		nh, nw := coor[1]+dy[i], coor[0]+dy[i]
+		if nh < 0 || nh >= H || nw < 0 || nw >= W {
+			continue
+		}
+		if seen[nh][nw] {
+			continue
 		}
 
-		v := q.PopLeft()
-
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
-			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
+		if graph[nh][nw] == "+" {
+			x[i] = 1
+		} else {
+			x[i] = -1
 		}
 	}
-	return true
+
+	if isum(x...) == 0 {
+		return false
+	}
+
+}
+
+func solve() {
+	for {
+		if !getScore(A, 1) && !getScore(B, 0) {
+			break
+		}
+	}
 }
 
 /*
@@ -50,37 +55,27 @@ main関数
 
 func main() {
 	is := isReader()
-	N, M = is[0], is[1]
+	H, W = is[0], is[1]
 
-	graph = make([][]int, N)
-
-	for i := 0; i < M; i++ {
-		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
+	for i := 0; i < H; i++ {
+		graph = append(graph, ssReader())
+		seen = append(seen, make([]bool, W))
 	}
 
-	c = make([]int, N)
-	initIS(c, -1)
-	q = *NewDeque()
+	dx = []int{1, 0}
+	dy = []int{0, 1}
 
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
-			}
-		}
+	A, B = []int{0, 0}, []int{0, 0}
 
-		cnt = b*w - M
+	solve()
+
+	if a > b {
+		fmt.Print("Aoki")
+	} else if a == b {
+		fmt.Print("Draw")
 	} else {
-		cnt = N*(N-1)/2 - M
+		fmt.Println("Takahashi")
 	}
-	fmt.Println(cnt)
 }
 
 /*

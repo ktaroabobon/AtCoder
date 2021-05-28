@@ -12,8 +12,9 @@ import (
 
 // page URL: https://atcoder.jp/contests/typical90/tasks/typical90_h
 
-var N, ans int
+var N, ans, mod int
 var S, d []string
+var dp [][]int
 
 /*
 main関数
@@ -22,10 +23,46 @@ main関数
 func main() {
 	N = iReader()
 	S = strings.Split(sReader(), "")
-	d = []string{"a", "t", "c", "o", "d", "e", "r"}
+	mod = 1e9 + 7
 
-	ans = ans % (1e9 + 7)
-	fmt.Println(ans)
+	dp = make([][]int, N+10)
+	//	dp[i][j]: Sのうちi文字目まで考えた場合の"atcoder"のj文字目までが何通りあるか
+	for i := 0; i < N+10; i++ {
+		dp[i] = initIS(make([]int, 8), 0)
+	}
+
+	dp[0][0] = 1
+	for i := 0; i < N; i++ {
+		for j := 0; j <= 7; j++ {
+			dp[i+1][j] += dp[i][j]
+			if S[i] == "a" && j == 0 {
+				dp[i+1][j+1] += dp[i][j]
+			}
+			if S[i] == "t" && j == 1 {
+				dp[i+1][j+1] += dp[i][j]
+			}
+			if S[i] == "c" && j == 2 {
+				dp[i+1][j+1] += dp[i][j]
+			}
+			if S[i] == "o" && j == 3 {
+				dp[i+1][j+1] += dp[i][j]
+			}
+			if S[i] == "d" && j == 4 {
+				dp[i+1][j+1] += dp[i][j]
+			}
+			if S[i] == "e" && j == 5 {
+				dp[i+1][j+1] += dp[i][j]
+			}
+			if S[i] == "r" && j == 6 {
+				dp[i+1][j+1] += dp[i][j]
+			}
+		}
+		for j := 0; j <= 7; j++ {
+			dp[i+1][j] %= mod
+		}
+	}
+
+	fmt.Println(dp[N][7])
 }
 
 /*

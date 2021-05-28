@@ -12,68 +12,37 @@ import (
 
 // page URL:
 
-type Edge struct {
-	to     int
-	weight int
-}
-
-var N int
-var graph [][]Edge
-var r []int
-var q Deque
-
-func bfs(x int) {
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-		c := r[v.(int)]
-		for _, nextV := range graph[v.(int)] {
-			if r[nextV.to] != -1 {
-				continue
-			}
-
-			if nextV.weight%2 == 0 {
-				r[nextV.to] = c
-			} else {
-				r[nextV.to] = (c + 1) % 2
-			}
-			q.Append(nextV.to)
-		}
-	}
-}
+var A, B, K int
+var dp [][]int
 
 /*
 main関数
 */
 
 func main() {
-	N = iReader()
-	graph = make([][]Edge, N)
+	is := isReader()
+	A, B, K = is[0], is[1], is[2]
+	N := A + B
+	K--
 
-	for i := 0; i < N-1; i++ {
-		is := isReader()
-		v1, v2, w := is[0]-1, is[1]-1, is[2]
+	var ans string
 
-		graph[v1] = append(graph[v1], Edge{v2, w})
-		graph[v2] = append(graph[v2], Edge{v1, w})
+	for i := 0; i < N; i++ {
+		if 0 < A {
+			if K < aCb(N-1, B) {
+				ans += "a"
+				A--
+			} else {
+				ans += "b"
+				K -= aCb(N-1, B)
+				B--
+			}
+		} else {
+			ans += "b"
+			B--
+		}
 	}
-
-	r = make([]int, N)
-	initIS(r, -1)
-	r[0] = 0
-
-	q = *NewDeque()
-
-	bfs(0)
-
-	for _, v := range r {
-		fmt.Println(v)
-	}
+	fmt.Println(ans)
 }
 
 /*
@@ -298,9 +267,35 @@ func ilcm(v1, v2 int) int {
 	return v1 * v2 / igcd(v1, v2)
 }
 
-func iswap(v1, v2 int) (int, int) {
-	return v2, v1
+func iswap(v1, v2 *int) {
+	*v1, *v2 = *v2, *v1
 }
+
+func imodinv(x, y int) int {
+	/*
+		mod y における逆元を求めるアルゴリズム
+		<逆元の存在条件>
+		mod p でのaの逆元が存在する条件は、pとaとが互いに素であること
+	*/
+
+	z, u, v := y, 1, 0
+	for {
+		if !i2b(z) {
+			break
+		}
+		t := x / z
+		x -= t * z
+		iswap(&x, &z)
+		u -= t * v
+		iswap(&u, &v)
+	}
+	u %= y
+	if u < 0 {
+		u += y
+	}
+	return u
+}
+
 func ichmin(a *int, b int) (f bool) {
 	if *a > b {
 		*a = b
@@ -313,6 +308,16 @@ func ichmax(a *int, b int) (f bool) {
 	if *a < b {
 		*a = b
 		f = true
+	}
+	return
+}
+func aCb(a, b int) (r int) {
+	r = 1
+	if a < b*2 {
+		b = a - b
+	}
+	for i := 1; i < b+1; i++ {
+		r = r * (a - i + 1) / i
 	}
 	return
 }
@@ -353,10 +358,33 @@ func initIS(is []int, v int) []int {
 	if cap(is) == 0 {
 		return is
 	}
-	for i := 0; i < cap(is); i++ {
-		is[i] = v
+	if len(is) == 0 {
+		for i := 0; i < cap(is); i++ {
+			is = append(is, v)
+		}
+	} else {
+		for i := 0; i < cap(is); i++ {
+			is[i] = v
+		}
 	}
 	return is
+}
+
+/*stringSliceの初期化*/
+func initSS(ss []string, v string) []string {
+	if cap(ss) == 0 {
+		return ss
+	}
+	if len(ss) == 0 {
+		for i := 0; i < cap(ss); i++ {
+			ss = append(ss, v)
+		}
+	} else {
+		for i := 0; i < cap(ss); i++ {
+			ss[i] = v
+		}
+	}
+	return ss
 }
 
 /* intHeap(優先度付きキュー) */

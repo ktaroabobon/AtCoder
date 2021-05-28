@@ -10,77 +10,32 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc201/tasks/abc201_b
 
-var N, M, cnt int
-var graph [][]int
-var c []int
-var q Deque
-
-func bfs(x int) (f bool) {
-	c[x] = 0
-	q.Append(x)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nextV := range graph[v.(int)] {
-			if c[nextV] == c[v.(int)] {
-				return
-			}
-
-			if c[nextV] != -1 {
-				continue
-			}
-
-			c[nextV] = (c[v.(int)] + 1) % 2
-			q.Append(nextV)
-		}
-	}
-	return true
-}
+var N int
+var Mt map[int]string
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	N, M = is[0], is[1]
-
-	graph = make([][]int, N)
-
-	for i := 0; i < M; i++ {
-		is = isReader()
-		a, b := is[0]-1, is[1]-1
-
-		graph[a] = append(graph[a], b)
-		graph[b] = append(graph[b], a)
+	N = iReader()
+	Mt = make(map[int]string)
+	for i := 0; i < N; i++ {
+		data := ssReader()
+		Mt[s2i(data[1])] = data[0]
 	}
 
-	c = make([]int, N)
-	initIS(c, -1)
-	q = *NewDeque()
-
-	if bfs(0) {
-		b, w := 0, 0
-		for i := 0; i < N; i++ {
-			if c[i] == 1 {
-				b++
-			} else {
-				w++
-			}
-		}
-
-		cnt = b*w - M
-	} else {
-		cnt = N*(N-1)/2 - M
+	keys := make([]int, 0, len(Mt))
+	for k := range Mt {
+		keys = append(keys, k)
 	}
-	fmt.Println(cnt)
+
+	sort.Ints(keys)
+	keys = toReverse(keys)
+
+	fmt.Println(Mt[keys[1]])
 }
 
 /*
@@ -348,7 +303,7 @@ func iisContain(intSlice []int, i int) bool {
 }
 
 /*Sliceを逆順にして返す。*/
-func toReverse(data []interface{}) []interface{} {
+func toReverse(data []int) []int {
 	if len(data) == 0 {
 		return data
 	}
