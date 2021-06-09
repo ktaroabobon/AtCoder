@@ -11,12 +11,19 @@ import (
 )
 
 // page URL:
+var N int
+var S string
 
 /*
 main関数
 */
 
 func main() {
+	N = iReader()
+	S = sReader()
+	for i := 0; i < N; i++ {
+		fmt.Println(string(S[i]))
+	}
 }
 
 /*
