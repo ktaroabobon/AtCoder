@@ -10,13 +10,48 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc203/tasks/abc203_d
+// 解説: https://atcoder.jp/contests/abc203/editorial/1955
+
+var N, K int
+var g, ss [][]int
 
 /*
 main関数
 */
 
 func main() {
+	is := isReader()
+	N, K = is[0], is[1]
+	g = make([][]int, N)
+	for i := 0; i < N; i++ {
+		g[i] = isReader()
+	}
+
+	K2 := ipow(K, 2)
+	mean := K2/2 + 1
+	var ris []int
+	var sss [][]int
+
+	for i := 0; i <= N-K; i++ {
+		for j := 0; j <= N-K; j++ {
+			var ss []int
+			for k := 0; k < K; k++ {
+				ss = append(ss, g[i+k][j:j+K]...)
+			}
+			sss = append(sss, ss)
+		}
+	}
+
+	for _, v := range sss {
+		sort.Ints(v)
+		ris = append(ris, v[K2-mean])
+	}
+
+	sort.Ints(ris)
+
+	fmt.Println(ris[0])
+
 }
 
 /*
@@ -300,21 +335,13 @@ func aCb(a, b int) (r int) {
 その他関数
 */
 /* strSlice内に対象の文字列が存在するか*/
-func ssContain(strSlice []string, s string) bool {
+func isContain(strSlice []string, s string) bool {
 	for _, v := range strSlice {
 		if s == v {
 			return true
 		}
 	}
 	return false
-}
-
-/*stringSliceを逆順にして返す。*/
-func ssReverse(data []string) []string {
-	if len(data) == 0 {
-		return data
-	}
-	return append(ssReverse(data[1:]), data[0])
 }
 
 /*stringSliceの初期化*/
@@ -335,7 +362,7 @@ func initSS(ss []string, v string) []string {
 }
 
 /* intSlice内に対象の数値が存在するか*/
-func isContain(intSlice []int, i int) bool {
+func iisContain(intSlice []int, i int) bool {
 	for _, v := range intSlice {
 		if i == v {
 			return true
@@ -344,12 +371,12 @@ func isContain(intSlice []int, i int) bool {
 	return false
 }
 
-/*intSliceを逆順にして返す。*/
-func isReverse(data []int) []int {
+/*Sliceを逆順にして返す。*/
+func toReverse(data []int) []int {
 	if len(data) == 0 {
 		return data
 	}
-	return append(isReverse(data[1:]), data[0])
+	return append(toReverse(data[1:]), data[0])
 }
 
 /*intSliceの初期化*/

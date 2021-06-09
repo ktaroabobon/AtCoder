@@ -10,13 +10,45 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc204/tasks/abc204_d
+
+var N, ans int
+var TS []int
+var dp [][]int
 
 /*
 main関数
 */
 
 func main() {
+	N = iReader()
+	TS = isReader()
+	sTS := isum(TS...)
+
+	dp = make([][]int, N+10)
+	for i := 0; i < N+10; i++ {
+		dp[i] = make([]int, 1e5+10)
+	}
+
+	dp[0][0] = 1
+	for i := 1; i < N+1; i++ {
+		for j := 0; j < sTS/2+1; j++ {
+			if dp[i-1][j] == 1 {
+				dp[i][j] = 1
+				dp[i][j+TS[i-1]] = 1
+			}
+		}
+	}
+
+	ans = math.MaxInt64
+	for i, v := range dp[N] {
+		if v == 1 {
+			ichmin(&ans, imax(i, sTS-i))
+		}
+	}
+
+	fmt.Println(ans)
+
 }
 
 /*
@@ -300,7 +332,7 @@ func aCb(a, b int) (r int) {
 その他関数
 */
 /* strSlice内に対象の文字列が存在するか*/
-func ssContain(strSlice []string, s string) bool {
+func isContain(strSlice []string, s string) bool {
 	for _, v := range strSlice {
 		if s == v {
 			return true
@@ -335,7 +367,7 @@ func initSS(ss []string, v string) []string {
 }
 
 /* intSlice内に対象の数値が存在するか*/
-func isContain(intSlice []int, i int) bool {
+func iisContain(intSlice []int, i int) bool {
 	for _, v := range intSlice {
 		if i == v {
 			return true

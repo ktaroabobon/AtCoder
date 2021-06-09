@@ -10,13 +10,26 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc203/tasks/abc203_a
+
+var is []int
 
 /*
 main関数
 */
 
 func main() {
+	is = isReader()
+	var ans int
+	if is[0] == is[1] {
+		ans = is[2]
+	} else if is[1] == is[2] {
+		ans = is[0]
+	} else if is[0] == is[2] {
+		ans = is[1]
+	}
+
+	fmt.Println(ans)
 }
 
 /*
@@ -300,21 +313,13 @@ func aCb(a, b int) (r int) {
 その他関数
 */
 /* strSlice内に対象の文字列が存在するか*/
-func ssContain(strSlice []string, s string) bool {
+func isContain(strSlice []string, s string) bool {
 	for _, v := range strSlice {
 		if s == v {
 			return true
 		}
 	}
 	return false
-}
-
-/*stringSliceを逆順にして返す。*/
-func ssReverse(data []string) []string {
-	if len(data) == 0 {
-		return data
-	}
-	return append(ssReverse(data[1:]), data[0])
 }
 
 /*stringSliceの初期化*/
@@ -335,7 +340,7 @@ func initSS(ss []string, v string) []string {
 }
 
 /* intSlice内に対象の数値が存在するか*/
-func isContain(intSlice []int, i int) bool {
+func iisContain(intSlice []int, i int) bool {
 	for _, v := range intSlice {
 		if i == v {
 			return true
@@ -344,12 +349,12 @@ func isContain(intSlice []int, i int) bool {
 	return false
 }
 
-/*intSliceを逆順にして返す。*/
-func isReverse(data []int) []int {
+/*Sliceを逆順にして返す。*/
+func toReverse(data []interface{}) []interface{} {
 	if len(data) == 0 {
 		return data
 	}
-	return append(isReverse(data[1:]), data[0])
+	return append(toReverse(data[1:]), data[0])
 }
 
 /*intSliceの初期化*/

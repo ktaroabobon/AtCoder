@@ -10,13 +10,66 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc204/tasks/abc204_c
+
+var N, M, ans int
+var g, dist [][]int
+var q Deque
+
+func bfs(i int, d []int) []int {
+	d[i] = 1
+	q.Append(i)
+
+	for {
+		if q.IsEmpty() {
+			break
+		}
+		v := q.PopLeft()
+
+		for _, nv := range g[v.(int)] {
+			if d[nv] == 1 {
+				continue
+			}
+			d[nv] = 1
+			q.Append(nv)
+		}
+	}
+
+	return d
+}
 
 /*
 main関数
 */
 
 func main() {
+	is := isReader()
+	N, M = is[0], is[1]
+
+	g = make([][]int, N)
+	for i := 0; i < M; i++ {
+		is = isReader()
+		g[is[0]-1] = append(g[is[0]-1], is[1]-1)
+	}
+
+	dist = make([][]int, N)
+	for i := 0; i < N; i++ {
+		dist[i] = make([]int, N)
+		initIS(dist[i], 0)
+	}
+	q = *NewDeque()
+
+	for i := 0; i < N; i++ {
+		dist[i] = bfs(i, dist[i])
+	}
+
+	ans = 0
+	for i := 0; i < N; i++ {
+		ans += isum(dist[i]...)
+	}
+
+	fmt.Println(ans)
+
 }
 
 /*
@@ -300,21 +353,13 @@ func aCb(a, b int) (r int) {
 その他関数
 */
 /* strSlice内に対象の文字列が存在するか*/
-func ssContain(strSlice []string, s string) bool {
+func isContain(strSlice []string, s string) bool {
 	for _, v := range strSlice {
 		if s == v {
 			return true
 		}
 	}
 	return false
-}
-
-/*stringSliceを逆順にして返す。*/
-func ssReverse(data []string) []string {
-	if len(data) == 0 {
-		return data
-	}
-	return append(ssReverse(data[1:]), data[0])
 }
 
 /*stringSliceの初期化*/
@@ -335,7 +380,7 @@ func initSS(ss []string, v string) []string {
 }
 
 /* intSlice内に対象の数値が存在するか*/
-func isContain(intSlice []int, i int) bool {
+func iisContain(intSlice []int, i int) bool {
 	for _, v := range intSlice {
 		if i == v {
 			return true
@@ -344,12 +389,12 @@ func isContain(intSlice []int, i int) bool {
 	return false
 }
 
-/*intSliceを逆順にして返す。*/
-func isReverse(data []int) []int {
+/*Sliceを逆順にして返す。*/
+func toReverse(data []interface{}) []interface{} {
 	if len(data) == 0 {
 		return data
 	}
-	return append(isReverse(data[1:]), data[0])
+	return append(toReverse(data[1:]), data[0])
 }
 
 /*intSliceの初期化*/
