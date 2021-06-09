@@ -5,63 +5,18 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
+
+// page URL:
 
 /*
 main関数
 */
 
-func make_socks_map(n int) map[string]int {
-	socks_map := make(map[string]int)
-	for i := 0; i < n; i++ {
-		num := 0
-		ss := ssReader()
-		kind, right_left := ss[0], ss[1]
-		socks := kind + "_" + right_left
-
-		if val, ok := socks_map[socks]; ok {
-			num = val
-		}
-
-		socks_map[socks] = num + 1
-	}
-	return socks_map
-}
-
-func socks_count(socks_map map[string]int) (count int) {
-	for key, val := range socks_map {
-		kind := string(key[:len(key)-1])
-		var new_key string
-
-		if string(key[len(key)-1]) == "R" {
-			new_key = kind + "L"
-		} else {
-			new_key = kind + "R"
-		}
-
-		num, _ := socks_map[new_key]
-
-		if val < num {
-			count += val
-		} else {
-			count += num
-		}
-
-	}
-
-	return
-}
-
 func main() {
-	n := iReader()
-
-	socks_map := make_socks_map(n)
-
-	count := socks_count(socks_map)
-
-	fmt.Println(count / 2)
 }
 
 /*
@@ -124,6 +79,19 @@ func splitToInt(strTargeted string) (intReturned []int, err error) {
 }
 
 /*
+数値型のSliceを文字列型のSliceに変換して返す
+e.g.)
+[100 200] -> ["100" "200"]
+*/
+func splitToString(intTargeted []int) (strReturned []string, err error) {
+	for _, v := range intTargeted {
+		strReturned = append(strReturned, i2s(v))
+	}
+
+	return
+}
+
+/*
 文字列、１単語
 e.g.)
 foo
@@ -137,7 +105,7 @@ func sReader() (strReturned string) {
 /*
 数値、１整数
 e.g.)
-100
+foo
 */
 func iReader() (numReturned int) {
 	str := readLine()
@@ -199,6 +167,14 @@ func b2i(b bool) int {
 
 func i2b(i int) bool {
 	return i != 0
+}
+
+func s2r(s string) rune {
+	var r int32
+	for _, v := range s {
+		r = v
+	}
+	return r
 }
 
 /*
@@ -265,11 +241,66 @@ func ilcm(v1, v2 int) int {
 	return v1 * v2 / igcd(v1, v2)
 }
 
+func iswap(v1, v2 *int) {
+	*v1, *v2 = *v2, *v1
+}
+
+func imodinv(x, y int) int {
+	/*
+		mod y における逆元を求めるアルゴリズム
+		<逆元の存在条件>
+		mod p でのaの逆元が存在する条件は、pとaとが互いに素であること
+	*/
+
+	z, u, v := y, 1, 0
+	for {
+		if !i2b(z) {
+			break
+		}
+		t := x / z
+		x -= t * z
+		iswap(&x, &z)
+		u -= t * v
+		iswap(&u, &v)
+	}
+	u %= y
+	if u < 0 {
+		u += y
+	}
+	return u
+}
+
+func ichmin(a *int, b int) (f bool) {
+	if *a > b {
+		*a = b
+		f = true
+	}
+	return
+}
+
+func ichmax(a *int, b int) (f bool) {
+	if *a < b {
+		*a = b
+		f = true
+	}
+	return
+}
+func aCb(a, b int) (r int) {
+	r = 1
+	if a < b*2 {
+		b = a - b
+	}
+	for i := 1; i < b+1; i++ {
+		r = r * (a - i + 1) / i
+	}
+	return
+}
+
 /*
 その他関数
 */
 /* strSlice内に対象の文字列が存在するか*/
-func isContain(strSlice []string, s string) bool {
+func ssContain(strSlice []string, s string) bool {
 	for _, v := range strSlice {
 		if s == v {
 			return true
@@ -278,12 +309,156 @@ func isContain(strSlice []string, s string) bool {
 	return false
 }
 
+/*stringSliceを逆順にして返す。*/
+func ssReverse(data []string) []string {
+	if len(data) == 0 {
+		return data
+	}
+	return append(ssReverse(data[1:]), data[0])
+}
+
+/*stringSliceの初期化*/
+func initSS(ss []string, v string) []string {
+	if cap(ss) == 0 {
+		return ss
+	}
+	if len(ss) == 0 {
+		for i := 0; i < cap(ss); i++ {
+			ss = append(ss, v)
+		}
+	} else {
+		for i := 0; i < cap(ss); i++ {
+			ss[i] = v
+		}
+	}
+	return ss
+}
+
 /* intSlice内に対象の数値が存在するか*/
-func iisContain(intSlice []int, i int) bool {
+func isContain(intSlice []int, i int) bool {
 	for _, v := range intSlice {
 		if i == v {
 			return true
 		}
+	}
+	return false
+}
+
+/*intSliceを逆順にして返す。*/
+func isReverse(data []int) []int {
+	if len(data) == 0 {
+		return data
+	}
+	return append(isReverse(data[1:]), data[0])
+}
+
+/*intSliceの初期化*/
+func initIS(is []int, v int) []int {
+	if cap(is) == 0 {
+		return is
+	}
+	if len(is) == 0 {
+		for i := 0; i < cap(is); i++ {
+			is = append(is, v)
+		}
+	} else {
+		for i := 0; i < cap(is); i++ {
+			is[i] = v
+		}
+	}
+	return is
+}
+
+/* intHeap(優先度付きキュー) */
+type intHeap []int
+
+func (h intHeap) Len() int           { return len(h) }
+func (h intHeap) Less(i, j int) bool { return h[i] < h[j] } // 昇順
+/* func (h intHeap) Less(i, j int) bool { return h[i] > h[j] } // 降順 */
+func (h intHeap) Swap(i, j int) { h[i], h[j] = h[j], h[i] }
+func (h *intHeap) Push(x interface{}) {
+	*h = append(*h, x.(int))
+}
+func (h *intHeap) Pop() interface{} {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[0 : n-1]
+	return x
+}
+
+// 二分探索
+// 数値型スライスのなかで対象の数値以上の初めて登場するインデックスを返す
+func lowerBound(intTarget []int, x int) (returnIndex int) {
+	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] >= x })
+	return
+}
+
+func designatedLowerBound(intTarget []int, x int) (returnIndex int, f bool) {
+	returnIndex = lowerBound(intTarget, x)
+	if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
+		f = true
+	} else {
+		f = false
+		returnIndex = -1
+	}
+	return
+}
+
+// 数値型スライスのなかで対象の数値以上の最後に登場するインデックスを返す
+func upperBound(intTarget []int, x int) (returnIndex int) {
+	returnIndex = sort.Search(len(intTarget), func(i int) bool { return intTarget[i] > x }) - 1
+	return
+}
+
+func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
+	returnIndex = upperBound(intTarget, x)
+	if returnIndex == -1 {
+		f = false
+	} else if returnIndex < len(intTarget) && intTarget[returnIndex] == x {
+		f = true
+	} else {
+		f = false
+		returnIndex = -1
+	}
+	return
+}
+
+func NewDeque() *Deque {
+	return &Deque{}
+}
+
+type Deque struct {
+	Items []interface{}
+}
+
+func (s *Deque) AppendLeft(item interface{}) {
+	temp := []interface{}{item}
+	s.Items = append(temp, s.Items...)
+}
+
+func (s *Deque) Append(item interface{}) {
+	s.Items = append(s.Items, item)
+}
+
+func (s *Deque) PopLeft() interface{} {
+	defer func() {
+		s.Items = s.Items[1:]
+	}()
+	return s.Items[0]
+}
+
+func (s *Deque) Pop() interface{} {
+	i := len(s.Items) - 1
+	defer func() {
+		s.Items = append(s.Items[:i], s.Items[i+1:]...)
+	}()
+	return s.Items[i]
+}
+
+func (s *Deque) IsEmpty() bool {
+	if len(s.Items) == 0 {
+		return true
 	}
 	return false
 }
