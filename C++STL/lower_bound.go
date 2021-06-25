@@ -43,7 +43,7 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 
 func main() {
 	a := []int{1, 3, 6, 6, 6, 6, 6, 6, 10, 15, 21, 28, 36, 45, 55}
-	x := 55
+	x := 3
 
 	fmt.Printf("index %d\n", len(a))
 
