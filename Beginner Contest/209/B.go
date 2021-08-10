@@ -10,23 +10,36 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc209/tasks/abc209_b
 
-var H, W int
-var g [][]int
+var N, X int
+var is []int
+var ans string
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	is = isReader()
+	N, X = is[0], is[1]
+	is = isReader()
+	ans = "Yes"
+
+	cnt := 0
+	for i := 0; i < N; i++ {
+		v := is[i]
+		if i%2 == 1 {
+			v--
+		}
+		cnt += v
 	}
 
+	if X < cnt {
+		ans = "No"
+	}
+
+	fmt.Println(ans)
 }
 
 /*

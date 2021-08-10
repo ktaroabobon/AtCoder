@@ -10,10 +10,10 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc208/tasks/abc208_d
 
-var H, W int
-var g [][]int
+var N, M, ans int
+var dist [][]int
 
 /*
 main関数
@@ -21,12 +21,43 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	N, M = is[0], is[1]
+
+	dist = make([][]int, N)
+
+	for i := 0; i < N; i++ {
+		dist[i] = initIS(make([]int, N), math.MaxInt64)
+	}
+	for i := 0; i < N; i++ {
+		dist[i][i] = 0
+	}
+	for i := 0; i < M; i++ {
+		is = isReader()
+		a, b, c := is[0], is[1], is[2]
+		a--
+		b--
+		dist[a][b] = c
 	}
 
+	for k := 0; k < N; k++ {
+		for i := 0; i < N; i++ {
+			for j := 0; j < N; j++ {
+				if dist[i][k] == math.MaxInt64 || dist[k][j] == math.MaxInt64 {
+					continue
+				}
+				ichmin(&dist[i][j], dist[i][k]+dist[k][j])
+			}
+		}
+		for i := 0; i < N; i++ {
+			for j := 0; j < N; j++ {
+				if dist[i][j] < math.MaxInt64 {
+					ans += dist[i][j]
+				}
+			}
+		}
+	}
+
+	fmt.Println(ans)
 }
 
 /*

@@ -10,10 +10,11 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc210/tasks/abc210_c
 
-var H, W int
-var g [][]int
+var N, K, ans int
+var CS []int
+var m map[int]int
 
 /*
 main関数
@@ -21,12 +22,28 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	N, K = is[0], is[1]
+	CS = isReader()
+
+	m = map[int]int{}
+	for j := 0; j < K; j++ {
+		m[CS[j]]++
 	}
 
+	for i := 0; i < N-K+1; i++ {
+		if i != 0 {
+			m[CS[i-1]]--
+			if m[CS[i-1]] == 0 {
+				delete(m, CS[i-1])
+			}
+			m[CS[K+i-1]]++
+		}
+
+		ichmax(&ans, len(m))
+
+	}
+
+	fmt.Println(ans)
 }
 
 /*
@@ -472,3 +489,10 @@ func (s *Deque) IsEmpty() bool {
 	}
 	return false
 }
+
+type set map[interface{}]bool
+
+func (h set) add(s interface{})         { h[s] = true }
+func (h set) erase(s interface{})       { delete(h, s) }
+func (h set) exists(s interface{}) bool { return h[s] }
+func (h *set) clear()                   { *h = make(set) }

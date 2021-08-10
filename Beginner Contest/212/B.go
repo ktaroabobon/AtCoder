@@ -10,23 +10,38 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc212/tasks/abc212_b
 
-var H, W int
-var g [][]int
+var ans string
+var pn int
+var f1, f2 bool
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	ans = "Weak"
+	x := sReader()
+
+	for i, v := range x {
+		n := s2i(string(v))
+		if i != 0 {
+			if pn != n {
+				f1 = true
+			}
+			if (pn+1)%10 != n {
+				f2 = true
+			}
+		}
+		pn = n
 	}
 
+	if f1 && f2 {
+		ans = "Strong"
+	}
+
+	fmt.Println(ans)
 }
 
 /*

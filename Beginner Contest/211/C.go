@@ -10,23 +10,52 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc211/tasks/abc211_c
 
-var H, W int
-var g [][]int
+const cnst = 1e9 + 7
+
+var m map[string]int
+var dp [][]int
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	s := sReader()
+	m = map[string]int{}
+	c := "chokudai"
+	for i, v := range c {
+		m[string(v)] = i + 1
 	}
 
+	dp = make([][]int, len(s))
+	for i := 0; i < len(s); i++ {
+		dp[i] = make([]int, len(c))
+	}
+
+	for i, v := range s {
+		idx := m[string(v)] - 1
+		if i == 0 {
+			if string(v) == "c" {
+				dp[i][idx]++
+			}
+		} else {
+			for j := 0; j < len(c); j++ {
+				if idx == j {
+					if j > 0 {
+						dp[i][j] = (dp[i-1][j] + dp[i-1][j-1]) % cnst
+					} else {
+						dp[i][j] = (dp[i-1][j] + 1) % cnst
+					}
+				} else {
+					dp[i][j] = dp[i-1][j] % cnst
+				}
+			}
+		}
+	}
+
+	fmt.Println(dp[len(s)-1][len(c)-1] % cnst)
 }
 
 /*

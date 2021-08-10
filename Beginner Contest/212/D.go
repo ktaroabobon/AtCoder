@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"container/heap"
 	"fmt"
 	"math"
 	"os"
@@ -10,23 +11,33 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc212/tasks/abc212_d
 
-var H, W int
-var g [][]int
+var Q, an int
+var is []int
+var bag *intHeap
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
-	}
+	Q = iReader()
+	bag = &intHeap{}
+	heap.Init(bag)
 
+	for i := 0; i < Q; i++ {
+		is = isReader()
+		if is[0] == 1 {
+			x := is[1] - an
+			heap.Push(bag, x)
+		} else if is[0] == 2 {
+			an += is[1]
+		} else {
+			n := heap.Pop(bag)
+			fmt.Println(n.(int) + an)
+		}
+	}
 }
 
 /*

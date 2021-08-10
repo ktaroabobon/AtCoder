@@ -48,6 +48,7 @@ func dfs(g Graph, s seen, v int) {
 			continue
 		}
 		dfs(g, s, nextV)
+		//fmt.Println(v)
 	}
 }
 func dfsLast(g Graph, s seen, v int) {

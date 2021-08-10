@@ -10,10 +10,10 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc185/tasks/abc185_d
 
-var H, W int
-var g [][]int
+var N, M, r int
+var AS, WS []int
 
 /*
 main関数
@@ -21,12 +21,38 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	N, M = is[0], is[1]
+	if M != 0 {
+		AS = isReader()
+		sort.Ints(AS)
+		WS = make([]int, M+1)
+
+		k := math.MaxInt64
+
+		for i := 0; i <= M; i++ {
+			if i == 0 {
+				WS[i] = AS[i] - 1
+			} else if i == M {
+				WS[i] = N - AS[i-1]
+			} else {
+				WS[i] = AS[i] - AS[i-1] - 1
+			}
+			if WS[i] > 0 {
+				ichmin(&k, WS[i])
+			}
+		}
+
+		for _, v := range WS {
+			r += v / k
+			if v%k != 0 {
+				r++
+			}
+		}
+	} else {
+		r = N
 	}
 
+	fmt.Println(r)
 }
 
 /*

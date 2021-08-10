@@ -10,23 +10,21 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc207/tasks/abc207_a
 
-var H, W int
-var g [][]int
+var is []int
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
-	}
+	is = isReader()
+	sort.Ints(is)
 
+	r := isum(is...) - is[0]
+
+	fmt.Println(r)
 }
 
 /*

@@ -10,23 +10,17 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc185/tasks/abc185_c
 
-var H, W int
-var g [][]int
+var L int
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
-	}
-
+	L = iReader()
+	fmt.Println(aCb(L-1, 11))
 }
 
 /*

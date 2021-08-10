@@ -10,23 +10,23 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc160/tasks/abc160_a
 
-var H, W int
-var g [][]int
+var s, ans string
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	s = sReader()
+	ans = "No"
+
+	if s[2] == s[3] && s[4] == s[5] {
+		ans = "Yes"
 	}
 
+	fmt.Println(ans)
 }
 
 /*

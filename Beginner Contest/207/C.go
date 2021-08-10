@@ -10,23 +10,45 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc207/tasks/abc207_c
 
-var H, W int
-var g [][]int
+var N, ans int
+var g [][]float64
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	N = iReader()
+
+	g = make([][]float64, N+10)
+
+	for i := 0; i < N; i++ {
+		is := isReader()
+		x := float64(is[2])
+		y := float64(is[1])
+		if is[0]%2 == 0 {
+			x -= 0.1
+		}
+		if is[0] >= 3 {
+			y += 0.1
+		}
+
+		g[i] = []float64{y, x}
 	}
 
+	for i := 0; i < N; i++ {
+		a1, a2 := g[i][0], g[i][1]
+		for j := i + 1; j < N; j++ {
+			b1, b2 := g[j][0], g[j][1]
+			if a1 <= b2 && b1 <= a2 {
+				ans++
+			}
+		}
+	}
+
+	fmt.Println(ans)
 }
 
 /*

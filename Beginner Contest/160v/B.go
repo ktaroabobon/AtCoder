@@ -10,23 +10,34 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc160/tasks/abc160_b
 
-var H, W int
-var g [][]int
+var X, ans int
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	X = iReader()
+
+	for {
+		if X < 500 {
+			break
+		}
+		X -= 500
+		ans += 1000
 	}
 
+	for {
+		if X < 5 {
+			break
+		}
+		X -= 5
+		ans += 5
+	}
+
+	fmt.Println(ans)
 }
 
 /*

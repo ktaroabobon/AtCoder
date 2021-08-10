@@ -10,9 +10,9 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc210/tasks/abc210_d
 
-var H, W int
+var H, W, C, ans int
 var g [][]int
 
 /*
@@ -21,7 +21,7 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
+	H, W, C := is[0], is[1], is[2]
 	g = make([][]int, H)
 	for i := 0; i < H; i++ {
 		g[i] = isReader()

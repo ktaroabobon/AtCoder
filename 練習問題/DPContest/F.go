@@ -12,20 +12,15 @@ import (
 
 // page URL:
 
-var H, W int
-var g [][]int
+var s, t string
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
-	}
+	s = sReader()
+	t = sReader()
 
 }
 

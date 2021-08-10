@@ -10,23 +10,51 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc213/tasks/abc213_d
 
-var H, W int
+var N int
 var g [][]int
+var r []int
+var seen []bool
+
+func dfs(i int) {
+	r = append(r, i+1)
+	seen[i] = true
+	for _, v := range g[i] {
+		if seen[v] {
+			continue
+		}
+		dfs(v)
+		r = append(r, i+1)
+	}
+}
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	N = iReader()
+	g = make([][]int, N)
+	for i := 0; i < N-1; i++ {
+		is := isReader()
+		a, b := is[0], is[1]
+		a--
+		b--
+		g[a] = append(g[a], b)
+		g[b] = append(g[b], a)
 	}
 
+	for i := 0; i < N; i++ {
+		sort.Ints(g[i])
+	}
+
+	seen = make([]bool, N)
+	seen[0] = true
+	dfs(0)
+
+	rs, _ := splitToString(r)
+	fmt.Println(strings.Join(rs, " "))
 }
 
 /*

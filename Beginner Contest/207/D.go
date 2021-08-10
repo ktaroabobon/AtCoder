@@ -10,23 +10,33 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc207/tasks/abc207_d
 
-var H, W int
-var g [][]int
+var N int
+var AS, BS []complex128
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	ans := "Yes"
+	N = iReader()
+	for i := 0; i < N; i++ {
+		is := isReader()
+		AS = append(AS, complex(float64(is[0]), float64(is[1])))
 	}
 
+	for i := 0; i < N; i++ {
+		is := isReader()
+		BS = append(BS, complex(float64(is[0]), float64(is[1])))
+	}
+
+	for i := 0; i < N; i++ {
+		X := AS[i]
+		Y := BS[i]
+
+	}
 }
 
 /*

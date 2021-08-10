@@ -10,10 +10,7 @@ import (
 	"strings"
 )
 
-// page URL:
-
-var H, W int
-var g [][]int
+// page URL: https://atcoder.jp/contests/abc212/tasks/abc212_a
 
 /*
 main関数
@@ -21,12 +18,15 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
-	}
+	a, b := is[0], is[1]
 
+	if a == 0 {
+		fmt.Println("Silver")
+	} else if b == 0 {
+		fmt.Println("Gold")
+	} else {
+		fmt.Println("Alloy")
+	}
 }
 
 /*

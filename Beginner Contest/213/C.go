@@ -10,10 +10,11 @@ import (
 	"strings"
 )
 
-// page URL:
-
-var H, W int
+// page URL: https://atcoder.jp/contests/abc213/tasks/abc213_c
+var H, W, N int
 var g [][]int
+var hs, ws []int
+var hm, wm map[int]bool
 
 /*
 main関数
@@ -21,12 +22,29 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	H, W, N = is[0], is[1], is[2]
+	hm = map[int]bool{}
+	wm = map[int]bool{}
+
+	for i := 0; i < N; i++ {
+		is = isReader()
+		g = append(g, is)
+		if !hm[is[0]] {
+			hs = append(hs, is[0])
+			hm[is[0]] = true
+		}
+		if !wm[is[1]] {
+			ws = append(ws, is[1])
+			wm[is[1]] = true
+		}
 	}
 
+	sort.Ints(hs)
+	sort.Ints(ws)
+
+	for i := 0; i < N; i++ {
+		fmt.Println(lowerBound(hs, g[i][0])+1, lowerBound(ws, g[i][1])+1)
+	}
 }
 
 /*

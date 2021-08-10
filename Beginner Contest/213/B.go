@@ -10,23 +10,28 @@ import (
 	"strings"
 )
 
-// page URL:
-
-var H, W int
-var g [][]int
+// page URL: https://atcoder.jp/contests/abc213/tasks/abc213_b
+var N int
+var as []int
+var p map[int]int
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
-	}
+	N = iReader()
+	as = isReader()
+	p = map[int]int{}
 
+	for i := 0; i < N; i++ {
+		p[as[i]] = i + 1
+	}
+	sort.Ints(as)
+
+	as = isReverse(as)
+
+	fmt.Println(p[as[1]])
 }
 
 /*

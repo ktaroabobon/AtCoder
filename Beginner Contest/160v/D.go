@@ -10,10 +10,35 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc160/tasks/abc160_d
 
-var H, W int
-var g [][]int
+var N, X, Y int
+var dp []int
+var g, dist [][]int
+var q Deque
+
+func bfs(x int) {
+	dist[x][x] = 0
+	q.Append(x)
+
+	for {
+		if q.IsEmpty() {
+			break
+		}
+
+		v := q.PopLeft()
+
+		for _, nv := range g[v.(int)] {
+			if dist[x][nv] != -1 {
+				continue
+			}
+
+			dist[x][nv] = dist[x][v.(int)] + 1
+
+			q.Append(nv)
+		}
+	}
+}
 
 /*
 main関数
@@ -21,10 +46,42 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	N, X, Y = is[0], is[1]-1, is[2]-1
+
+	g = make([][]int, N)
+	dist = make([][]int, N)
+	dp = make([]int, N)
+
+	for i := 0; i < N; i++ {
+		dist[i] = initIS(make([]int, N), -1)
+	}
+
+	q = *NewDeque()
+
+	for i := 1; i < N; i++ {
+		g[i-1] = append(g[i-1], i)
+		g[i] = append(g[i], i-1)
+	}
+
+	g[X] = append(g[X], Y)
+	g[Y] = append(g[Y], X)
+
+	for i := 0; i < N; i++ {
+		bfs(i)
+	}
+
+	for i := 0; i < N; i++ {
+		for j := i + 1; j < N; j++ {
+			k := dist[i][j]
+			dp[k]++
+		}
+	}
+
+	for i, v := range dp {
+		if i == 0 {
+			continue
+		}
+		fmt.Println(v)
 	}
 
 }

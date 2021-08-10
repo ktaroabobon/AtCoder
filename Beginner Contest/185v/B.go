@@ -10,23 +10,62 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc185/tasks/abc185_b
 
-var H, W int
-var g [][]int
+var N, M, T, x int
+var ans string
+var is []int
+
+func solve(r, s, g int, f bool) (int, bool) {
+	if f {
+		r += (g - s)
+		if r > N {
+			r = N
+		}
+	} else {
+		r -= (g - s)
+	}
+
+	return r, !f
+}
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	is = isReader()
+	N, M, T = is[0], is[1], is[2]
+	ans = "Yes"
+	pt := 0
+	f := false
+	x = N
+
+	for i := 0; i < M; i++ {
+		is = isReader()
+
+		for _, v := range is {
+			x, f = solve(x, pt, v, f)
+			pt = v
+			if x <= 0 {
+				ans = "No"
+				break
+			}
+		}
+
+		if ans == "No" {
+			break
+		}
 	}
 
+	if ans != "No" {
+		x, _ = solve(x, pt, T, f)
+		if x <= 0 {
+			ans = "No"
+		}
+	}
+
+	fmt.Println(ans)
 }
 
 /*

@@ -10,23 +10,27 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL:https://atcoder.jp/contests/abc211/tasks/abc211_b
 
-var H, W int
-var g [][]int
+var m map[string]bool
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	m = map[string]bool{}
+	ans := "Yes"
+	for i := 0; i < 4; i++ {
+		s := sReader()
+		if m[s] {
+			ans = "No"
+			break
+		}
+		m[s] = true
 	}
 
+	fmt.Println(ans)
 }
 
 /*

@@ -10,23 +10,66 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc209/tasks/abc209_d
 
-var H, W int
+var N, Q int
 var g [][]int
+var dp []int
+var q *Deque
+
+func bfs(x int) (f bool) {
+	dp[x] = 0
+	q.Append(x)
+
+	for {
+		if q.IsEmpty() {
+			break
+		}
+
+		v := q.PopLeft()
+
+		for _, nextV := range g[v.(int)] {
+			if dp[nextV] != -1 {
+				continue
+			}
+
+			dp[nextV] = b2i(!i2b(dp[v.(int)]))
+			q.Append(nextV)
+		}
+	}
+	return true
+}
 
 /*
-main関数
+   main関数
 */
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	N, Q = is[0], is[1]
+	g = make([][]int, N)
+	dp = initIS(make([]int, N), -1)
+
+	for i := 0; i < N-1; i++ {
+		is = isReader()
+		a, b := is[0]-1, is[1]-1
+		g[a] = append(g[a], b)
+		g[b] = append(g[b], a)
 	}
 
+	q = NewDeque()
+
+	bfs(0)
+
+	for i := 0; i < Q; i++ {
+		ans := "Road"
+		is = isReader()
+		c, d := dp[is[0]-1], dp[is[1]-1]
+		if c == d {
+			ans = "Town"
+		}
+		fmt.Println(ans)
+	}
 }
 
 /*

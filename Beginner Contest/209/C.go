@@ -10,23 +10,35 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc209/tasks/abc209_c
+var N int
+var CS, dp []int
 
-var H, W int
-var g [][]int
+const cnst = 1e9 + 7
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	N = iReader()
+	CS = isReader()
+	sort.Ints(CS)
+	dp = make([]int, N)
+	var r int
+
+	for i := 0; i < N; i++ {
+		if i == 0 {
+			r = CS[0] % cnst
+			continue
+		}
+
+		dp[i] = dp[i-1] + 1
+		r *= (CS[i] - dp[i]) % cnst
+		r %= cnst
 	}
 
+	fmt.Println(r)
 }
 
 /*

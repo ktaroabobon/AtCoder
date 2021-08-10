@@ -10,10 +10,10 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc160/tasks/abc160_c
 
-var H, W int
-var g [][]int
+var K, N, ans int
+var AS, dp []int
 
 /*
 main関数
@@ -21,12 +21,25 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	K, N = is[0], is[1]
+	AS = isReader()
+	dp = make([]int, N)
+
+	for i := 0; i < N; i++ {
+		if i == 0 {
+			dp[i] = AS[i]
+			continue
+		}
+		dp[i] = AS[i] - AS[i-1]
+		if i == N-1 {
+			dp[0] += K - AS[i]
+		}
 	}
 
+	sort.Ints(dp)
+	ans = isum(dp...) - dp[N-1]
+
+	fmt.Println(ans)
 }
 
 /*

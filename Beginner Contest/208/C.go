@@ -10,10 +10,11 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc208/tasks/abc208_c
 
-var H, W int
-var g [][]int
+var N, K int
+var AS, sAS []int
+var p map[int]int
 
 /*
 main関数
@@ -21,12 +22,28 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	N, K = is[0], is[1]
+
+	ans := K / N
+	r := K % N
+	p = map[int]int{}
+
+	AS = isReader()
+	sAS = make([]int, N)
+	copy(sAS, AS)
+	sort.Ints(sAS)
+
+	for i := 0; i < N; i++ {
+		if r != 0 && i < r {
+			p[sAS[i]] = ans + 1
+		} else {
+			p[sAS[i]] = ans
+		}
 	}
 
+	for _, v := range AS {
+		fmt.Println(p[v])
+	}
 }
 
 /*

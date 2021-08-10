@@ -11,8 +11,8 @@ import (
 )
 
 // page URL:
-
-var A, B, K int
+var N, W int
+var WS, VS []int
 var dp [][]int
 
 /*
@@ -21,28 +21,34 @@ main関数
 
 func main() {
 	is := isReader()
-	A, B, K = is[0], is[1], is[2]
-	N := A + B
-	K--
+	N, W = is[0], is[1]
 
-	var ans string
+	dp = make([][]int, N+10)
+	for i := 0; i < N+10; i++ {
+		dp[i] = make([]int, W+10)
+	}
 
 	for i := 0; i < N; i++ {
-		if 0 < A {
-			if K < aCb(N-1, B) {
-				ans += "a"
-				A--
-			} else {
-				ans += "b"
-				K -= aCb(N-1, B)
-				B--
-			}
-		} else {
-			ans += "b"
-			B--
-		}
+		is = isReader()
+		WS = append(WS, is[0])
+		VS = append(VS, is[1])
 	}
-	fmt.Println(ans)
+
+	for i := 0; i < N; i++ {
+		if i != 0 {
+			for j := W; j >= 0; j-- {
+				if dp[i-1][j] != 0 {
+					if j+WS[i] <= W {
+						ichmax(&dp[i][j+WS[i]], dp[i-1][j]+VS[i])
+					}
+					ichmax(&dp[i][j], dp[i-1][j])
+				}
+			}
+		}
+		dp[i][WS[i]] = VS[i]
+	}
+
+	fmt.Println(imax(dp[N-1]...))
 }
 
 /*
@@ -326,7 +332,7 @@ func aCb(a, b int) (r int) {
 その他関数
 */
 /* strSlice内に対象の文字列が存在するか*/
-func isContain(strSlice []string, s string) bool {
+func ssContain(strSlice []string, s string) bool {
 	for _, v := range strSlice {
 		if s == v {
 			return true
@@ -335,39 +341,12 @@ func isContain(strSlice []string, s string) bool {
 	return false
 }
 
-/* intSlice内に対象の数値が存在するか*/
-func iisContain(intSlice []int, i int) bool {
-	for _, v := range intSlice {
-		if i == v {
-			return true
-		}
-	}
-	return false
-}
-
-/*Sliceを逆順にして返す。*/
-func toReverse(data []interface{}) []interface{} {
+/*stringSliceを逆順にして返す。*/
+func ssReverse(data []string) []string {
 	if len(data) == 0 {
 		return data
 	}
-	return append(toReverse(data[1:]), data[0])
-}
-
-/*intSliceの初期化*/
-func initIS(is []int, v int) []int {
-	if cap(is) == 0 {
-		return is
-	}
-	if len(is) == 0 {
-		for i := 0; i < cap(is); i++ {
-			is = append(is, v)
-		}
-	} else {
-		for i := 0; i < cap(is); i++ {
-			is[i] = v
-		}
-	}
-	return is
+	return append(ssReverse(data[1:]), data[0])
 }
 
 /*stringSliceの初期化*/
@@ -385,6 +364,41 @@ func initSS(ss []string, v string) []string {
 		}
 	}
 	return ss
+}
+
+/* intSlice内に対象の数値が存在するか*/
+func isContain(intSlice []int, i int) bool {
+	for _, v := range intSlice {
+		if i == v {
+			return true
+		}
+	}
+	return false
+}
+
+/*intSliceを逆順にして返す。*/
+func isReverse(data []int) []int {
+	if len(data) == 0 {
+		return data
+	}
+	return append(isReverse(data[1:]), data[0])
+}
+
+/*intSliceの初期化*/
+func initIS(is []int, v int) []int {
+	if cap(is) == 0 {
+		return is
+	}
+	if len(is) == 0 {
+		for i := 0; i < cap(is); i++ {
+			is = append(is, v)
+		}
+	} else {
+		for i := 0; i < cap(is); i++ {
+			is[i] = v
+		}
+	}
+	return is
 }
 
 /* intHeap(優先度付きキュー) */

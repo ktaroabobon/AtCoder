@@ -10,10 +10,10 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc212/tasks/abc212_c
 
-var H, W int
-var g [][]int
+var N, M, r int
+var AS, BS []int
 
 /*
 main関数
@@ -21,12 +21,27 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	N, M = is[0], is[1]
+	AS = isReader()
+	BS = isReader()
+	r = math.MaxInt64
+
+	sort.Ints(AS)
+	sort.Ints(BS)
+
+	for _, v := range AS {
+		x := lowerBound(BS, v)
+		y := upperBound(BS, v)
+
+		if x < M {
+			ichmin(&r, iabs(BS[x]-v))
+		}
+		if 0 <= y {
+			ichmin(&r, iabs(BS[y]-v))
+		}
 	}
 
+	fmt.Println(r)
 }
 
 /*

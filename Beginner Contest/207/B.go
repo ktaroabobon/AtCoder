@@ -10,10 +10,9 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc207/tasks/abc207_b
 
-var H, W int
-var g [][]int
+var A, B, C, D, ans int
 
 /*
 main関数
@@ -21,12 +20,18 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	A, B, C, D = is[0], is[1], is[2], is[3]
+
+	if C*D-B <= 0 {
+		ans = -1
+	} else {
+		ans = A / (C*D - B)
+		if ans*(C*D-B) != A {
+			ans++
+		}
 	}
 
+	fmt.Println(ans)
 }
 
 /*

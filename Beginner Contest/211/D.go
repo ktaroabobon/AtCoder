@@ -10,10 +10,47 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc211/tasks/abc211_d
+const cnst = 1e9 + 7
 
-var H, W int
+var N, M, ans int
 var g [][]int
+var c, dist []int
+var q Deque
+
+func bfs(x int) (f bool) {
+	c[x] = 1
+	dist[x] = 0
+	q.Append(x)
+
+	for {
+		if q.IsEmpty() {
+			break
+		}
+
+		v := q.PopLeft()
+
+		for _, nextV := range g[v.(int)] {
+			//if c[nextV] == c[v.(int)] {
+			//	continue
+			//}
+
+			//if ichmin(&c[nextV], c[v.(int)]+1) || c[nextV] == c[v.(int)]+1 {
+			//	dist[nextV] += dist[v.(int)]
+			//	q.Append(nextV)
+			//}
+
+			if dist[nextV] == -1 {
+				dist[nextV] = dist[v.(int)] + 1
+				c[nextV] = c[v.(int)] % cnst
+				q.Append(nextV)
+			} else if dist[nextV] != -1 && dist[nextV] == dist[v.(int)]+1 {
+				c[nextV] += (c[v.(int)] % cnst)
+			}
+		}
+	}
+	return true
+}
 
 /*
 main関数
@@ -21,11 +58,24 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
-	g = make([][]int, H)
-	for i := 0; i < H; i++ {
-		g[i] = isReader()
+	N, M = is[0], is[1]
+	g = make([][]int, N)
+	for i := 0; i < M; i++ {
+		is = isReader()
+		a, b := is[0], is[1]
+		a--
+		b--
+		g[a] = append(g[a], b)
+		g[b] = append(g[b], a)
 	}
+	c = make([]int, N)
+	dist = make([]int, N)
+	initIS(dist, -1)
+	q = *NewDeque()
+
+	bfs(0)
+
+	fmt.Println(c[N-1] % cnst)
 
 }
 
