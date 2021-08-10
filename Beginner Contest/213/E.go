@@ -11,9 +11,16 @@ import (
 )
 
 // page URL: https://atcoder.jp/contests/abc213/tasks/abc213_e
+type Edge struct {
+	to     int
+	weight int
+}
 
 var H, W, r int
 var g [][]string
+var seen, dp [][]int
+var dx, dy []int
+var q Deque
 
 /*
 main関数
