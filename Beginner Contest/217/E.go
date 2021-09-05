@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"container/heap"
 	"fmt"
 	"math"
 	"os"
@@ -10,60 +11,39 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/abc213/tasks/abc213_e
-type Edge struct {
-	to     int
-	weight int
-}
+// page URL: https://atcoder.jp/contests/abc217/tasks/abc217_e
 
-var H, W, r int
-var g [][]string
-var seen, dist [][]int
-var q Deque
-
-func bfs(h, w int) {
-	dist[h][w] = 0
-	q.Append(i)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nv := range g[v.(int)] {
-			if dist[nv] != -1 {
-				continue
-			}
-			dist[nv] = dist[v.(int)] + 1
-			q.Append(nv)
-		}
-	}
-}
+var Q, j int
+var q1 *Deque
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
+	Q = iReader()
+	q1 = NewDeque()
+	q2 := &intHeap{}
 
-	for i := 0; i < H; i++ {
-		g = append(g, ssReader())
+	for i := 0; i < Q; i++ {
+		is := isReader()
+		switch is[0] {
+		case 1:
+			q1.Append(is[1])
+		case 2:
+			if q2.Len() > 0 {
+				j = heap.Pop(q2).(int)
+			} else {
+				j = q1.PopLeft().(int)
+			}
+			fmt.Println(j)
+		case 3:
+			for _, v := range q1.Items {
+				heap.Push(q2, v.(int))
+			}
+			q1 = NewDeque()
+		}
 	}
-
-	dx := []int{1, 0, -1, 0}
-	dy := []int{0, -1, 0, 1}
-
-	sh, sw, gh, gw := 0, 0, H-1, W-1
-
-	dist = make([][]int, H)
-	for i := 0; i < H; i++ {
-		dist[i] = initIS(make([]int, W), math.MaxInt64)
-	}
-
 }
 
 /*

@@ -10,9 +10,11 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL:　https://atcoder.jp/contests/dp/tasks/dp_f
 
 var s, t string
+var dp [][]int
+var ans []string
 
 /*
 main関数
@@ -22,6 +24,45 @@ func main() {
 	s = sReader()
 	t = sReader()
 
+	dp = make([][]int, len(s)+1)
+	for i := 0; i < len(s)+1; i++ {
+		dp[i] = make([]int, len(t)+1)
+	}
+
+	for i := 1; i < len(s)+1; i++ {
+		for j := 1; j < len(t)+1; j++ {
+			if s[i-1] == t[j-1] {
+				dp[i][j] = dp[i-1][j-1] + 1
+			} else {
+				dp[i][j] = imax(dp[i-1][j], dp[i][j-1])
+			}
+		}
+	}
+
+	anslen := dp[len(s)][len(t)]
+	i := len(s)
+	j := len(t)
+	ans = make([]string, anslen)
+	anslen--
+
+	for {
+		if anslen < 0 {
+			break
+		}
+
+		if s[i-1] == t[j-1] {
+			ans[anslen] = string(s[i-1])
+			i--
+			j--
+			anslen--
+		} else if dp[i][j] == dp[i-1][j] {
+			i--
+		} else {
+			j--
+		}
+	}
+
+	fmt.Println(strings.Join(ans, ""))
 }
 
 /*
@@ -466,4 +507,44 @@ func (s *Deque) IsEmpty() bool {
 		return true
 	}
 	return false
+}
+
+type UnionFind struct {
+	par []int
+}
+
+func NewUnionFind(N int) *UnionFind {
+	uf := new(UnionFind)
+	uf.par = make([]int, N)
+	for i := range uf.par {
+		uf.par[i] = -1
+	}
+	return uf
+}
+
+func (u UnionFind) root(x int) int {
+	if u.par[x] < 0 {
+		return x
+	}
+	u.par[x] = u.root(u.par[x])
+	return u.par[x]
+}
+
+func (u UnionFind) unite(x, y int) {
+	xr := u.root(x)
+	yr := u.root(y)
+
+	if xr == yr {
+		return
+	}
+	u.par[yr] += u.par[xr]
+	u.par[xr] = yr
+}
+
+func (u UnionFind) same(x, y int) bool {
+	return u.root(x) == u.root(y)
+}
+
+func (u UnionFind) size(x int) int {
+	return -u.par[u.root(x)]
 }

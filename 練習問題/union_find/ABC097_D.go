@@ -10,13 +10,36 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc097/tasks/arc097_b
+
+var N, M, ans int
+var ps []int
+var t UnionFind
 
 /*
 main関数
 */
 
 func main() {
+	is := isReader()
+	N, M = is[0], is[1]
+	ps = isReader()
+
+	t = *NewUnionFind(N)
+
+	for i := 0; i < M; i++ {
+		is = isReader()
+		x, y := is[0], is[1]
+		t.unite(x-1, y-1)
+	}
+
+	for i := 0; i < N; i++ {
+		if t.same(i, ps[i]-1) {
+			ans++
+		}
+	}
+
+	fmt.Println(ans)
 }
 
 /*

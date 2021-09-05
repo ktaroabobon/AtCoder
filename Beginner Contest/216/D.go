@@ -10,37 +10,12 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/abc213/tasks/abc213_e
-type Edge struct {
-	to     int
-	weight int
-}
+// page URL: https://atcoder.jp/contests/abc216/tasks/abc216_d
 
-var H, W, r int
-var g [][]string
-var seen, dist [][]int
-var q Deque
-
-func bfs(h, w int) {
-	dist[h][w] = 0
-	q.Append(i)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nv := range g[v.(int)] {
-			if dist[nv] != -1 {
-				continue
-			}
-			dist[nv] = dist[v.(int)] + 1
-			q.Append(nv)
-		}
-	}
-}
+var N, M, n, cnt int
+var t [][]int
+var f Deque
+var tm map[int][]int
 
 /*
 main関数
@@ -48,22 +23,71 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
+	N, M = is[0], is[1]
 
-	for i := 0; i < H; i++ {
-		g = append(g, ssReader())
+	f = *NewDeque()
+
+	for i := 0; i < M; i++ {
+		_ = iReader()
+		t = append(t, isReader())
 	}
 
-	dx := []int{1, 0, -1, 0}
-	dy := []int{0, -1, 0, 1}
+	tm = map[int][]int{}
+	cnt = N
 
-	sh, sw, gh, gw := 0, 0, H-1, W-1
-
-	dist = make([][]int, H)
-	for i := 0; i < H; i++ {
-		dist[i] = initIS(make([]int, W), math.MaxInt64)
+	for i := 0; i < M; i++ {
+		if t[i] == nil {
+			continue
+		}
+		n = t[i][0]
+		if len(t[i]) > 1 {
+			t[i] = t[i][1:]
+		} else {
+			t[i] = nil
+		}
+		if tm[n] == nil {
+			tm[n] = []int{i}
+		} else {
+			tm[n] = append(tm[n], i)
+			f.Append(n)
+		}
 	}
 
+	for {
+		if f.IsEmpty() {
+			break
+		}
+
+		v := f.PopLeft()
+
+		is = tm[v.(int)]
+
+		for _, address := range is {
+			if t[address] == nil {
+				continue
+			}
+			n = t[address][0]
+			if len(t[address]) > 1 {
+				t[address] = t[address][1:]
+			} else {
+				t[address] = nil
+			}
+			if tm[n] == nil {
+				tm[n] = []int{address}
+			} else {
+				tm[n] = append(tm[n], address)
+				f.Append(n)
+			}
+		}
+
+		cnt--
+	}
+
+	if cnt == 0 {
+		fmt.Println("Yes")
+	} else {
+		fmt.Println("No")
+	}
 }
 
 /*

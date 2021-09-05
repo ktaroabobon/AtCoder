@@ -10,37 +10,10 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/abc213/tasks/abc213_e
-type Edge struct {
-	to     int
-	weight int
-}
+// page URL: https://atcoder.jp/contests/abc217/tasks/abc217_d
 
-var H, W, r int
-var g [][]string
-var seen, dist [][]int
-var q Deque
-
-func bfs(h, w int) {
-	dist[h][w] = 0
-	q.Append(i)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nv := range g[v.(int)] {
-			if dist[nv] != -1 {
-				continue
-			}
-			dist[nv] = dist[v.(int)] + 1
-			q.Append(nv)
-		}
-	}
-}
+var l, q int
+var c, x, sl, ans []int
 
 /*
 main関数
@@ -48,22 +21,42 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
+	l, q = is[0], is[1]
 
-	for i := 0; i < H; i++ {
-		g = append(g, ssReader())
+	c, x = make([]int, q), make([]int, q)
+	sl = []int{0, l}
+
+	for i := 0; i < q; i++ {
+		is = isReader()
+		c[i], x[i] = is[0], is[1]
+		switch is[0] {
+		case 1:
+			sl = append(sl, is[1])
+		}
 	}
 
-	dx := []int{1, 0, -1, 0}
-	dy := []int{0, -1, 0, 1}
+	sort.Ints(sl)
 
-	sh, sw, gh, gw := 0, 0, H-1, W-1
+	uf := NewUnionFind(len(sl))
+	uf.InitSize(sl)
 
-	dist = make([][]int, H)
-	for i := 0; i < H; i++ {
-		dist[i] = initIS(make([]int, W), math.MaxInt64)
+	uf.size[0] = 0
+
+	for i := q - 1; i >= 0; i-- {
+		idx := lowerBound(sl, x[i])
+		switch c[i] {
+		case 1:
+			uf.Unite(idx, idx+1)
+		case 2:
+			ans = append(ans, uf.Size(idx))
+		}
 	}
 
+	ans = isReverse(ans)
+
+	for _, v := range ans {
+		fmt.Println(v)
+	}
 }
 
 /*
@@ -508,4 +501,66 @@ func (s *Deque) IsEmpty() bool {
 		return true
 	}
 	return false
+}
+
+/* Union Find */
+type UnionFind struct {
+	par  []int // parent numbers
+	rank []int // height of tree
+	size []int
+}
+
+func NewUnionFind(N int) *UnionFind {
+	uf := new(UnionFind)
+	uf.par = make([]int, N)
+	uf.rank = make([]int, N)
+	uf.size = make([]int, N)
+	for i := range uf.par {
+		uf.par[i] = -1
+		uf.rank[i] = 0
+		uf.size[i] = 1
+	}
+	return uf
+}
+
+func (u UnionFind) InitSize(s []int) {
+	for i := 1; i < len(u.size); i++ {
+		u.size[i] = s[i] - s[i-1]
+	}
+}
+
+func (u UnionFind) Root(x int) int {
+	if u.par[x] < 0 {
+		return x
+	}
+	u.par[x] = u.Root(u.par[x])
+	return u.par[x]
+}
+
+func (u UnionFind) Unite(x, y int) {
+	xr := u.Root(x)
+	yr := u.Root(y)
+
+	if xr == yr {
+		return
+	}
+	// rank
+	if u.rank[xr] < u.rank[yr] {
+		u.par[xr] = yr
+		u.size[yr] += u.size[xr]
+	} else {
+		u.par[yr] = xr
+		u.size[xr] += u.size[yr]
+		if u.rank[xr] == u.rank[yr] {
+			u.rank[xr]++
+		}
+	}
+}
+
+func (u UnionFind) Same(x, y int) bool {
+	return u.Root(x) == u.Root(y)
+}
+
+func (u UnionFind) Size(x int) int {
+	return u.size[u.Root(x)]
 }

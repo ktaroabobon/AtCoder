@@ -33,43 +33,29 @@ import (
 
 // page URL: https://qiita.com/drken/items/996d80bcae64649a6580
 
-type Graph = [][]int
+var g [][]int
+var dist []int
+var q Deque
 
-type dist = []int
-
-func initValueSlice(s []int, v int) []int {
-	if len(s) == 0 {
-		return s
-	}
-	s[0] = v
-
-	for i := 1; i < len(s); i *= 2 {
-		copy(s[i:], s[:i])
-	}
-	return s
-}
-
-func bfs(g Graph, d dist, q *Deque) dist {
-	d[0] = 0
-	q.Append(0)
+func bfs(i int) {
+	dist[i] = 0
+	q.Append(i)
 
 	for {
 		if q.IsEmpty() {
 			break
 		}
+
 		v := q.PopLeft()
 
-		for _, nextV := range g[v.(int)] {
-			if d[nextV] != -1 {
+		for _, nv := range g[v.(int)] {
+			if dist[nv] != -1 {
 				continue
 			}
-
-			d[nextV] = d[v.(int)] + 1
-			q.Append(nextV)
+			dist[nv] = dist[v.(int)] + 1
+			q.Append(nv)
 		}
 	}
-
-	return d
 }
 
 /*
@@ -80,26 +66,22 @@ func main() {
 	numbers := isReader()
 	N, M := numbers[0], numbers[1]
 
-	g := make(Graph, N)
+	g = make([][]int, N)
 
 	for i := 0; i < M; i++ {
-		info := isReader()
-		g[info[0]] = append(g[info[0]], info[1])
-		g[info[1]] = append(g[info[1]], info[0])
+		is := isReader()
+		a, b := is[0], is[1]
+		g[a] = append(g[a], b)
+		g[b] = append(g[b], a)
 	}
 
-	fmt.Println(g)
+	dist = initIS(make([]int, N), -1)
+	q = *NewDeque()
 
-	d := make(dist, M)
-	q := NewDeque()
-
-	d = initValueSlice(d, -1)
-	fmt.Println(d)
-
-	d = bfs(g, d, q)
+	bfs(0)
 
 	for i := 0; i < N; i++ {
-		fmt.Printf("%v: %v\n", i, d[i])
+		fmt.Printf("%v: %v\n", i, dist[i])
 	}
 
 }
@@ -326,15 +308,66 @@ func ilcm(v1, v2 int) int {
 	return v1 * v2 / igcd(v1, v2)
 }
 
-func iswap(v1, v2 int) (int, int) {
-	return v2, v1
+func iswap(v1, v2 *int) {
+	*v1, *v2 = *v2, *v1
+}
+
+func imodinv(x, y int) int {
+	/*
+		mod y における逆元を求めるアルゴリズム
+		<逆元の存在条件>
+		mod p でのaの逆元が存在する条件は、pとaとが互いに素であること
+	*/
+
+	z, u, v := y, 1, 0
+	for {
+		if !i2b(z) {
+			break
+		}
+		t := x / z
+		x -= t * z
+		iswap(&x, &z)
+		u -= t * v
+		iswap(&u, &v)
+	}
+	u %= y
+	if u < 0 {
+		u += y
+	}
+	return u
+}
+
+func ichmin(a *int, b int) (f bool) {
+	if *a > b {
+		*a = b
+		f = true
+	}
+	return
+}
+
+func ichmax(a *int, b int) (f bool) {
+	if *a < b {
+		*a = b
+		f = true
+	}
+	return
+}
+func aCb(a, b int) (r int) {
+	r = 1
+	if a < b*2 {
+		b = a - b
+	}
+	for i := 1; i < b+1; i++ {
+		r = r * (a - i + 1) / i
+	}
+	return
 }
 
 /*
 その他関数
 */
 /* strSlice内に対象の文字列が存在するか*/
-func isContain(strSlice []string, s string) bool {
+func ssContain(strSlice []string, s string) bool {
 	for _, v := range strSlice {
 		if s == v {
 			return true
@@ -343,8 +376,33 @@ func isContain(strSlice []string, s string) bool {
 	return false
 }
 
+/*stringSliceを逆順にして返す。*/
+func ssReverse(data []string) []string {
+	if len(data) == 0 {
+		return data
+	}
+	return append(ssReverse(data[1:]), data[0])
+}
+
+/*stringSliceの初期化*/
+func initSS(ss []string, v string) []string {
+	if cap(ss) == 0 {
+		return ss
+	}
+	if len(ss) == 0 {
+		for i := 0; i < cap(ss); i++ {
+			ss = append(ss, v)
+		}
+	} else {
+		for i := 0; i < cap(ss); i++ {
+			ss[i] = v
+		}
+	}
+	return ss
+}
+
 /* intSlice内に対象の数値が存在するか*/
-func iisContain(intSlice []int, i int) bool {
+func isContain(intSlice []int, i int) bool {
 	for _, v := range intSlice {
 		if i == v {
 			return true
@@ -353,11 +411,29 @@ func iisContain(intSlice []int, i int) bool {
 	return false
 }
 
-func toReverse(data []interface{}) []interface{} {
+/*intSliceを逆順にして返す。*/
+func isReverse(data []int) []int {
 	if len(data) == 0 {
 		return data
 	}
-	return append(toReverse(data[1:]), data[0])
+	return append(isReverse(data[1:]), data[0])
+}
+
+/*intSliceの初期化*/
+func initIS(is []int, v int) []int {
+	if cap(is) == 0 {
+		return is
+	}
+	if len(is) == 0 {
+		for i := 0; i < cap(is); i++ {
+			is = append(is, v)
+		}
+	} else {
+		for i := 0; i < cap(is); i++ {
+			is[i] = v
+		}
+	}
+	return is
 }
 
 /* intHeap(優先度付きキュー) */
@@ -415,7 +491,6 @@ func designatedUpperBound(intTarget []int, x int) (returnIndex int, f bool) {
 	return
 }
 
-// Deque
 func NewDeque() *Deque {
 	return &Deque{}
 }

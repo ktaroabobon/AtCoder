@@ -10,60 +10,33 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/abc213/tasks/abc213_e
-type Edge struct {
-	to     int
-	weight int
-}
+// page URL: https://atcoder.jp/contests/abc216/tasks/abc216_b
 
-var H, W, r int
-var g [][]string
-var seen, dist [][]int
-var q Deque
-
-func bfs(h, w int) {
-	dist[h][w] = 0
-	q.Append(i)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nv := range g[v.(int)] {
-			if dist[nv] != -1 {
-				continue
-			}
-			dist[nv] = dist[v.(int)] + 1
-			q.Append(nv)
-		}
-	}
-}
+var N int
+var ps [][]string
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
-
-	for i := 0; i < H; i++ {
-		g = append(g, ssReader())
+	N = iReader()
+	for i := 0; i < N; i++ {
+		ps = append(ps, ssReader())
 	}
 
-	dx := []int{1, 0, -1, 0}
-	dy := []int{0, -1, 0, 1}
+	ans := "No"
 
-	sh, sw, gh, gw := 0, 0, H-1, W-1
-
-	dist = make([][]int, H)
-	for i := 0; i < H; i++ {
-		dist[i] = initIS(make([]int, W), math.MaxInt64)
+	for i := 0; i < N; i++ {
+		for j := i + 1; j < N; j++ {
+			if ps[i][0] == ps[j][0] && ps[i][1] == ps[j][1] {
+				ans = "Yes"
+				break
+			}
+		}
 	}
 
+	fmt.Println(ans)
 }
 
 /*

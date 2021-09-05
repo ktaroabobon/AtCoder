@@ -10,37 +10,10 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/abc213/tasks/abc213_e
-type Edge struct {
-	to     int
-	weight int
-}
+// page URL: https://atcoder.jp/contests/abc216/tasks/abc216_e
 
-var H, W, r int
-var g [][]string
-var seen, dist [][]int
-var q Deque
-
-func bfs(h, w int) {
-	dist[h][w] = 0
-	q.Append(i)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nv := range g[v.(int)] {
-			if dist[nv] != -1 {
-				continue
-			}
-			dist[nv] = dist[v.(int)] + 1
-			q.Append(nv)
-		}
-	}
-}
+var N, K, cnt, ans, rst int
+var AS, ds []int
 
 /*
 main関数
@@ -48,22 +21,37 @@ main関数
 
 func main() {
 	is := isReader()
-	H, W = is[0], is[1]
+	N, K = is[0], is[1]
+	AS = isReader()
 
-	for i := 0; i < H; i++ {
-		g = append(g, ssReader())
+	sort.Ints(AS)
+	AS = append([]int{0}, AS...)
+	AS = isReverse(AS)
+
+	for i, _ := range AS {
+		if i != 0 {
+			ds = append(ds, AS[i-1]-AS[i])
+		}
 	}
 
-	dx := []int{1, 0, -1, 0}
-	dy := []int{0, -1, 0, 1}
+	ans = 0
+	cnt = 1
 
-	sh, sw, gh, gw := 0, 0, H-1, W-1
-
-	dist = make([][]int, H)
-	for i := 0; i < H; i++ {
-		dist[i] = initIS(make([]int, W), math.MaxInt64)
+	for i, n := range ds {
+		if K < cnt*n {
+			rst = K
+			if rst > 0 {
+				a, b := rst/cnt, rst%cnt
+				ans += cnt*(AS[i]*a-(a-1)*a/2) + b*(AS[i]-a)
+			}
+			break
+		}
+		ans += cnt * (AS[i]*n - (n-1)*n/2)
+		K -= cnt * n
+		cnt++
 	}
 
+	fmt.Println(ans)
 }
 
 /*

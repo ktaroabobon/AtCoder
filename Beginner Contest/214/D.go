@@ -10,60 +10,40 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/abc213/tasks/abc213_e
-type Edge struct {
-	to     int
-	weight int
-}
+// page URL: https://atcoder.jp/contests/abc214/tasks/abc214_d
 
-var H, W, r int
-var g [][]string
-var seen, dist [][]int
-var q Deque
-
-func bfs(h, w int) {
-	dist[h][w] = 0
-	q.Append(i)
-
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-
-		for _, nv := range g[v.(int)] {
-			if dist[nv] != -1 {
-				continue
-			}
-			dist[nv] = dist[v.(int)] + 1
-			q.Append(nv)
-		}
-	}
-}
+var N, ans int
+var t UnionFind
+var em map[int][]int
+var es []int
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	H, W = is[0], is[1]
+	N = iReader()
+	em = map[int][]int{}
+	for i := 0; i < N-1; i++ {
+		is := isReader()
+		u, v, w := is[0], is[1], is[2]
+		u--
+		v--
+		es = append(es, w)
+		em[w] = []int{u, v}
+	}
+	sort.Ints(es)
 
-	for i := 0; i < H; i++ {
-		g = append(g, ssReader())
+	t = *NewUnionFind(N)
+
+	for _, w := range es {
+		u := em[w][0]
+		v := em[w][1]
+		ans += w * t.size(u) * t.size(v)
+		t.unite(u, v)
 	}
 
-	dx := []int{1, 0, -1, 0}
-	dy := []int{0, -1, 0, 1}
-
-	sh, sw, gh, gw := 0, 0, H-1, W-1
-
-	dist = make([][]int, H)
-	for i := 0; i < H; i++ {
-		dist[i] = initIS(make([]int, W), math.MaxInt64)
-	}
-
+	fmt.Println(ans)
 }
 
 /*
@@ -508,4 +488,44 @@ func (s *Deque) IsEmpty() bool {
 		return true
 	}
 	return false
+}
+
+type UnionFind struct {
+	par []int
+}
+
+func NewUnionFind(N int) *UnionFind {
+	uf := new(UnionFind)
+	uf.par = make([]int, N)
+	for i := range uf.par {
+		uf.par[i] = -1
+	}
+	return uf
+}
+
+func (u UnionFind) root(x int) int {
+	if u.par[x] < 0 {
+		return x
+	}
+	u.par[x] = u.root(u.par[x])
+	return u.par[x]
+}
+
+func (u UnionFind) unite(x, y int) {
+	xr := u.root(x)
+	yr := u.root(y)
+
+	if xr == yr {
+		return
+	}
+	u.par[yr] += u.par[xr]
+	u.par[xr] = yr
+}
+
+func (u UnionFind) same(x, y int) bool {
+	return u.root(x) == u.root(y)
+}
+
+func (u UnionFind) size(x int) int {
+	return -u.par[u.root(x)]
 }

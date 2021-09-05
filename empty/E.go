@@ -10,30 +10,13 @@ import (
 	"strings"
 )
 
-// page URL: https://atcoder.jp/contests/abc212/tasks/abc212_e
-const cnst = 998244353
-
-var N, M, K int
-var g [][]int
+// page URL:
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	N, M, K = is[0], is[1], is[2]
-	g = make([][]int, N)
-	for i := 0; i < M; i++ {
-		is = isReader()
-		u, v := is[0], is[1]
-		u--
-		v--
-
-		g[u] = append(g[u], v)
-		g[v] = append(g[v], u)
-	}
-
 }
 
 /*
@@ -478,4 +461,66 @@ func (s *Deque) IsEmpty() bool {
 		return true
 	}
 	return false
+}
+
+/* Union Find */
+type UnionFind struct {
+	par  []int // parent numbers
+	rank []int // height of tree
+	size []int
+}
+
+func NewUnionFind(N int) *UnionFind {
+	uf := new(UnionFind)
+	uf.par = make([]int, N)
+	uf.rank = make([]int, N)
+	uf.size = make([]int, N)
+	for i := range uf.par {
+		uf.par[i] = -1
+		uf.rank[i] = 0
+		uf.size[i] = 1
+	}
+	return uf
+}
+
+func (u UnionFind) InitSize(s []int) {
+	for i := 1; i < len(u.size); i++ {
+		u.size[i] = s[i] - s[i-1]
+	}
+}
+
+func (u UnionFind) Root(x int) int {
+	if u.par[x] < 0 {
+		return x
+	}
+	u.par[x] = u.Root(u.par[x])
+	return u.par[x]
+}
+
+func (u UnionFind) Unite(x, y int) {
+	xr := u.Root(x)
+	yr := u.Root(y)
+
+	if xr == yr {
+		return
+	}
+	// rank
+	if u.rank[xr] < u.rank[yr] {
+		u.par[xr] = yr
+		u.size[yr] += u.size[xr]
+	} else {
+		u.par[yr] = xr
+		u.size[xr] += u.size[yr]
+		if u.rank[xr] == u.rank[yr] {
+			u.rank[xr]++
+		}
+	}
+}
+
+func (u UnionFind) Same(x, y int) bool {
+	return u.Root(x) == u.Root(y)
+}
+
+func (u UnionFind) Size(x int) int {
+	return u.size[u.Root(x)]
 }
