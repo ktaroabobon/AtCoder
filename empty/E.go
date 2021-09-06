@@ -484,6 +484,7 @@ func NewUnionFind(N int) *UnionFind {
 }
 
 func (u UnionFind) InitSize(s []int) {
+	u.size[0] = 0
 	for i := 1; i < len(u.size); i++ {
 		u.size[i] = s[i] - s[i-1]
 	}

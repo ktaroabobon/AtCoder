@@ -10,13 +10,19 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc217/tasks/abc217_f
+
+const con = 998244353
+
+var n, m int
 
 /*
 main関数
 */
 
 func main() {
+	is := isReader()
+	n, m = is[0], is[1]
 }
 
 /*

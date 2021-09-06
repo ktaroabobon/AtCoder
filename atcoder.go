@@ -11,9 +11,9 @@ import (
 )
 
 // page URL:
-var N, W int
-var WS, VS []int
-var dp [][]int
+
+var l, q int
+var c, x, ls, ans []int
 
 /*
 main関数
@@ -21,34 +21,39 @@ main関数
 
 func main() {
 	is := isReader()
-	N, W = is[0], is[1]
+	l, q = is[0], is[1]
+	ls = []int{0, l}
 
-	dp = make([][]int, N+10)
-	for i := 0; i < N+10; i++ {
-		dp[i] = make([]int, W+10)
-	}
-
-	for i := 0; i < N; i++ {
-		is = isReader()
-		WS = append(WS, is[0])
-		VS = append(VS, is[1])
-	}
-
-	for i := 0; i < N; i++ {
-		if i != 0 {
-			for j := W; j >= 0; j-- {
-				if dp[i-1][j] != 0 {
-					if j+WS[i] <= W {
-						ichmax(&dp[i][j+WS[i]], dp[i-1][j]+VS[i])
-					}
-					ichmax(&dp[i][j], dp[i-1][j])
-				}
-			}
+	for i := 0; i < q; i++ {
+		is := isReader()
+		c = append(c, is[0])
+		x = append(x, is[1])
+		if is[0] == 1 {
+			ls = append(ls, is[1])
 		}
-		dp[i][WS[i]] = VS[i]
 	}
 
-	fmt.Println(imax(dp[N-1]...))
+	sort.Ints(ls)
+
+	uf := NewUnionFind(len(ls))
+	uf.InitSize(ls)
+
+	for i := q - 1; i >= 0; i-- {
+		idx := lowerBound(ls, x[i])
+		switch c[i] {
+		case 1:
+			uf.Unite(idx, idx+1)
+		case 2:
+			ans = append(ans, uf.Size(idx))
+		}
+	}
+
+	ans = isReverse(ans)
+
+	for _, v := range ans {
+		fmt.Println(v)
+	}
+
 }
 
 /*
@@ -493,4 +498,67 @@ func (s *Deque) IsEmpty() bool {
 		return true
 	}
 	return false
+}
+
+/* Union Find */
+type UnionFind struct {
+	par  []int // parent numbers
+	rank []int // height of tree
+	size []int
+}
+
+func NewUnionFind(N int) *UnionFind {
+	uf := new(UnionFind)
+	uf.par = make([]int, N)
+	uf.rank = make([]int, N)
+	uf.size = make([]int, N)
+	for i := range uf.par {
+		uf.par[i] = -1
+		uf.rank[i] = 0
+		uf.size[i] = 1
+	}
+	return uf
+}
+
+func (u UnionFind) InitSize(s []int) {
+	u.size[0] = 0
+	for i := 1; i < len(u.size); i++ {
+		u.size[i] = s[i] - s[i-1]
+	}
+}
+
+func (u UnionFind) Root(x int) int {
+	if u.par[x] < 0 {
+		return x
+	}
+	u.par[x] = u.Root(u.par[x])
+	return u.par[x]
+}
+
+func (u UnionFind) Unite(x, y int) {
+	xr := u.Root(x)
+	yr := u.Root(y)
+
+	if xr == yr {
+		return
+	}
+	// rank
+	if u.rank[xr] < u.rank[yr] {
+		u.par[xr] = yr
+		u.size[yr] += u.size[xr]
+	} else {
+		u.par[yr] = xr
+		u.size[xr] += u.size[yr]
+		if u.rank[xr] == u.rank[yr] {
+			u.rank[xr]++
+		}
+	}
+}
+
+func (u UnionFind) Same(x, y int) bool {
+	return u.Root(x) == u.Root(y)
+}
+
+func (u UnionFind) Size(x int) int {
+	return u.size[u.Root(x)]
 }
