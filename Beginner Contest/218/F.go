@@ -10,13 +10,81 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc218/tasks/abc218_f
+
+var N, M int
+var g [][]int
+var edges [][2]int
+var dist, tmpDist []int
+var q Deque
+var roadMap map[[2]int]bool
+
+func bfs(i int, f bool, d []int) {
+	d[i] = 0
+	q.Append(i)
+
+	for {
+		if q.IsEmpty() {
+			break
+		}
+
+		v := q.PopLeft()
+
+		for _, nv := range g[v.(int)] {
+			if d[nv] != -1 {
+				continue
+			}
+			d[nv] = d[v.(int)] + 1
+			if f {
+				roadMap[[2]int{v.(int), nv}] = true
+			}
+			q.Append(nv)
+		}
+	}
+}
 
 /*
 main関数
 */
 
 func main() {
+	is := isReader()
+	N, M = is[0], is[1]
+	g = make([][]int, N)
+	roadMap = map[[2]int]bool{}
+
+	for i := 0; i < M; i++ {
+		is = isReader()
+		s, t := is[0], is[1]
+		s--
+		t--
+		edges = append(edges, [2]int{s, t})
+		g[s] = append(g[s], t)
+	}
+
+	dist = initIS(make([]int, N), -1)
+	q = *NewDeque()
+
+	bfs(0, true, dist)
+
+	for _, v := range edges {
+		if !roadMap[v] {
+			fmt.Println(dist[N-1])
+		} else {
+			tmpDist = initIS(make([]int, N), -1)
+			q = *NewDeque()
+			sort.Ints(g[v[0]])
+			idx := lowerBound(g[v[0]], v[1])
+			if idx == len(g[v[0]])-1 {
+				g[v[0]] = g[v[0]][:idx]
+			} else {
+				g[v[0]] = append(g[v[0]][:idx], g[v[0]][idx+1:]...)
+			}
+			bfs(0, false, tmpDist)
+			fmt.Println(tmpDist[N-1])
+			g[v[0]] = append(g[v[0]], v[1])
+		}
+	}
 }
 
 /*
@@ -470,11 +538,11 @@ type UnionFind struct {
 	size []int
 }
 
-func NewUnionFind(N int) *UnionFind {
+func NewUnionFind(n int) *UnionFind {
 	uf := new(UnionFind)
-	uf.par = make([]int, N)
-	uf.rank = make([]int, N)
-	uf.size = make([]int, N)
+	uf.par = make([]int, n)
+	uf.rank = make([]int, n)
+	uf.size = make([]int, n)
 	for i := range uf.par {
 		uf.par[i] = -1
 		uf.rank[i] = 0

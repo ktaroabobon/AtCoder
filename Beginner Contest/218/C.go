@@ -20,7 +20,7 @@ type Coordinates struct {
 type Graph []Coordinates
 
 func (a Graph) Len() int           { return len(a) }
-func (a Graph) Less(i, j int) bool { return a[i].x < a[j].x }
+func (a Graph) Less(i, j int) bool { return a[i].x+a[i].y < a[j].x+a[j].y }
 func (a Graph) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
 type set map[Coordinates]bool
@@ -69,7 +69,6 @@ func rotate(g Graph) (ng Graph) {
 	for i, c := range g {
 		ng[i].x, ng[i].y = c.y, -c.x
 	}
-	sort.Sort(ng)
 	return ng
 }
 
@@ -83,18 +82,18 @@ func main() {
 		return
 	}
 
-	sort.Sort(S)
-
-	S = normalize(S)
-
-	ss = map[Coordinates]bool{}
-
-	for _, c := range S {
-		ss.add(c)
-	}
-
 	for i := 0; i < 4; i++ {
+		sort.Sort(S)
+		sort.Sort(T)
+
+		S = normalize(S)
 		T = normalize(T)
+
+		ss = map[Coordinates]bool{}
+
+		for _, c := range S {
+			ss.add(c)
+		}
 
 		f := true
 		for _, c := range T {
