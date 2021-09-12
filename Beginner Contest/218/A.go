@@ -10,13 +10,21 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL:https://atcoder.jp/contests/abc218/tasks/abc218_a
 
 /*
 main関数
 */
 
 func main() {
+	n := iReader()
+	s := sReader()
+
+	if string(s[n-1]) == "o" {
+		fmt.Println("Yes")
+	} else {
+		fmt.Println("No")
+	}
 }
 
 /*
@@ -470,11 +478,11 @@ type UnionFind struct {
 	size []int
 }
 
-func NewUnionFind(n int) *UnionFind {
+func NewUnionFind(N int) *UnionFind {
 	uf := new(UnionFind)
-	uf.par = make([]int, n)
-	uf.rank = make([]int, n)
-	uf.size = make([]int, n)
+	uf.par = make([]int, N)
+	uf.rank = make([]int, N)
+	uf.size = make([]int, N)
 	for i := range uf.par {
 		uf.par[i] = -1
 		uf.rank[i] = 0

@@ -470,11 +470,11 @@ type UnionFind struct {
 	size []int
 }
 
-func NewUnionFind(n int) *UnionFind {
+func NewUnionFind(N int) *UnionFind {
 	uf := new(UnionFind)
-	uf.par = make([]int, n)
-	uf.rank = make([]int, n)
-	uf.size = make([]int, n)
+	uf.par = make([]int, N)
+	uf.rank = make([]int, N)
+	uf.size = make([]int, N)
 	for i := range uf.par {
 		uf.par[i] = -1
 		uf.rank[i] = 0

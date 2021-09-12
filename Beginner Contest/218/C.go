@@ -10,13 +10,109 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc218/tasks/abc218_c
+
+type Coordinates struct {
+	x int
+	y int
+}
+
+type Graph []Coordinates
+
+func (a Graph) Len() int           { return len(a) }
+func (a Graph) Less(i, j int) bool { return a[i].x < a[j].x }
+func (a Graph) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+
+type set map[Coordinates]bool
+
+func (h set) add(s Coordinates)         { h[s] = true }
+func (h set) erase(s Coordinates)       { delete(h, s) }
+func (h set) exists(s Coordinates) bool { return h[s] }
+func (h *set) clear()                   { *h = make(set) }
+
+var N int
+var S, T Graph
+var ss set
 
 /*
 main関数
 */
+func readGraph(N int) Graph {
+	g := Graph{}
+	for i := 0; i < N; i++ {
+		s := sReader()
+		for j := 0; j < N; j++ {
+			if s[j] == '#' {
+				g = append(g, Coordinates{i, j})
+			}
+		}
+	}
+	return g
+}
+
+func normalize(g Graph) Graph {
+	var sx, sy int
+	for i, c := range g {
+		if i == 0 {
+			sx, sy = c.x, c.y
+			g[i].x, g[i].y = 0, 0
+		} else {
+			g[i].x -= sx
+			g[i].y -= sy
+		}
+	}
+	return g
+}
+
+func rotate(g Graph) (ng Graph) {
+	ng = make(Graph, g.Len())
+	for i, c := range g {
+		ng[i].x, ng[i].y = c.y, -c.x
+	}
+	sort.Sort(ng)
+	return ng
+}
 
 func main() {
+	N = iReader()
+	S = readGraph(N)
+	T = readGraph(N)
+
+	if S.Len() != T.Len() {
+		fmt.Println("No")
+		return
+	}
+
+	sort.Sort(S)
+
+	S = normalize(S)
+
+	ss = map[Coordinates]bool{}
+
+	for _, c := range S {
+		ss.add(c)
+	}
+
+	for i := 0; i < 4; i++ {
+		T = normalize(T)
+
+		f := true
+		for _, c := range T {
+			if !ss.exists(c) {
+				f = !f
+				break
+			}
+		}
+		if f {
+			fmt.Println("Yes")
+			return
+		}
+
+		T = rotate(T)
+	}
+
+	fmt.Println("No")
+
 }
 
 /*
@@ -470,11 +566,11 @@ type UnionFind struct {
 	size []int
 }
 
-func NewUnionFind(n int) *UnionFind {
+func NewUnionFind(N int) *UnionFind {
 	uf := new(UnionFind)
-	uf.par = make([]int, n)
-	uf.rank = make([]int, n)
-	uf.size = make([]int, n)
+	uf.par = make([]int, N)
+	uf.rank = make([]int, N)
+	uf.size = make([]int, N)
 	for i := range uf.par {
 		uf.par[i] = -1
 		uf.rank[i] = 0

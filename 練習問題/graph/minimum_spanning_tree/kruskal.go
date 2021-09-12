@@ -10,13 +10,69 @@ import (
 	"strings"
 )
 
-// page URL:
+// 参考URL: https://dai1741.github.io/maximum-algo-2012/docs/minimum-spanning-tree/
+
+/*
+入力
+5 8
+0 1 10
+0 3 5
+1 2 1
+1 3 1000
+1 4 500
+2 3 100
+2 4 10000
+3 4 5000
+*/
+
+var N, M, mc int
 
 /*
 main関数
 */
 
+type Edge struct {
+	node1 int
+	node2 int
+	cost  int
+}
+
+type ByCost []Edge
+
+func (a ByCost) Len() int           { return len(a) }
+func (a ByCost) Less(i, j int) bool { return a[i].cost < a[j].cost }
+func (a ByCost) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+
+func kruskal(g ByCost) (minCost int) {
+	uf := NewUnionFind(N)
+
+	for _, e := range g {
+		a, b, c := e.node1, e.node2, e.cost
+		if !uf.Same(a, b) {
+			minCost += c
+			uf.Unite(a, b)
+		}
+	}
+
+	return
+}
+
 func main() {
+	is := isReader()
+	N, M = is[0], is[1]
+
+	var g ByCost
+
+	for i := 0; i < M; i++ {
+		is = isReader()
+		g = append(g, Edge{is[0], is[1], is[2]})
+	}
+
+	sort.Sort(g)
+
+	mc = kruskal(g)
+
+	fmt.Println(mc)
 }
 
 /*
@@ -470,11 +526,11 @@ type UnionFind struct {
 	size []int
 }
 
-func NewUnionFind(n int) *UnionFind {
+func NewUnionFind(N int) *UnionFind {
 	uf := new(UnionFind)
-	uf.par = make([]int, n)
-	uf.rank = make([]int, n)
-	uf.size = make([]int, n)
+	uf.par = make([]int, N)
+	uf.rank = make([]int, N)
+	uf.size = make([]int, N)
 	for i := range uf.par {
 		uf.par[i] = -1
 		uf.rank[i] = 0

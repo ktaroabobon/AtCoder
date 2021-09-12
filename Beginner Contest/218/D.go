@@ -10,13 +10,49 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc218/tasks/abc218_d
+
+var N, cnt int
+var xys [][]int
+var xy map[int][]int
 
 /*
 main関数
 */
 
 func main() {
+	N = iReader()
+	xy = map[int][]int{}
+	for i := 0; i < N; i++ {
+		is := isReader()
+		xys = append(xys, is)
+		xy[is[0]] = append(xy[is[0]], is[1])
+	}
+
+	for _, v := range xy {
+		sort.Ints(v)
+	}
+
+	for i := 0; i < N; i++ {
+		for j := i + 1; j < N; j++ {
+			f1, f2 := false, false
+			x1, y1, x2, y2 := xys[i][0], xys[i][1], xys[j][0], xys[j][1]
+			if x1 == x2 {
+				continue
+			}
+			if y1 == y2 {
+				continue
+			}
+
+			_, f1 = designatedLowerBound(xy[x1], y2)
+			_, f2 = designatedLowerBound(xy[x2], y1)
+			if f1 && f2 {
+				cnt++
+			}
+		}
+	}
+
+	fmt.Println(cnt / 2)
 }
 
 /*
@@ -470,11 +506,11 @@ type UnionFind struct {
 	size []int
 }
 
-func NewUnionFind(n int) *UnionFind {
+func NewUnionFind(N int) *UnionFind {
 	uf := new(UnionFind)
-	uf.par = make([]int, n)
-	uf.rank = make([]int, n)
-	uf.size = make([]int, n)
+	uf.par = make([]int, N)
+	uf.rank = make([]int, N)
+	uf.size = make([]int, N)
 	for i := range uf.par {
 		uf.par[i] = -1
 		uf.rank[i] = 0

@@ -12,8 +12,20 @@ import (
 
 // page URL:
 
-var l, q int
-var c, x, ls, ans []int
+type Edge struct {
+	node1 int
+	node2 int
+	cost  int
+}
+
+type ByCost []Edge
+
+func (a ByCost) Len() int           { return len(a) }
+func (a ByCost) Less(i, j int) bool { return a[i].cost < a[j].cost }
+func (a ByCost) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+
+var N, M, mc int
+var g ByCost
 
 /*
 main関数
@@ -21,39 +33,31 @@ main関数
 
 func main() {
 	is := isReader()
-	l, q = is[0], is[1]
-	ls = []int{0, l}
+	N, M = is[0], is[1]
 
-	for i := 0; i < q; i++ {
-		is := isReader()
-		c = append(c, is[0])
-		x = append(x, is[1])
-		if is[0] == 1 {
-			ls = append(ls, is[1])
+	for i := 0; i < M; i++ {
+		is = isReader()
+		g = append(g, Edge{is[0], is[1], is[2]})
+	}
+
+	sort.Sort(g)
+
+	mc = kruskal(g)
+
+	fmt.Println(mc)
+
+}
+
+func kruskal(g ByCost) (minCost int) {
+	uf := NewUnionFind(N)
+
+	for _, e := range g {
+		if !uf.Same(e.node1, e.node2) {
+			minCost += e.cost
+			uf.Unite(e.node1, e.node2)
 		}
 	}
-
-	sort.Ints(ls)
-
-	uf := NewUnionFind(len(ls))
-	uf.InitSize(ls)
-
-	for i := q - 1; i >= 0; i-- {
-		idx := lowerBound(ls, x[i])
-		switch c[i] {
-		case 1:
-			uf.Unite(idx, idx+1)
-		case 2:
-			ans = append(ans, uf.Size(idx))
-		}
-	}
-
-	ans = isReverse(ans)
-
-	for _, v := range ans {
-		fmt.Println(v)
-	}
-
+	return
 }
 
 /*

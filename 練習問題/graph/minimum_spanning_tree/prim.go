@@ -10,13 +10,36 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://tjkendev.github.io/procon-library/python/graph/min_st_prim.html
+// page URL: https://pione.hatenablog.com/entry/2021/01/24/231352
+
+/*
+入力
+5 8
+0 1 10
+0 3 5
+1 2 1
+1 3 1000
+1 4 500
+2 3 100
+2 4 10000
+3 4 5000
+*/
+
+var N, M, mc int
+var used []bool
 
 /*
 main関数
 */
 
 func main() {
+	is := isReader()
+	N, M = is[0], is[1]
+
+	used = make([]bool, N)
+	q := &intHeap{}
+
 }
 
 /*
@@ -470,11 +493,11 @@ type UnionFind struct {
 	size []int
 }
 
-func NewUnionFind(n int) *UnionFind {
+func NewUnionFind(N int) *UnionFind {
 	uf := new(UnionFind)
-	uf.par = make([]int, n)
-	uf.rank = make([]int, n)
-	uf.size = make([]int, n)
+	uf.par = make([]int, N)
+	uf.rank = make([]int, N)
+	uf.size = make([]int, N)
 	for i := range uf.par {
 		uf.par[i] = -1
 		uf.rank[i] = 0

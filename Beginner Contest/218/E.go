@@ -10,13 +10,59 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc218/tasks/abc218_e
+
+type Edge struct {
+	node1 int
+	node2 int
+	cost  int
+}
+
+type ByCost []Edge
+
+func (a ByCost) Len() int           { return len(a) }
+func (a ByCost) Less(i, j int) bool { return a[i].cost < a[j].cost }
+func (a ByCost) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+
+var N, M, mc int
+var g ByCost
 
 /*
 main関数
 */
 
 func main() {
+	is := isReader()
+	N, M = is[0], is[1]
+
+	for i := 0; i < M; i++ {
+		is = isReader()
+		g = append(g, Edge{is[0] - 1, is[1] - 1, is[2]})
+	}
+
+	sort.Sort(g)
+
+	mc = kruskal(g)
+
+	fmt.Println(mc)
+
+}
+
+func kruskal(g ByCost) (maxCost int) {
+	uf := *NewUnionFind(N)
+
+	for _, e := range g {
+		if e.cost < 0 {
+			uf.Unite(e.node1, e.node2)
+		} else {
+			if !uf.Same(e.node1, e.node2) {
+				uf.Unite(e.node1, e.node2)
+			} else {
+				maxCost += e.cost
+			}
+		}
+	}
+	return
 }
 
 /*
