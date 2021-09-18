@@ -10,78 +10,13 @@ import (
 	"strings"
 )
 
-// page URL: https://paiza.jp/challenges/43/show
-
-var s string
-var cnt map[string]int
-var num int
-var nc []string
-var q *Deque
-
-// abcxyz()012
+// page URL:
 
 /*
 main関数
 */
 
 func main() {
-	s = sReader()
-
-	num = 1
-
-	cnt = map[string]int{}
-
-	for _, r := range "abcdefghijklmnopqrstuvwxyz" {
-		cnt[string(rune(r))] = 0
-	}
-
-	q = NewDeque()
-
-	for _, v := range s {
-		//fmt.Println(v)
-		//fmt.Println(string(v))
-		switch {
-		case 97 <= v && v <= 122:
-			if len(nc) > 0 {
-				x := s2i(strings.Join(nc, ""))
-				nc = make([]string, 0)
-				cnt[string(v)] += num * x
-			} else {
-				cnt[string(v)] += num
-			}
-		case v == 40:
-			x := s2i(strings.Join(nc, ""))
-			nc = make([]string, 0)
-			if !q.IsEmpty() {
-				y := q.Pop().(int)
-				x *= y
-				q.Append(y)
-			}
-			q.Append(x)
-			num = x
-		case v == 41:
-			_ = q.Pop()
-			if q.IsEmpty() {
-				num = 1
-			} else {
-				x := q.Pop().(int)
-				num = x
-				q.Append(x)
-			}
-		default:
-			nc = append(nc, string(v))
-		}
-	}
-
-	ks := make([]string, 0)
-	for k := range cnt {
-		ks = append(ks, k)
-	}
-	sort.Strings(ks)
-
-	for _, k := range ks {
-		fmt.Println(k, cnt[k])
-	}
 }
 
 /*
