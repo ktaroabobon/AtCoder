@@ -10,13 +10,41 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc219/tasks/abc219_f
+
+var d map[[2]int]bool
+var cnt int
+var coor [2]int
+
+func move(coor [2]int, s string) [2]int {
+	var nc [2]int
+	switch s {
+	case "L":
+		nc[0], nc[1] = coor[0]-1, coor[1]
+	case "R":
+		nc[0], nc[1] = coor[0]+1, coor[1]
+	case "U":
+		nc[0], nc[1] = coor[0], coor[1]-1
+	case "D":
+		nc[0], nc[1] = coor[0], coor[1]+1
+	}
+	if d[nc] {
+		cnt++
+	} else {
+		d[nc] = true
+	}
+
+	return nc
+}
 
 /*
 main関数
 */
 
 func main() {
+	s := sReader()
+	ss := strings.Split(s, "")
+	k := iReader()
 }
 
 /*

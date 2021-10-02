@@ -10,13 +10,24 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc219/tasks/abc219_a
 
 /*
 main関数
 */
 
 func main() {
+	i := iReader()
+	switch {
+	case i < 40:
+		fmt.Println(40 - i)
+	case 40 <= i && i < 70:
+		fmt.Println(70 - i)
+	case 70 <= i && i < 90:
+		fmt.Println(90 - i)
+	default:
+		fmt.Println("expert")
+	}
 }
 
 /*

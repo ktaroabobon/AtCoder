@@ -10,13 +10,34 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc219/tasks/abc219_d
+
+var N, X, Y int
+var boxes [][]int
+var dp [][][]int
 
 /*
 main関数
 */
 
 func main() {
+	N = iReader()
+	is := isReader()
+	X, Y = is[0], is[1]
+	var maxx, maxy int
+
+	for i := 0; i < N; i++ {
+		is = isReader()
+		boxes = append(boxes, is)
+		maxx += is[0]
+		maxy += is[1]
+	}
+
+	if maxx < X && maxy < Y {
+		fmt.Println(-1)
+		return
+	}
+
 }
 
 /*

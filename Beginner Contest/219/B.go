@@ -10,13 +10,26 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc219/tasks/abc219_b
+
+var ss, ans []string
 
 /*
 main関数
 */
 
 func main() {
+	for i := 0; i < 3; i++ {
+		s := sReader()
+		ss = append(ss, s)
+	}
+	t := sReader()
+
+	for _, v := range t {
+		ans = append(ans, ss[s2i(string(v))-1])
+	}
+
+	fmt.Println(strings.Join(ans, ""))
 }
 
 /*

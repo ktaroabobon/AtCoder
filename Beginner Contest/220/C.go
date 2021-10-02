@@ -8,75 +8,32 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"unicode/utf8"
 )
 
-// page URL: https://atcoder.jp/contests/abc219/tasks/abc219_c
+// page URL: https://atcoder.jp/contests/abc220/tasks/abc220_c
 
-var d map[rune]int
-var ns Names
-
-type Names []string
-
-func (a Names) Len() int           { return len(a) }
-func (a Names) Less(i, j int) bool { return less(a[i], a[j]) }
-func (a Names) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-
-func less(s1, s2 string) bool {
-	for {
-		switch e1, e2 := len(s1) == 0, len(s2) == 0; {
-		case e1 && e2:
-			return false // Both empty, they are equal (not less)
-		case !e1 && e2:
-			return false // s1 not empty but s2 is: s1 is greater (not less)
-		case e1 && !e2:
-			return true // s1 empty but s2 is not: s1 is less
-		}
-
-		r1, size1 := utf8.DecodeRuneInString(s1)
-		r2, size2 := utf8.DecodeRuneInString(s2)
-
-		// Check if both are custom, in which case we use custom order:
-		custom := false
-		if w1, ok1 := d[r1]; ok1 {
-			if w2, ok2 := d[r2]; ok2 {
-				custom = true
-				if w1 != w2 {
-					return w1 < w2
-				}
-			}
-		}
-		if !custom {
-			// Fallback to numeric rune comparison:
-			if r1 != r2 {
-				return r1 < r2
-			}
-		}
-
-		s1, s2 = s1[size1:], s2[size2:]
-	}
-}
+var N, X, ans int
+var AS []int
 
 /*
 main関数
 */
 
 func main() {
-	x := sReader()
-	d = map[rune]int{}
-	for i, v := range x {
-		d[v] = i
-	}
-	n := iReader()
-	for i := 0; i < n; i++ {
-		s := sReader()
-		ns = append(ns, s)
-	}
+	N = iReader()
+	AS = isReader()
+	X = iReader()
+	s := isum(AS...)
 
-	sort.Sort(ns)
-
-	for _, v := range ns {
-		fmt.Println(v)
+	ans = (X / s) * N
+	cnt := s * (X / s)
+	for i := 0; i < N; i++ {
+		cnt += AS[i]
+		ans++
+		if cnt > X {
+			fmt.Println(ans)
+			break
+		}
 	}
 }
 
