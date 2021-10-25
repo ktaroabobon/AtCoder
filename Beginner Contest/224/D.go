@@ -10,80 +10,15 @@ import (
 	"strings"
 )
 
-// page URL: https://qiita.com/drken/items/996d80bcae64649a6580#3-4-%E3%83%88%E3%83%9D%E3%83%AD%E3%82%B8%E3%82%AB%E3%83%AB%E3%82%BD%E3%83%BC%E3%83%88
+// page URL: https://atcoder.jp/contests/abc224/tasks/abc224_d
 
-/*
-INPUT
-9 13
-0 1
-0 4
-0 2
-1 4
-1 3
-1 8
-2 5
-3 8
-4 8
-5 8
-5 6
-3 7
-6 7
-
-*/
-
-var q *Deque
-var g [][]int
-var deg, order []int
-var N, M int
+var M int
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	N, M = is[0], is[1]
-
-	g = make([][]int, N)
-	deg = make([]int, N)
-
-	for i := 0; i < M; i++ {
-		is = isReader()
-		a, b := is[0], is[1]
-		g[b] = append(g[b], a)
-		deg[a]++
-	}
-
-	q = NewDeque()
-	for i := 0; i < N; i++ {
-		if deg[i] == 0 {
-			q.AppendLeft(i)
-		}
-	}
-
-	order = make([]int, 0, N)
-	for {
-		if q.IsEmpty() {
-			break
-		}
-
-		v := q.PopLeft()
-		order = append(order, v.(int))
-
-		for _, nv := range g[v.(int)] {
-			deg[nv]--
-
-			if deg[nv] == 0 {
-				q.AppendLeft(nv)
-			}
-		}
-	}
-
-	order = toReverse(order)
-	for _, v := range order {
-		fmt.Println(v)
-	}
-
 }
 
 /*
@@ -308,9 +243,35 @@ func ilcm(v1, v2 int) int {
 	return v1 * v2 / igcd(v1, v2)
 }
 
-func iswap(v1, v2 int) (int, int) {
-	return v2, v1
+func iswap(v1, v2 *int) {
+	*v1, *v2 = *v2, *v1
 }
+
+func imodinv(x, y int) int {
+	/*
+		mod y における逆元を求めるアルゴリズム
+		<逆元の存在条件>
+		mod p でのaの逆元が存在する条件は、pとaとが互いに素であること
+	*/
+
+	z, u, v := y, 1, 0
+	for {
+		if !i2b(z) {
+			break
+		}
+		t := x / z
+		x -= t * z
+		iswap(&x, &z)
+		u -= t * v
+		iswap(&u, &v)
+	}
+	u %= y
+	if u < 0 {
+		u += y
+	}
+	return u
+}
+
 func ichmin(a *int, b int) (f bool) {
 	if *a > b {
 		*a = b
@@ -326,12 +287,22 @@ func ichmax(a *int, b int) (f bool) {
 	}
 	return
 }
+func aCb(a, b int) (r int) {
+	r = 1
+	if a < b*2 {
+		b = a - b
+	}
+	for i := 1; i < b+1; i++ {
+		r = r * (a - i + 1) / i
+	}
+	return
+}
 
 /*
 その他関数
 */
 /* strSlice内に対象の文字列が存在するか*/
-func isContain(strSlice []string, s string) bool {
+func ssContain(strSlice []string, s string) bool {
 	for _, v := range strSlice {
 		if s == v {
 			return true
@@ -340,8 +311,33 @@ func isContain(strSlice []string, s string) bool {
 	return false
 }
 
+/*stringSliceを逆順にして返す。*/
+func ssReverse(data []string) []string {
+	if len(data) == 0 {
+		return data
+	}
+	return append(ssReverse(data[1:]), data[0])
+}
+
+/*stringSliceの初期化*/
+func initSS(ss []string, v string) []string {
+	if cap(ss) == 0 {
+		return ss
+	}
+	if len(ss) == 0 {
+		for i := 0; i < cap(ss); i++ {
+			ss = append(ss, v)
+		}
+	} else {
+		for i := 0; i < cap(ss); i++ {
+			ss[i] = v
+		}
+	}
+	return ss
+}
+
 /* intSlice内に対象の数値が存在するか*/
-func iisContain(intSlice []int, i int) bool {
+func isContain(intSlice []int, i int) bool {
 	for _, v := range intSlice {
 		if i == v {
 			return true
@@ -350,12 +346,12 @@ func iisContain(intSlice []int, i int) bool {
 	return false
 }
 
-/*Sliceを逆順にして返す。*/
-func toReverse(data []int) []int {
+/*intSliceを逆順にして返す。*/
+func isReverse(data []int) []int {
 	if len(data) == 0 {
 		return data
 	}
-	return append(toReverse(data[1:]), data[0])
+	return append(isReverse(data[1:]), data[0])
 }
 
 /*intSliceの初期化*/
@@ -363,8 +359,14 @@ func initIS(is []int, v int) []int {
 	if cap(is) == 0 {
 		return is
 	}
-	for i := 0; i < cap(is); i++ {
-		is[i] = v
+	if len(is) == 0 {
+		for i := 0; i < cap(is); i++ {
+			is = append(is, v)
+		}
+	} else {
+		for i := 0; i < cap(is); i++ {
+			is[i] = v
+		}
 	}
 	return is
 }
@@ -385,6 +387,12 @@ func (h *intHeap) Pop() interface{} {
 	x := old[n-1]
 	*h = old[0 : n-1]
 	return x
+}
+func (h *intHeap) IsEmpty() bool {
+	if h.Len() == 0 {
+		return true
+	}
+	return false
 }
 
 // 二分探索
@@ -461,4 +469,67 @@ func (s *Deque) IsEmpty() bool {
 		return true
 	}
 	return false
+}
+
+/* Union Find */
+type UnionFind struct {
+	par  []int // parent numbers
+	rank []int // height of tree
+	size []int
+}
+
+func NewUnionFind(n int) *UnionFind {
+	uf := new(UnionFind)
+	uf.par = make([]int, n)
+	uf.rank = make([]int, n)
+	uf.size = make([]int, n)
+	for i := range uf.par {
+		uf.par[i] = -1
+		uf.rank[i] = 0
+		uf.size[i] = 1
+	}
+	return uf
+}
+
+func (u UnionFind) InitSize(s []int) {
+	u.size[0] = 0
+	for i := 1; i < len(u.size); i++ {
+		u.size[i] = s[i] - s[i-1]
+	}
+}
+
+func (u UnionFind) Root(x int) int {
+	if u.par[x] < 0 {
+		return x
+	}
+	u.par[x] = u.Root(u.par[x])
+	return u.par[x]
+}
+
+func (u UnionFind) Unite(x, y int) {
+	xr := u.Root(x)
+	yr := u.Root(y)
+
+	if xr == yr {
+		return
+	}
+	// rank
+	if u.rank[xr] < u.rank[yr] {
+		u.par[xr] = yr
+		u.size[yr] += u.size[xr]
+	} else {
+		u.par[yr] = xr
+		u.size[xr] += u.size[yr]
+		if u.rank[xr] == u.rank[yr] {
+			u.rank[xr]++
+		}
+	}
+}
+
+func (u UnionFind) Same(x, y int) bool {
+	return u.Root(x) == u.Root(y)
+}
+
+func (u UnionFind) Size(x int) int {
+	return u.size[u.Root(x)]
 }

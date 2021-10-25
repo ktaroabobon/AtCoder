@@ -386,6 +386,12 @@ func (h *intHeap) Pop() interface{} {
 	*h = old[0 : n-1]
 	return x
 }
+func (h *intHeap) IsEmpty() bool {
+	if h.Len() == 0 {
+		return true
+	}
+	return false
+}
 
 // 二分探索
 // 数値型スライスのなかで対象の数値以上の初めて登場するインデックスを返す

@@ -12,52 +12,47 @@ import (
 
 // page URL:
 
-type Edge struct {
-	node1 int
-	node2 int
-	cost  int
+var N, cnt int
+var ans []int
+var PS days
+
+type day struct {
+	num int
+	f   int
 }
 
-type ByCost []Edge
+type days []day
 
-func (a ByCost) Len() int           { return len(a) }
-func (a ByCost) Less(i, j int) bool { return a[i].cost < a[j].cost }
-func (a ByCost) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-
-var N, M, mc int
-var g ByCost
+func (a days) Len() int           { return len(a) }
+func (a days) Less(i, j int) bool { return a[i].num < a[j].num }
+func (a days) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
 /*
 main関数
 */
 
 func main() {
-	is := isReader()
-	N, M = is[0], is[1]
-
-	for i := 0; i < M; i++ {
-		is = isReader()
-		g = append(g, Edge{is[0], is[1], is[2]})
+	N = iReader()
+	ans = make([]int, N)
+	for i := 0; i < N; i++ {
+		is := isReader()
+		PS = append(PS, day{is[0], 1})
+		PS = append(PS, day{is[0] + is[1], -1})
 	}
 
-	sort.Sort(g)
+	sort.Sort(PS)
 
-	mc = kruskal(g)
-
-	fmt.Println(mc)
-
-}
-
-func kruskal(g ByCost) (minCost int) {
-	uf := NewUnionFind(N)
-
-	for _, e := range g {
-		if !uf.Same(e.node1, e.node2) {
-			minCost += e.cost
-			uf.Unite(e.node1, e.node2)
+	for i := 0; i < len(PS)-1; i++ {
+		cnt += PS[i].f
+		if cnt == 0 {
+			continue
 		}
+		ans[cnt-1] += PS[i+1].num - PS[i].num
 	}
-	return
+
+	sans, _ := splitToString(ans)
+
+	fmt.Println(strings.Join(sans, " "))
 }
 
 /*
@@ -511,11 +506,11 @@ type UnionFind struct {
 	size []int
 }
 
-func NewUnionFind(N int) *UnionFind {
+func NewUnionFind(n int) *UnionFind {
 	uf := new(UnionFind)
-	uf.par = make([]int, N)
-	uf.rank = make([]int, N)
-	uf.size = make([]int, N)
+	uf.par = make([]int, n)
+	uf.rank = make([]int, n)
+	uf.size = make([]int, n)
 	for i := range uf.par {
 		uf.par[i] = -1
 		uf.rank[i] = 0
