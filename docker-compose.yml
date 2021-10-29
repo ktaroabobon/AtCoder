@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  at_coder:
+    container_name: at-coder
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./:/code
+    ports:
+      - "3000:3000"
+    tty: true
