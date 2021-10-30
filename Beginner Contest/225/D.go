@@ -10,13 +10,83 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc225/tasks/abc225_d
+
+var N, Q int
+var ts trains
+
+type trains []train
+type train struct {
+	front int
+	back  int
+}
+
+/*
+出力
+*/
+// []int{...}
+func isPrint(is []int) {
+	fmt.Printf("%d ", len(is))
+	for _, v := range is {
+		fmt.Printf("%d ", v)
+	}
+	fmt.Print("\n")
+}
 
 /*
 main関数
 */
 
 func main() {
+	is := isReader()
+	N, Q = is[0], is[1]
+
+	for i := 0; i < N; i++ {
+		ts = append(ts, train{-1, -1})
+	}
+
+	for i := 0; i < Q; i++ {
+		is := isReader()
+		switch is[0] {
+		case 1:
+			x := is[1]
+			y := is[2]
+			x--
+			y--
+			ts[x].back = y
+			ts[y].front = x
+		case 2:
+			x := is[1]
+			y := is[2]
+			x--
+			y--
+			ts[x].back = -1
+			ts[y].front = -1
+		case 3:
+			x := is[1]
+			x--
+			r := x
+			fr := ts[x].front
+			for {
+				if fr == -1 {
+					break
+				}
+				r = fr
+				fr = ts[r].front
+			}
+			ans := []int{}
+			nr := ts[r].back
+			for {
+				ans = append(ans, r+1)
+				if nr == -1 {
+					break
+				}
+				r = nr
+				nr = ts[r].back
+			}
+			isPrint(ans)
+		}
+	}
 }
 
 /*
@@ -139,17 +209,6 @@ func isReader() (intSlice []int) {
 	intSlice, _ = splitToInt(str)
 
 	return
-}
-
-/*
-出力
-*/
-// []int{...}
-func isPrint(intSlice []int) {
-	for _, v := range intSlice {
-		fmt.Printf("%d ", v)
-	}
-	fmt.Print("\n")
 }
 
 /*

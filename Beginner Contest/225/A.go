@@ -10,13 +10,31 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc225/tasks/abc225_a
 
 /*
 main関数
 */
 
 func main() {
+	s := sReader()
+	ss := strings.Split(s, "")
+	rs := []int{}
+	for _, w := range ss {
+		if !isContain(rs, int(s2r(w))) {
+			rs = append(rs, int(s2r(w)))
+		}
+	}
+
+	switch len(rs) {
+	case 1:
+		fmt.Println(1)
+	case 2:
+		fmt.Println(3)
+	case 3:
+		fmt.Println(6)
+
+	}
 }
 
 /*
@@ -139,17 +157,6 @@ func isReader() (intSlice []int) {
 	intSlice, _ = splitToInt(str)
 
 	return
-}
-
-/*
-出力
-*/
-// []int{...}
-func isPrint(intSlice []int) {
-	for _, v := range intSlice {
-		fmt.Printf("%d ", v)
-	}
-	fmt.Print("\n")
 }
 
 /*
@@ -396,11 +403,6 @@ func (h *intHeap) Pop() interface{} {
 	x := old[n-1]
 	*h = old[0 : n-1]
 	return x
-}
-func (h *intHeap) Remove(i int) {
-	idx := sort.SearchInts(*h, i)
-	old := *h
-	*h = append(old[:idx], old[idx+1:]...)
 }
 func (h *intHeap) IsEmpty() bool {
 	if h.Len() == 0 {

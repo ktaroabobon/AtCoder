@@ -10,13 +10,57 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc225/tasks/abc225_c
+
+var N, M int
+var bg [][]int
+var ans string
 
 /*
 main関数
 */
 
 func main() {
+	is := isReader()
+	N, M := is[0], is[1]
+	bg = make([][]int, N)
+	ans = "Yes"
+
+	for i := 0; i < N; i++ {
+		bg[i] = isReader()
+	}
+	x := bg[0][0] % 7
+	if x == 0 {
+		x = 7
+	}
+	if x <= 8-M {
+		base := bg[0][0]
+		for i := 0; i < N; i++ {
+			if i > 0 {
+				base += 7
+			}
+			num := base
+			for j := 0; j < M; j++ {
+				if i == 0 && j == 0 {
+					continue
+				}
+				if j > 0 {
+					num++
+				}
+				if bg[i][j] != num {
+					ans = "No"
+					break
+				}
+			}
+			if ans == "No" {
+				break
+			}
+		}
+	} else {
+		ans = "No"
+	}
+
+	fmt.Println(ans)
 }
 
 /*
@@ -139,17 +183,6 @@ func isReader() (intSlice []int) {
 	intSlice, _ = splitToInt(str)
 
 	return
-}
-
-/*
-出力
-*/
-// []int{...}
-func isPrint(intSlice []int) {
-	for _, v := range intSlice {
-		fmt.Printf("%d ", v)
-	}
-	fmt.Print("\n")
 }
 
 /*
@@ -396,11 +429,6 @@ func (h *intHeap) Pop() interface{} {
 	x := old[n-1]
 	*h = old[0 : n-1]
 	return x
-}
-func (h *intHeap) Remove(i int) {
-	idx := sort.SearchInts(*h, i)
-	old := *h
-	*h = append(old[:idx], old[idx+1:]...)
 }
 func (h *intHeap) IsEmpty() bool {
 	if h.Len() == 0 {

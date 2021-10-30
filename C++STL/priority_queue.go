@@ -3,6 +3,7 @@ package main
 import (
 	"container/heap"
 	"fmt"
+	"sort"
 )
 
 //例題
@@ -22,6 +23,17 @@ func (h *intHeap) Pop() interface{} {
 	x := old[n-1]
 	*h = old[0 : n-1]
 	return x
+}
+func (h *intHeap) Remove(i int) {
+	idx := sort.SearchInts(*h, i)
+	old := *h
+	*h = append(old[:idx], old[idx+1:]...)
+}
+func (h *intHeap) IsEmpty() bool {
+	if h.Len() == 0 {
+		return true
+	}
+	return false
 }
 
 func main() {

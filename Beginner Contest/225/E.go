@@ -142,17 +142,6 @@ func isReader() (intSlice []int) {
 }
 
 /*
-出力
-*/
-// []int{...}
-func isPrint(intSlice []int) {
-	for _, v := range intSlice {
-		fmt.Printf("%d ", v)
-	}
-	fmt.Print("\n")
-}
-
-/*
 型変換
 */
 // string <-> int
@@ -396,11 +385,6 @@ func (h *intHeap) Pop() interface{} {
 	x := old[n-1]
 	*h = old[0 : n-1]
 	return x
-}
-func (h *intHeap) Remove(i int) {
-	idx := sort.SearchInts(*h, i)
-	old := *h
-	*h = append(old[:idx], old[idx+1:]...)
 }
 func (h *intHeap) IsEmpty() bool {
 	if h.Len() == 0 {

@@ -10,13 +10,37 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc225/tasks/abc225_b
+
+var N int
+var ans string
+var g [][]int
 
 /*
 main関数
 */
 
 func main() {
+	N = iReader()
+	ans := "No"
+	g = make([][]int, N)
+
+	for i := 0; i < N-1; i++ {
+		is := isReader()
+		a, b := is[0], is[1]
+		a--
+		b--
+		g[a] = append(g[a], b)
+		g[b] = append(g[b], a)
+	}
+
+	for i := 0; i < N; i++ {
+		if len(g[i]) == N-1 {
+			ans = "Yes"
+			break
+		}
+	}
+	fmt.Println(ans)
 }
 
 /*
@@ -139,17 +163,6 @@ func isReader() (intSlice []int) {
 	intSlice, _ = splitToInt(str)
 
 	return
-}
-
-/*
-出力
-*/
-// []int{...}
-func isPrint(intSlice []int) {
-	for _, v := range intSlice {
-		fmt.Printf("%d ", v)
-	}
-	fmt.Print("\n")
 }
 
 /*
@@ -396,11 +409,6 @@ func (h *intHeap) Pop() interface{} {
 	x := old[n-1]
 	*h = old[0 : n-1]
 	return x
-}
-func (h *intHeap) Remove(i int) {
-	idx := sort.SearchInts(*h, i)
-	old := *h
-	*h = append(old[:idx], old[idx+1:]...)
 }
 func (h *intHeap) IsEmpty() bool {
 	if h.Len() == 0 {
