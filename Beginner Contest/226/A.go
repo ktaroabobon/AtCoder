@@ -10,22 +10,14 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc226/tasks/abc226_a
 
 /*
 main関数
 */
 
 func main() {
-LOOP:
-	for i := 0; i < 10; i++ {
-		for j := 0; j < 10; j++ {
-			fmt.Printf("i:%d j:%d\n", i, j)
-			if i > 5 && j > 5 {
-				break LOOP
-			}
-		}
-	}
+
 }
 
 /*
@@ -114,12 +106,25 @@ func sReader() (strReturned string) {
 /*
 数値、１整数
 e.g.)
-foo
+10
 */
 func iReader() (numReturned int) {
 	str := readLine()
 
 	numReturned = s2i(str)
+
+	return
+}
+
+/*
+数値、１小数
+e.g.)
+1.5
+*/
+func fReader() (numReturned float64) {
+	str := readLine()
+
+	numReturned = s2f(str)
 
 	return
 }
@@ -151,11 +156,29 @@ func isReader() (intSlice []int) {
 }
 
 /*
+出力
+*/
+// []int{...}
+func isPrint(intSlice []int) {
+	for _, v := range intSlice {
+		fmt.Printf("%d ", v)
+	}
+	fmt.Print("\n")
+}
+
+/*
 型変換
 */
 // string <-> int
 func s2i(s string) int {
 	v, ok := strconv.Atoi(s)
+	if ok != nil {
+		panic("Faild : " + s + " can't convert to int")
+	}
+	return v
+}
+func s2f(s string) float64 {
+	v, ok := strconv.ParseFloat(s, 64)
 	if ok != nil {
 		panic("Faild : " + s + " can't convert to int")
 	}
@@ -394,6 +417,17 @@ func (h *intHeap) Pop() interface{} {
 	x := old[n-1]
 	*h = old[0 : n-1]
 	return x
+}
+func (h *intHeap) Remove(i int) {
+	idx := sort.SearchInts(*h, i)
+	old := *h
+	*h = append(old[:idx], old[idx+1:]...)
+}
+func (h *intHeap) IsEmpty() bool {
+	if h.Len() == 0 {
+		return true
+	}
+	return false
 }
 
 // 二分探索

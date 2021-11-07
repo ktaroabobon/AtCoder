@@ -17,15 +17,6 @@ main関数
 */
 
 func main() {
-LOOP:
-	for i := 0; i < 10; i++ {
-		for j := 0; j < 10; j++ {
-			fmt.Printf("i:%d j:%d\n", i, j)
-			if i > 5 && j > 5 {
-				break LOOP
-			}
-		}
-	}
 }
 
 /*
@@ -148,6 +139,17 @@ func isReader() (intSlice []int) {
 	intSlice, _ = splitToInt(str)
 
 	return
+}
+
+/*
+出力
+*/
+// []int{...}
+func isPrint(intSlice []int) {
+	for _, v := range intSlice {
+		fmt.Printf("%d ", v)
+	}
+	fmt.Print("\n")
 }
 
 /*
@@ -394,6 +396,17 @@ func (h *intHeap) Pop() interface{} {
 	x := old[n-1]
 	*h = old[0 : n-1]
 	return x
+}
+func (h *intHeap) Remove(i int) {
+	idx := sort.SearchInts(*h, i)
+	old := *h
+	*h = append(old[:idx], old[idx+1:]...)
+}
+func (h *intHeap) IsEmpty() bool {
+	if h.Len() == 0 {
+		return true
+	}
+	return false
 }
 
 // 二分探索

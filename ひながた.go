@@ -105,12 +105,25 @@ func sReader() (strReturned string) {
 /*
 数値、１整数
 e.g.)
-foo
+10
 */
 func iReader() (numReturned int) {
 	str := readLine()
 
 	numReturned = s2i(str)
+
+	return
+}
+
+/*
+数値、１小数
+e.g.)
+1.5
+*/
+func fReader() (numReturned float64) {
+	str := readLine()
+
+	numReturned = s2f(str)
 
 	return
 }
@@ -180,12 +193,22 @@ func i2b(i int) bool {
 	return i != 0
 }
 
+// str -> rune
 func s2r(s string) rune {
 	var r int32
 	for _, v := range s {
 		r = v
 	}
 	return r
+}
+
+// str -> float64
+func s2f(s string) float64 {
+	v, ok := strconv.ParseFloat(s, 64)
+	if ok != nil {
+		panic("Faild : " + s + " can't convert to int")
+	}
+	return v
 }
 
 /*
