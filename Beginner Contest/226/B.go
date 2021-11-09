@@ -10,13 +10,42 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc226/tasks/abc226_b
+
+var N int
+var ls, ans [][]int
 
 /*
 main関数
 */
 
 func main() {
+	N = iReader()
+	ls = make([][]int, N)
+	ans = make([][]int, N)
+	for i := 0; i < N; i++ {
+		is := isReader()
+		ls = append(ls, is[1:])
+	}
+
+	for _, l := range ls {
+		if len(ans) == 0 {
+			ans = append(ans, l)
+		}
+
+		for _, al := range ans {
+			if len(al) == len(l) {
+				for i := 0; i < len(l); i++ {
+					if al[i] == l[i] {
+						continue
+					}
+				}
+			}
+		}
+	}
+
+	fmt.Println(len(ans))
+
 }
 
 /*

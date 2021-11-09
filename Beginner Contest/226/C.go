@@ -10,13 +10,59 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc226/tasks/abc226_c
+
+var N, ans int
+var g [][]int
+var q Deque
+var dist, ts []int
+
+func bfs(i int) {
+	dist[i] = 0
+	q.Append(i)
+
+	for {
+		if q.IsEmpty() {
+			break
+		}
+		v := q.PopLeft()
+		ans += ts[v.(int)]
+
+		for _, nv := range g[v.(int)] {
+			nv--
+			if dist[nv] == 0 {
+				continue
+			}
+			q.Append(nv)
+		}
+	}
+
+}
 
 /*
 main関数
 */
 
 func main() {
+	N = iReader()
+	g = make([][]int, N)
+	ts = make([]int, N)
+
+	for i := 0; i < N; i++ {
+		is := isReader()
+		ts[i] = is[0]
+		if is[1] > 0 {
+			g[i] = append(g[i], is[2:]...)
+		}
+	}
+
+	q = *NewDeque()
+	dist = make([]int, N)
+	initIS(dist, -1)
+
+	bfs(N - 1)
+
+	fmt.Println(ans)
 }
 
 /*

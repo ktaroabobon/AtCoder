@@ -17,7 +17,8 @@ main関数
 */
 
 func main() {
-
+	f := fReader()
+	fmt.Println(math.Round(f))
 }
 
 /*
