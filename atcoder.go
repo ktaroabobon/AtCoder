@@ -12,47 +12,46 @@ import (
 
 // page URL:
 
-var N, cnt int
-var ans []int
-var PS days
-
-type day struct {
-	num int
-	f   int
-}
-
-type days []day
-
-func (a days) Len() int           { return len(a) }
-func (a days) Less(i, j int) bool { return a[i].num < a[j].num }
-func (a days) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-
 /*
 main関数
 */
 
+type Stringer interface {
+	String() string
+}
+
+type I int
+
+func (n I) String() string {
+	return "I"
+}
+
+type B bool
+
+func (b B) String() string {
+	return "B"
+}
+
+type S string
+
+func (s S) String() string {
+	return "S"
+}
+func F(s Stringer) {
+	switch v := s.(type) {
+	case I:
+		fmt.Println(int(v), "I")
+	case S:
+		fmt.Println(string(v), "S")
+	case B:
+		fmt.Println(bool(v), "B")
+	}
+}
 func main() {
-	N = iReader()
-	ans = make([]int, N)
-	for i := 0; i < N; i++ {
-		is := isReader()
-		PS = append(PS, day{is[0], 1})
-		PS = append(PS, day{is[0] + is[1], -1})
-	}
-
-	sort.Sort(PS)
-
-	for i := 0; i < len(PS)-1; i++ {
-		cnt += PS[i].f
-		if cnt == 0 {
-			continue
-		}
-		ans[cnt-1] += PS[i+1].num - PS[i].num
-	}
-
-	sans, _ := splitToString(ans)
-
-	fmt.Println(strings.Join(sans, " "))
+	var n = I(100)
+	F(n)
+	F(B(true))
+	F(S("hoge"))
 }
 
 /*
