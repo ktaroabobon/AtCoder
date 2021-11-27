@@ -10,13 +10,27 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc229/tasks/abc229_a
 
 /*
 main関数
 */
 
 func main() {
+	s := sReader()
+	s1 := strings.Split(s, "")
+	s = sReader()
+	s2 := strings.Split(s, "")
+	ans := "Yes"
+
+	if s1[0] == "." && s1[1] == "#" && s2[0] == "#" && s2[1] == "." {
+		ans = "No"
+	}
+	if s1[0] == "#" && s1[1] == "." && s2[0] == "." && s2[1] == "#" {
+		ans = "No"
+	}
+
+	fmt.Println(ans)
 }
 
 /*
@@ -139,6 +153,17 @@ func isReader() (intSlice []int) {
 	intSlice, _ = splitToInt(str)
 
 	return
+}
+
+/*
+出力
+*/
+// []int{...}
+func isPrint(intSlice []int) {
+	for _, v := range intSlice {
+		fmt.Printf("%d ", v)
+	}
+	fmt.Print("\n")
 }
 
 /*
@@ -385,6 +410,17 @@ func (h *intHeap) Pop() interface{} {
 	x := old[n-1]
 	*h = old[0 : n-1]
 	return x
+}
+func (h *intHeap) Remove(i int) {
+	idx := sort.SearchInts(*h, i)
+	old := *h
+	*h = append(old[:idx], old[idx+1:]...)
+}
+func (h *intHeap) IsEmpty() bool {
+	if h.Len() == 0 {
+		return true
+	}
+	return false
 }
 
 // 二分探索

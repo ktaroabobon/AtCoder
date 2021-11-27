@@ -10,13 +10,39 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc229/tasks/abc229_c
+
+var dp [][]int
+var N, W int
+var AS, BS []int
 
 /*
 main関数
 */
 
 func main() {
+	is := isReader()
+	N, W = is[0], is[1]
+	for i := 0; i < N; i++ {
+		is = isReader()
+		AS = append(AS, is[0])
+		BS = append(BS, is[1])
+	}
+
+	dp = make([][]int, N+10)
+	for i := 0; i < N+10; i++ {
+		dp[i] = make([]int, 1e3+10)
+		initIS(dp[i], math.MaxInt64)
+	}
+
+	for i := 0; i < N; i++ {
+		for j := 1; j < 1e3+10; j++ {
+			if j < BS[i]+1 {
+				ichmin(&dp[i][AS[i]*j], j)
+			}
+
+		}
+	}
 }
 
 /*
@@ -139,6 +165,17 @@ func isReader() (intSlice []int) {
 	intSlice, _ = splitToInt(str)
 
 	return
+}
+
+/*
+出力
+*/
+// []int{...}
+func isPrint(intSlice []int) {
+	for _, v := range intSlice {
+		fmt.Printf("%d ", v)
+	}
+	fmt.Print("\n")
 }
 
 /*
@@ -385,6 +422,17 @@ func (h *intHeap) Pop() interface{} {
 	x := old[n-1]
 	*h = old[0 : n-1]
 	return x
+}
+func (h *intHeap) Remove(i int) {
+	idx := sort.SearchInts(*h, i)
+	old := *h
+	*h = append(old[:idx], old[idx+1:]...)
+}
+func (h *intHeap) IsEmpty() bool {
+	if h.Len() == 0 {
+		return true
+	}
+	return false
 }
 
 // 二分探索
