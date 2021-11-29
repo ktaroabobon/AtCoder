@@ -10,49 +10,33 @@ import (
 	"strings"
 )
 
-// page URL:
-
-var N, cnt int
-var ans []int
-var PS days
-
-type day struct {
-	num int
-	f   int
-}
-
-type days []day
-
-func (a days) Len() int           { return len(a) }
-func (a days) Less(i, j int) bool { return a[i].num < a[j].num }
-func (a days) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+// page URL: https://atcoder.jp/contests/abc229/tasks/abc229_b
 
 /*
 main関数
 */
 
 func main() {
-	N = iReader()
-	ans = make([]int, N)
-	for i := 0; i < N; i++ {
-		is := isReader()
-		PS = append(PS, day{is[0], 1})
-		PS = append(PS, day{is[0] + is[1], -1})
-	}
+	is := isReader()
+	ans := "Easy"
 
-	sort.Sort(PS)
+	n1 := strings.Split(i2s(is[0]), "")
+	n2 := strings.Split(i2s(is[1]), "")
 
-	for i := 0; i < len(PS)-1; i++ {
-		cnt += PS[i].f
-		if cnt == 0 {
-			continue
+	l1 := len(n1)
+	l2 := len(n2)
+
+	l := math.MaxInt64
+	ichmin(&l, l1)
+	ichmin(&l, l2)
+
+	for i := 0; i < l; i++ {
+		if s2i(n1[l1-i-1])+s2i(n2[l2-i-1]) >= 10 {
+			ans = "Hard"
+			break
 		}
-		ans[cnt-1] += PS[i+1].num - PS[i].num
 	}
-
-	sans, _ := splitToString(ans)
-
-	fmt.Println(strings.Join(sans, " "))
+	fmt.Println(ans)
 }
 
 /*
@@ -175,6 +159,17 @@ func isReader() (intSlice []int) {
 	intSlice, _ = splitToInt(str)
 
 	return
+}
+
+/*
+出力
+*/
+// []int{...}
+func isPrint(intSlice []int) {
+	for _, v := range intSlice {
+		fmt.Printf("%d ", v)
+	}
+	fmt.Print("\n")
 }
 
 /*
@@ -421,6 +416,17 @@ func (h *intHeap) Pop() interface{} {
 	x := old[n-1]
 	*h = old[0 : n-1]
 	return x
+}
+func (h *intHeap) Remove(i int) {
+	idx := sort.SearchInts(*h, i)
+	old := *h
+	*h = append(old[:idx], old[idx+1:]...)
+}
+func (h *intHeap) IsEmpty() bool {
+	if h.Len() == 0 {
+		return true
+	}
+	return false
 }
 
 // 二分探索
