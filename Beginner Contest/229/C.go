@@ -12,9 +12,19 @@ import (
 
 // page URL: https://atcoder.jp/contests/abc229/tasks/abc229_c
 
-var dp [][]int
-var N, W int
-var AS, BS []int
+type Cheese struct {
+	o      int
+	weight int
+}
+
+type cs []Cheese
+
+func (c cs) Len() int           { return len(c) }
+func (c cs) Less(i, j int) bool { return c[i].o > c[j].o }
+func (c cs) Swap(i, j int)      { c[i], c[j] = c[j], c[i] }
+
+var N, W, ans int
+var ss cs
 
 /*
 main関数
@@ -25,24 +35,27 @@ func main() {
 	N, W = is[0], is[1]
 	for i := 0; i < N; i++ {
 		is = isReader()
-		AS = append(AS, is[0])
-		BS = append(BS, is[1])
+		ss = append(ss, Cheese{o: is[0], weight: is[1]})
 	}
 
-	dp = make([][]int, N+10)
-	for i := 0; i < N+10; i++ {
-		dp[i] = make([]int, 1e3+10)
-		initIS(dp[i], math.MaxInt64)
-	}
+	sort.Sort(ss)
 
-	for i := 0; i < N; i++ {
-		for j := 1; j < 1e3+10; j++ {
-			if j < BS[i]+1 {
-				ichmin(&dp[i][AS[i]*j], j)
-			}
-
+	for _, c := range ss {
+		if W <= 0 {
+			break
 		}
+
+		if c.weight <= W {
+			ans += c.o * c.weight
+			W -= c.weight
+		} else {
+			ans += c.o * W
+			W -= W
+		}
+
 	}
+
+	fmt.Println(ans)
 }
 
 /*
