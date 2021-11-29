@@ -12,11 +12,39 @@ import (
 
 // page URL: https://atcoder.jp/contests/abc229/tasks/abc229_d
 
+var s string
+var k, ans, r int
+var cnt []int
+
 /*
 main関数
 */
 
 func main() {
+	s = sReader()
+	ss := strings.Split(s, "")
+	k = iReader()
+	n := len(s)
+
+	cnt = make([]int, n+1)
+	for i := 0; i < n; i++ {
+		if ss[i] == "." {
+			cnt[i+1] = cnt[i] + 1
+		} else {
+			cnt[i+1] = cnt[i]
+		}
+	}
+
+	for l := 0; l < n; l++ {
+		for {
+			if r > n-1 || cnt[r+1]-cnt[l] > k {
+				break
+			}
+			r++
+		}
+		ichmax(&ans, r-l)
+	}
+	fmt.Println(ans)
 }
 
 /*
