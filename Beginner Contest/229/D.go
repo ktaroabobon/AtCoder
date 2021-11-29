@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// page URL:
+// page URL: https://atcoder.jp/contests/abc229/tasks/abc229_d
 
 /*
 main関数
