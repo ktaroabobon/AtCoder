@@ -1,7 +1,7 @@
 version: '3.8'
 services:
-  at_coder:
-    container_name: at-coder
+  go_coder:
+    container_name: go-coder
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -9,4 +9,15 @@ services:
       - ./:/code
     ports:
       - "3000:3000"
+    tty: true
+
+  py_coder:
+    container_name: py-coder
+    build:
+      context: .
+      dockerfile: ./Dockerfile_py
+    volumes:
+      - ./:/code
+    ports:
+      - "8000:8000"
     tty: true
