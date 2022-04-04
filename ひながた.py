@@ -1,5 +1,9 @@
+import sys
+
+
 def main():
     print('hello world')
+    print(sys.version)
 
 
 def s2i(s: str) -> int:
@@ -10,18 +14,26 @@ def i2s(i: int) -> str:
     return str(i)
 
 
-def sReader():
+def b2i(b: bool) -> int:
+    return int(b)
+
+
+def i2b(i: int) -> bool:
+    return bool(i)
+
+
+def str_reader():
     """
      文字列、１単語
      e.g.)
      foo
      """
-    str_returned = input()
+    str_returned = sys.stdin.readline().rstrip()
 
     return str_returned
 
 
-def iReader():
+def int_reader():
     """
     数値、１整数
     e.g.)
