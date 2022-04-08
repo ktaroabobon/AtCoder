@@ -3,28 +3,8 @@ from typing import Union, List
 
 
 def main():
-    n, m = read_nums()
-    lights_d = dict()
-    ans = 0
-
-    for i in range(m):
-        switches = read_nums()[1:]
-        lights_d[i] = set([s - 1 for s in switches])
-
-    ps = read_nums()
-
-    for i in range(1 << n):
-        for l in range(m):
-            turn_on = 0
-            for j in range(n):
-                if i >> j & 1 and j in lights_d[l]:
-                    turn_on += 1
-
-            if turn_on % 2 != ps[l]:
-                break
-        else:
-            ans += 1
-    print(ans)
+    print('hello world')
+    print(sys.version)
 
 
 def split_without_empty(strs: str) -> List[str]:
