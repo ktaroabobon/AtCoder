@@ -1,30 +1,49 @@
 import sys
 from typing import Union, List
 
+INF = 2 * 10 ** 14
+
+
+def check(X, n, hs, ss):
+    data = [0] * n
+
+    for h, s in zip(hs, ss):
+        j = (X - h) // s
+        if j < 0:
+            return False
+        data[min(j, n - 1)] += 1
+
+    if data[0] >= 2:
+        return False
+
+    for i in range(1, n):
+        data[i] += data[i - 1]
+        if data[i] >= i + 2:
+            return False
+
+    return True
+
 
 def main():
     n = read_num()
-    ans = 0
-    testimonies = [[] for _ in range(n)]
 
-    for i in range(n):
-        num = read_num()
-        for _ in range(num):
-            data = read_nums()
-            testimonies[i].append((data[0] - 1, data[1]))
+    hs = list()
+    ss = list()
 
-    for i in range(1 << n):
-        f = True
-        for j in range(n):
-            if i >> j & 1:
-                for p, e in testimonies[j]:
-                    if i >> p & 1 != e:
-                        f = False
-                        break
-            if not f:
-                break
-        if f:
-            ans = max(ans, bin(i)[2:].count('1'))
+    for _ in range(n):
+        IS = read_nums()
+        hs.append(IS[0])
+        ss.append(IS[1])
+
+    l, u = 0, INF
+
+    while l < u:
+        m = (l + u) // 2
+        if check(m, n, hs, ss):
+            u = m
+        else:
+            l = m + 1
+    ans = l
 
     print(ans)
 
