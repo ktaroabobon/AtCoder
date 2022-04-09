@@ -3,8 +3,25 @@ from typing import Union, List
 
 
 def main():
-    print('hello world')
-    print(sys.version)
+    num = read_num()
+
+    r = 1
+    f = 0
+
+    for i in range(1, num + 1):
+        x = i
+        cnt = 0
+        while True:
+            if x % 2 == 1:
+                break
+            x /= 2
+            cnt += 1
+
+        if f < cnt:
+            f = cnt
+            r = i
+
+    print(r)
 
 
 def split_without_empty(strs: str) -> List[str]:
@@ -67,8 +84,9 @@ def read_str() -> str:
      e.g.)
      foo
      """
+    str_returned = sys.stdin.readline().rstrip()
 
-    return sys.stdin.readline().rstrip()
+    return str_returned
 
 
 def read_strs() -> List[str]:
@@ -79,8 +97,9 @@ def read_strs() -> List[str]:
     Examples:
         foo, boo
     """
+    strs = read_str()
 
-    return split_without_empty(read_str())
+    return split_without_empty(strs)
 
 
 def read_num() -> Union[int, float]:
@@ -89,17 +108,11 @@ def read_num() -> Union[int, float]:
     e.g.)
     10
     """
+    s = read_str()
 
-    return s2i(read_str())
+    num_returned = s2i(s)
 
-
-def read_nums() -> Union[List[int], List[float]]:
-    """
-    数値
-    e.g.)
-    [10, 20]
-    """
-    return split2int(read_strs())
+    return num_returned
 
 
 def aCb(a, b: int) -> int:

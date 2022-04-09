@@ -1,10 +1,22 @@
+import bisect
 import sys
 from typing import Union, List
 
 
 def main():
-    print('hello world')
-    print(sys.version)
+    n = read_num()
+    AS = sorted(read_nums())
+    BS = sorted(read_nums())
+    CS = sorted(read_nums())
+    cnt = 0
+
+    for b in BS:
+        idx_a = bisect.bisect_left(AS, b)
+        idx_c = bisect.bisect_right(CS, b)
+
+        cnt += idx_a * (n - idx_c)
+
+    print(cnt)
 
 
 def split_without_empty(strs: str) -> List[str]:

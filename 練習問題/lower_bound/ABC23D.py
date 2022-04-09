@@ -1,10 +1,51 @@
 import sys
 from typing import Union, List
 
+INF = 2 * 10 ** 14
+
+
+def check(X, n, hs, ss):
+    data = [0] * n
+
+    for h, s in zip(hs, ss):
+        j = (X - h) // s
+        if j < 0:
+            return False
+        data[min(j, n - 1)] += 1
+
+    if data[0] >= 2:
+        return False
+
+    for i in range(1, n):
+        data[i] += data[i - 1]
+        if data[i] >= i + 2:
+            return False
+
+    return True
+
 
 def main():
-    print('hello world')
-    print(sys.version)
+    n = read_num()
+
+    hs = list()
+    ss = list()
+
+    for _ in range(n):
+        IS = read_nums()
+        hs.append(IS[0])
+        ss.append(IS[1])
+
+    l, u = 0, INF
+
+    while l < u:
+        m = (l + u) // 2
+        if check(m, n, hs, ss):
+            u = m
+        else:
+            l = m + 1
+    ans = l
+
+    print(ans)
 
 
 def split_without_empty(strs: str) -> List[str]:

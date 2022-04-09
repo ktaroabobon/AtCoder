@@ -1,10 +1,23 @@
+import math
 import sys
 from typing import Union, List
 
 
 def main():
-    print('hello world')
-    print(sys.version)
+    n = read_num()
+    towns = list()
+    sum = 0
+    for _ in range(n):
+        towns.append(read_nums())
+
+    for i, t1 in enumerate(towns):
+        for j, t2 in enumerate(towns):
+            if i <= j:
+                continue
+            d = get_distance(t1, t2)
+            sum += d
+
+    print(sum * 2 / n)
 
 
 def split_without_empty(strs: str) -> List[str]:
@@ -121,6 +134,23 @@ def aCb(a, b: int) -> int:
         r *= (a - i + 1) / i
 
     return r
+
+
+def get_distance(p1, p2: List[int]) -> Union[int, float]:
+    """
+    2点間距離
+
+    Args:
+        p1(List[int]): 座標
+        p2(List[int]): 座標
+
+    Returns:
+        距離
+    """
+    d = 0
+    for x1, x2 in zip(p1, p2):
+        d += (x1 - x2) ** 2
+    return math.sqrt(d)
 
 
 if __name__ == "__main__":

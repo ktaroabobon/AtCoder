@@ -3,8 +3,31 @@ from typing import Union, List
 
 
 def main():
-    print('hello world')
-    print(sys.version)
+    n = read_num()
+    testimonies = [[] for _ in range(n)]
+    ans = 0
+
+    for i in range(n):
+        num = read_num()
+        for _ in range(num):
+            t = read_nums()
+            testimonies[i].append((t[0] - 1, t[1]))
+
+    for i in range(1 << n):
+        f = True
+        for j in range(n):
+            if not i >> j & 1:
+                continue
+            for p, d in testimonies[j]:
+                if i >> p & 1 != d:
+                    f = False
+                    break
+            if not f:
+                break
+        if f:
+            ans = max(ans, bin(i)[2:].count('1'))
+
+    print(ans)
 
 
 def split_without_empty(strs: str) -> List[str]:
