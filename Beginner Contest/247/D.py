@@ -1,7 +1,8 @@
 """
-問題URL:
+問題URL: https://atcoder.jp/contests/abc247/tasks/abc247_d
 """
 
+import bisect
 import math
 import sys
 from typing import Union, List
@@ -10,8 +11,35 @@ INF = 2 * 10 ** 14
 
 
 def main():
-    print('hello world')
-    print(sys.version)
+    n = read_num()
+    balls = [0]
+    sum_values = [0]
+    total_balls = 0
+    per_ans = 0
+
+    for _ in range(n):
+        x = read_nums()
+        if x[0] == 1:
+            if len(balls) == 0:
+                balls.append(x[2])
+                sum_values.append(x[1] * x[2])
+            else:
+                balls.append(balls[-1] + x[2])
+                sum_values.append(sum_values[-1] + x[1] * x[2])
+        else:
+            total_balls += x[1]
+            idx = bisect.bisect_left(balls, total_balls)
+            if balls[idx] == x[1]:
+                ans = sum_values[idx] - per_ans
+                per_ans += ans
+            else:
+                ans = sum_values[idx] - per_ans - (
+                            (sum_values[idx] - sum_values[idx - 1]) // (balls[idx] - balls[idx - 1])) * (
+                                  balls[idx] - total_balls)
+                per_ans += ans
+            # per_total_balls = total_balls
+
+            print(ans)
 
 
 def split_without_empty(strs: str) -> List[str]:

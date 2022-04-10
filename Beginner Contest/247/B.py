@@ -1,5 +1,5 @@
 """
-問題URL:
+問題URL: https://atcoder.jp/contests/abc247/tasks/abc247_b
 """
 
 import math
@@ -10,8 +10,35 @@ INF = 2 * 10 ** 14
 
 
 def main():
-    print('hello world')
-    print(sys.version)
+    n = read_num()
+    ss = list()
+    ts = list()
+
+    for _ in range(n):
+        d = read_strs()
+        ss.append(d[0])
+        ts.append(d[1])
+
+    ss = tuple(ss)
+    ts = tuple(ts)
+
+    for i in range(n):
+        enable = False
+        for s in [ss[i], ts[i]]:
+            s_ok = True
+            for j in range(n):
+                if i != j:
+                    if s == ss[j] or s == ts[j]:
+                        s_ok = False
+                        break
+            if s_ok:
+                enable = True
+                break
+        if not enable:
+            print("No")
+            break
+    else:
+        print("Yes")
 
 
 def split_without_empty(strs: str) -> List[str]:

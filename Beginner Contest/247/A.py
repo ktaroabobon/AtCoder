@@ -1,5 +1,5 @@
 """
-問題URL:
+問題URL: https://atcoder.jp/contests/abc247/tasks/abc247_a
 """
 
 import math
@@ -10,8 +10,8 @@ INF = 2 * 10 ** 14
 
 
 def main():
-    print('hello world')
-    print(sys.version)
+    n = read_str()
+    print("0" + n[:3])
 
 
 def split_without_empty(strs: str) -> List[str]:

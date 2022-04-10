@@ -1,32 +1,51 @@
+import math
 import sys
 from typing import Union, List
+
+INF = 2 * 10 ** 14
+
+
+def check(m, n, HS, SS):
+    d = [0] * n
+    for i in range(n):
+        h = HS[i]
+        s = SS[i]
+        t = (m - h) // s
+        if t < 0:
+            return
+
+        d[min(t, n - 1)] += 1
+
+    if d[0] >= 2:
+        return
+
+    for i in range(1, n):
+        d[i] += d[i - 1]
+        if d[i] >= i + 2:
+            return
+
+    return True
 
 
 def main():
     n = read_num()
-    ans = 0
-    testimonies = [[] for _ in range(n)]
+    HS, SS = list(), list()
 
-    for i in range(n):
-        num = read_num()
-        for _ in range(num):
-            data = read_nums()
-            testimonies[i].append((data[0] - 1, data[1]))
+    for _ in range(n):
+        data = read_nums()
+        HS.append(data[0])
+        SS.append(data[1])
 
-    for i in range(1 << n):
-        f = True
-        for j in range(n):
-            if i >> j & 1:
-                for p, e in testimonies[j]:
-                    if i >> p & 1 != e:
-                        f = False
-                        break
-            if not f:
-                break
-        if f:
-            ans = max(ans, bin(i)[2:].count('1'))
+    l, r = 0, INF
 
-    print(ans)
+    while l < r:
+        m = (r + l) // 2
+        if check(m, n, HS, SS):
+            r = m
+        else:
+            l = m + 1
+
+    print(l)
 
 
 def split_without_empty(strs: str) -> List[str]:
@@ -143,6 +162,23 @@ def aCb(a, b: int) -> int:
         r *= (a - i + 1) / i
 
     return r
+
+
+def get_distance(p1, p2: List[int]) -> Union[int, float]:
+    """
+    2点間距離
+
+    Args:
+        p1(List[int]): 座標
+        p2(List[int]): 座標
+
+    Returns:
+        距離
+    """
+    d = 0
+    for x1, x2 in zip(p1, p2):
+        d += (x1 - x2) ** 2
+    return math.sqrt(d)
 
 
 if __name__ == "__main__":

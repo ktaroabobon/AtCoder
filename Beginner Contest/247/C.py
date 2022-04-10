@@ -1,5 +1,5 @@
 """
-問題URL:
+問題URL: https://atcoder.jp/contests/abc247/tasks/abc247_c
 """
 
 import math
@@ -9,9 +9,16 @@ from typing import Union, List
 INF = 2 * 10 ** 14
 
 
+def row(n):
+    if n == 1:
+        return n
+    else:
+        return f"{row(n - 1)} {n} {row(n - 1)}"
+
+
 def main():
-    print('hello world')
-    print(sys.version)
+    n = read_num()
+    print(row(n))
 
 
 def split_without_empty(strs: str) -> List[str]:
