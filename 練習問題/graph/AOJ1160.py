@@ -1,36 +1,62 @@
+"""
+問題URL:
+"""
+
 import math
 import sys
 from typing import Union, List
 
 INF = 2 * 10 ** 14
 
+g = None
+s = None
+
+
+def dfs(x, y, g, s):
+    s[y][x] = True
+
+    dxs = [-1, 0, 1]
+    dys = [-1, 0, 1]
+
+    for dx in dxs:
+        for dy in dys:
+            if dx == 0 and dy == 0:
+                continue
+            next_x = x + dx
+            next_y = y + dy
+            if next_x < 0 or next_x >= len(g[0]):
+                continue
+            if next_y < 0 or next_y >= len(g):
+                continue
+            if s[next_y][next_x]:
+                continue
+            if g[next_y][next_x] == 0:
+                continue
+
+            dfs(next_x, next_y, g, s)
+
 
 def main():
-    n = read_num()
-    AS = [[] for _ in range(n)]
-    ans = 0
+    while True:
+        w, h = read_nums()
+        if w == 0 and h == 0:
+            break
 
-    for i in range(n):
-        a = read_num()
-        for _ in range(a):
-            d = read_nums()
-            AS[i].append([d[0] - 1, d[1]])
+        g = [[] for _ in range(h)]
+        s = [[False] * w for _ in range(h)]
 
-    for i in range(1 << n):
-        f = True
-        for j in range(n):
-            if i >> j & 1:
-                for p, t in AS[j]:
-                    if i >> p & 1 != t:
-                        f = False
-                        break
-            if not f:
-                break
+        for i in range(h):
+            g[i] = read_nums()
 
-        if f:
-            ans = max(ans, bin(i)[2:].count('1'))
+        cnt = 0
 
-    print(ans)
+        for i in range(h):
+            for j in range(w):
+                if g[i][j] == 1 and not s[i][j]:
+                    dfs(j, i, g, s)
+                    cnt += 1
+
+        print(cnt)
 
 
 def split_without_empty(strs: str) -> List[str]:

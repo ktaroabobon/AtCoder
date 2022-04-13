@@ -1,3 +1,7 @@
+"""
+問題URL:
+"""
+
 import math
 import sys
 from typing import Union, List
@@ -6,31 +10,8 @@ INF = 2 * 10 ** 14
 
 
 def main():
-    n = read_num()
-    AS = [[] for _ in range(n)]
-    ans = 0
-
-    for i in range(n):
-        a = read_num()
-        for _ in range(a):
-            d = read_nums()
-            AS[i].append([d[0] - 1, d[1]])
-
-    for i in range(1 << n):
-        f = True
-        for j in range(n):
-            if i >> j & 1:
-                for p, t in AS[j]:
-                    if i >> p & 1 != t:
-                        f = False
-                        break
-            if not f:
-                break
-
-        if f:
-            ans = max(ans, bin(i)[2:].count('1'))
-
-    print(ans)
+    print('hello world')
+    print(sys.version)
 
 
 def split_without_empty(strs: str) -> List[str]:
