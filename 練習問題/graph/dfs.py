@@ -1,36 +1,116 @@
+"""
+問題URL:
+
+入力情報
+URL: https://qiita.com/drken/items/4a7869c5e304883f539b#3-4-dfs-%E3%81%AE%E6%8E%A2%E7%B4%A2%E9%A0%86%E5%BA%8F%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%81%AE%E8%A9%B3%E7%B4%B0
+
+
+15 14
+0 1
+0 4
+0 11
+1 2
+1 3
+4 5
+4 8
+5 6
+5 7
+8 9
+8 10
+11 12
+11 13
+13 14
+
+答え
+行きがけ順
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+=================
+帰りがけ順
+2
+3
+1
+6
+7
+5
+9
+10
+8
+4
+12
+14
+13
+11
+0
+
+"""
+
 import math
 import sys
 from typing import Union, List
 
 INF = 2 * 10 ** 14
 
+g = None
+s = None
+
+n = 0
+m = 0
+
+
+def dfs(g, s, x):
+    print(x)
+    s[x] = True
+
+    for next_x in g[x]:
+        if s[next_x]:
+            continue
+        dfs(g, s, next_x)
+
+
+def dfs_last(g, s, x):
+    s[x] = True
+
+    for next_x in g[x]:
+        if s[next_x]:
+            continue
+        dfs_last(g, s, next_x)
+
+    print(x)
+
 
 def main():
-    n = read_num()
-    AS = [[] for _ in range(n)]
-    ans = 0
+    n, m = read_nums()
+    g = [[] for _ in range(n)]
 
-    for i in range(n):
-        a = read_num()
-        for _ in range(a):
-            d = read_nums()
-            AS[i].append([d[0] - 1, d[1]])
+    for _ in range(m):
+        info = read_nums()
+        g[info[0]].append(info[1])
+        g[info[1]].append(info[0])
 
-    for i in range(1 << n):
-        f = True
-        for j in range(n):
-            if i >> j & 1:
-                for p, t in AS[j]:
-                    if i >> p & 1 != t:
-                        f = False
-                        break
-            if not f:
-                break
+    print(g)
 
-        if f:
-            ans = max(ans, bin(i)[2:].count('1'))
+    print("行きがけ順")
+    s = [False] * n
+    dfs(g, s, 0)
 
-    print(ans)
+    print('=================')
+    print("帰りがけ順")
+    s = [False] * n
+    dfs_last(g, s, 0)
 
 
 def split_without_empty(strs: str) -> List[str]:
