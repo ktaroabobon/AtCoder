@@ -1,61 +1,18 @@
+"""
+問題URL:
+"""
+
 import math
 import sys
 from typing import Union, List
 
 INF = 2 * 10 ** 14
-
-g = None
-s = None
-
-
-def dfs(sx, sy, g, s):
-    s[sy][sx] = True
-
-    d = [-1, 0, 1]
-
-    for dx in d:
-        for dy in d:
-            if dx == 0 and dy == 0:
-                continue
-            next_x = sx + dx
-            next_y = sy + dy
-
-            if next_x < 0 or next_x >= len(g[0]):
-                continue
-            if next_y < 0 or next_y >= len(g):
-                continue
-
-            if s[next_y][next_x]:
-                break
-            if g[next_y][next_x] == 0:
-                break
-
-            dfs(next_x, next_y, g, s)
+CONST = 998244353
 
 
 def main():
-    while True:
-        w, h = read_nums()
-        if w == 0 and h == 0:
-            return
-
-        cnt = 0
-        g = [[] for _ in range(h)]
-        s = [[False] * w for _ in range(h)]
-
-        for i in range(h):
-            g[i] = read_nums()
-
-        for i in range(h):
-            for j in range(w):
-                if s[i][j] or g[i][j] == 0:
-                    continue
-
-                dfs(j, i, g, s)
-
-                cnt += 1
-
-        print(cnt)
+    print('hello world')
+    print(sys.version)
 
 
 def split_without_empty(strs: str) -> List[str]:
