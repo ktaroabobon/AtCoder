@@ -1,5 +1,5 @@
 """
-問題URL:
+問題URL: https://atcoder.jp/contests/abc248/tasks/abc248_c
 """
 
 import math
@@ -9,10 +9,28 @@ from typing import Union, List
 INF = 2 * 10 ** 14
 CONST = 998244353
 
+global dp
+
 
 def main():
-    print('hello world')
-    print(sys.version)
+    n, m, K = read_nums()
+
+    x = [0] * (K + 1)
+    dp = list()
+    for _ in range(n + 1):
+        dp.append(x.copy())
+
+    dp[0][0] = 1
+
+    for i in range(n):
+        for j in range(K):
+            for k in range(1, m + 1):
+                if j + k <= K:
+                    dp[i + 1][j + k] += dp[i][j]
+
+    ans = sum(dp[n][1:]) % CONST
+
+    print(ans)
 
 
 def split_without_empty(strs: str) -> List[str]:

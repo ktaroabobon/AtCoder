@@ -1,5 +1,5 @@
 """
-問題URL:
+問題URL: https://atcoder.jp/contests/abc248/tasks/abc248_b
 """
 
 import math
@@ -7,12 +7,18 @@ import sys
 from typing import Union, List
 
 INF = 2 * 10 ** 14
-CONST = 998244353
 
 
 def main():
-    print('hello world')
-    print(sys.version)
+    a, b, k = read_nums()
+
+    cnt = 0
+
+    while a < b:
+        a *= k
+        cnt += 1
+
+    print(cnt)
 
 
 def split_without_empty(strs: str) -> List[str]:

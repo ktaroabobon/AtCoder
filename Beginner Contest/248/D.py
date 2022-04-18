@@ -1,7 +1,7 @@
 """
-問題URL:
+問題URL: https://atcoder.jp/contests/abc248/tasks/abc248_d
 """
-
+import bisect
 import math
 import sys
 from typing import Union, List
@@ -11,8 +11,21 @@ CONST = 998244353
 
 
 def main():
-    print('hello world')
-    print(sys.version)
+    n = read_num()
+    AS = read_nums()
+    dp = [[] for _ in range(n + 1)]
+
+    for i, a in enumerate(AS):
+        dp[a].append(i)
+
+    q_num = read_num()
+
+    for _ in range(q_num):
+        l, r, x = read_nums()
+        idx_l = bisect.bisect_left(dp[x], l - 1)
+        idx_r = bisect.bisect_right(dp[x], r - 1)
+
+        print(idx_r - idx_l)
 
 
 def split_without_empty(strs: str) -> List[str]:
