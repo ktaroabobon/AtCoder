@@ -1,30 +1,65 @@
 """
 問題URL:
 """
+
 import math
 import sys
+from collections import deque
 from typing import Union, List
 
 INF = 2 * 10 ** 14
 CONST = 998244353
 
+global g
+global q
+global dist
+
+
+def bfs(x, y, g, q: deque, dist):
+    x -= 1
+    y -= 1
+    dist[y][x] = 0
+
+    q.append((x, y))
+
+    dxs = [-1, 0, 1, 0]
+    dys = [0, 1, 0, -1]
+
+    while len(q) != 0:
+        bx, by = q.popleft()
+        for dx, dy in zip(dxs, dys):
+            nx = bx + dx
+            ny = by + dy
+
+            if nx < 0 or nx >= len(g[0]):
+                continue
+            if ny < 0 or ny >= len(g):
+                continue
+            if dist[ny][nx] != -1:
+                continue
+            if g[ny][nx] == '#':
+                continue
+
+            dist[ny][nx] = dist[by][bx] + 1
+            q.append((nx, ny))
+
 
 def main():
-    N, M, K = read_nums()
-    x = [0] * (K + 1)
-    dp = [x.copy() for _ in range(N + 1)]
+    R, C = read_nums()
+    sy, sx = read_nums()
+    gy, gx = read_nums()
 
-    dp[0][0] = 1
+    g = [[] for _ in range(R)]
 
-    for i in range(N):
-        for j in range(K):
-            for k in range(1, M + 1):
-                if j + k <= K:
-                    dp[i + 1][j + k] += dp[i][j]
+    for i in range(R):
+        g[i] = [s for s in read_str()]
 
-    ans = sum(dp[N]) % CONST
+    dist = [[-1] * C for _ in range(R)]
+    q = deque()
 
-    print(ans)
+    bfs(sx, sy, g, q, dist)
+
+    print(dist[gy - 1][gx - 1])
 
 
 def split_without_empty(strs: str) -> List[str]:
