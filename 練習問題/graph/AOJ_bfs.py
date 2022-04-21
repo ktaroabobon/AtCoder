@@ -1,30 +1,53 @@
 """
 問題URL:
 """
+
 import math
 import sys
+from collections import deque
 from typing import Union, List
 
 INF = 2 * 10 ** 14
 CONST = 998244353
 
+global g
+global q
+global dist
+
+
+def bfs(i, g, q: deque, dist):
+    dist[i] = 0
+    q.append(i)
+
+    while len(q) != 0:
+        v = q.popleft()
+
+        for nv in g[v]:
+            if dist[nv] != -1:
+                continue
+            dist[nv] = dist[v] + 1
+            q.append(nv)
+
 
 def main():
-    N, M, K = read_nums()
-    x = [0] * (K + 1)
-    dp = [x.copy() for _ in range(N + 1)]
+    N = read_num()
+    g = [[] for _ in range(N)]
 
-    dp[0][0] = 1
+    for _ in range(N):
+        info = read_nums()
+        x = info[0] - 1
+        for i in range(info[1]):
+            y = info[i + 2] - 1
+            g[x].append(y)
+            g[y].append(x)
+
+    dist = [-1] * N
+    q = deque()
+
+    bfs(0, g, q, dist)
 
     for i in range(N):
-        for j in range(K):
-            for k in range(1, M + 1):
-                if j + k <= K:
-                    dp[i + 1][j + k] += dp[i][j]
-
-    ans = sum(dp[N]) % CONST
-
-    print(ans)
+        print(f"{i + 1} {dist[i]}")
 
 
 def split_without_empty(strs: str) -> List[str]:

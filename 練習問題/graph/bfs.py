@@ -1,17 +1,66 @@
 """
-問題URL:
-"""
+問題URL: https://qiita.com/drken/items/996d80bcae64649a6580
 
+15 14
+0 1
+0 4
+0 11
+1 2
+1 3
+4 5
+4 8
+5 6
+5 7
+8 9
+8 10
+11 12
+11 13
+13 14
+"""
 import math
 import sys
+#
+from collections import deque
 from typing import Union, List
 
 INF = 2 * 10 ** 14
+CONST = 998244353
+
+global g
+global q
+global dist
+
+
+def bfs(i, dist, g, q: deque):
+    dist[i] = 0
+    q.append(i)
+
+    while len(q) != 0:
+        v = q.popleft()
+
+        for nv in g[v]:
+            if dist[nv] != -1:
+                continue
+            dist[nv] = dist[v] + 1
+            q.append(nv)
 
 
 def main():
-    print('hello world')
-    print(sys.version)
+    N, M = read_nums()
+    g = [[] for _ in range(N)]
+
+    for i in range(M):
+        a, b = read_nums()
+        g[a].append(b)
+        g[b].append(a)
+
+    dist = [-1] * N
+    q = deque()
+
+    bfs(0, dist, g, q)
+
+    for i in range(N):
+        print(f"{i}: {dist[i]}")
 
 
 def split_without_empty(strs: str) -> List[str]:
