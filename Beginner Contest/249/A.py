@@ -1,3 +1,7 @@
+"""
+問題URL:
+"""
+
 import math
 import sys
 from typing import Union, List
@@ -7,29 +11,40 @@ CONST = 998244353
 
 
 def main():
-    str_list = read_str()
-    upper_count = 0
-    lower_count = 0
-    count = []
-    j = 0
-    for i in str_list:
+    a, b, c, d, e, f, x = read_nums()
 
-        count.append(str_list.count(i) - 1)
+    total_t = 0
+    rest_t = x
+    while rest_t > 0:
+        if rest_t >= a + c:
+            total_t += (a * b)
+            rest_t -= (a + c)
+        elif a < rest_t < a + c:
+            total_t += (a * b)
+            break
+        else:
+            total_t += (rest_t * b)
+            break
 
-        if i.isupper():
-            upper_count += 1
+    total_a = 0
+    rest_t = x
+    while rest_t > 0:
+        if rest_t >= d + f:
+            total_a += (d * e)
+            rest_t -= (d + f)
+        elif d < rest_t < d + f:
+            total_a += (d * e)
+            break
+        else:
+            total_a += (rest_t * e)
+            break
 
-        if i.islower():
-            lower_count += 1
-
-        j += 1
-
-    sum_list = sum(count)
-
-    if sum_list == 0 and upper_count >= 1 and lower_count >= 1:
-        print("Yes")
+    if total_t < total_a:
+        print("Aoki")
+    elif total_t == total_a:
+        print("Draw")
     else:
-        print("No")
+        print("Takahashi")
 
 
 def split_without_empty(strs: str) -> List[str]:
@@ -37,6 +52,7 @@ def split_without_empty(strs: str) -> List[str]:
     文字列を分割してlistに格納し返す
     Args:
         strs: 複数の文字
+
     Returns: listに複数の文字列を格納されたもの
     Examples: foo boo -> [foo, boo]
     """
@@ -46,8 +62,10 @@ def split_without_empty(strs: str) -> List[str]:
 def split2int(strs: List[str]) -> List[int]:
     """
     文字列型のlistを数値型のlistに変換する
+
     Args:
         strs: 数値が文字列型のlist
+
     Returns: 数値型のlist
     Examples: ['100', '200'] -> [100, 200]
     """
@@ -57,8 +75,10 @@ def split2int(strs: List[str]) -> List[int]:
 def split2str(ints: List[int]) -> List[str]:
     """
     数値型のlistを文字列型のlistに変換する
+
     Args:
         ints: 数値型のlist
+
     Returns: 文字列型のlist
     Examples: [100, 200] -> ['100', '200']
     """
@@ -94,6 +114,7 @@ def read_str() -> str:
 def read_strs() -> List[str]:
     """
     文字列、複数単語
+
     Returns: List[str]
     Examples:
         foo, boo
@@ -124,9 +145,11 @@ def read_nums() -> Union[List[int], List[float]]:
 def aCb(a, b: int) -> int:
     """
     二項定理
+
     Args:
         a (int)
         b (int)
+
     Returns:
         二項定理の値
     """
@@ -143,9 +166,11 @@ def aCb(a, b: int) -> int:
 def get_distance(p1, p2: List[int]) -> Union[int, float]:
     """
     2点間距離
+
     Args:
         p1(List[int]): 座標
         p2(List[int]): 座標
+
     Returns:
         距離
     """
