@@ -7,29 +7,18 @@ CONST = 998244353
 
 
 def main():
-    str_list = read_str()
-    upper_count = 0
-    lower_count = 0
-    count = []
-    j = 0
-    for i in str_list:
+    N, W = read_nums()
 
-        count.append(str_list.count(i) - 1)
+    dp = [0] * (W + 1)
 
-        if i.isupper():
-            upper_count += 1
+    for _ in range(N):
+        v, w = read_nums()
 
-        if i.islower():
-            lower_count += 1
+        for i in range(W):
+            if i + w <= W:
+                dp[i + w] = max(dp[i + w], dp[i] + v)
 
-        j += 1
-
-    sum_list = sum(count)
-
-    if sum_list == 0 and upper_count >= 1 and lower_count >= 1:
-        print("Yes")
-    else:
-        print("No")
+    print(max(dp))
 
 
 def split_without_empty(strs: str) -> List[str]:

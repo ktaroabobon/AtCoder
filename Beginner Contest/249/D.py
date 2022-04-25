@@ -10,9 +10,34 @@ INF = 2 * 10 ** 14
 CONST = 998244353
 
 
+def make_divisors(n):
+    d = list()
+    for i in range(1, int(n ** 0.5) + 1):
+        if n % i == 0:
+            d.append(i)
+            if i != n // i:
+                d.append(n // i)
+    return sorted(d)
+
+
 def main():
-    print('hello world')
-    print(sys.version)
+    N = read_num()
+    AS = read_nums()
+    cnt = [0] * int(2e5 + 1)
+
+    ans = 0
+    for a in AS:
+        cnt[a] += 1
+
+    for i in range(N):
+        ds = make_divisors(AS[i])
+
+        for d in ds:
+            cnt_j = cnt[d]
+            cnt_k = cnt[AS[i] // d]
+            ans += cnt_j * cnt_k
+
+    print(ans)
 
 
 def split_without_empty(strs: str) -> List[str]:
