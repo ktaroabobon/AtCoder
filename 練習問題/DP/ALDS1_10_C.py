@@ -1,3 +1,7 @@
+"""
+問題URL:
+"""
+
 import math
 import sys
 from typing import Union, List
@@ -7,18 +11,22 @@ CONST = 998244353
 
 
 def main():
-    N, W = read_nums()
+    q_num = read_num()
 
-    dp = [0] * (W + 1)
+    for _ in range(q_num):
+        x = read_str()
+        y = read_str()
 
-    for _ in range(N):
-        v, w = read_nums()
+        dp = [[0] * (len(y) + 1) for _ in range(len(x) + 1)]
 
-        for i in range(W):
-            if i + w <= W:
-                dp[i + w] = max(dp[i + w], dp[i] + v)
+        for i in range(1, len(x) + 1):
+            for j in range(1, len(y) + 1):
+                if x[i - 1] == y[j - 1]:
+                    dp[i][j] = dp[i - 1][j - 1] + 1
+                else:
+                    dp[i][j] = max(dp[i][j - 1], dp[i - 1][j])
 
-    print(max(dp))
+        print(dp[len(x)][len(y)])
 
 
 def split_without_empty(strs: str) -> List[str]:
@@ -26,6 +34,7 @@ def split_without_empty(strs: str) -> List[str]:
     文字列を分割してlistに格納し返す
     Args:
         strs: 複数の文字
+
     Returns: listに複数の文字列を格納されたもの
     Examples: foo boo -> [foo, boo]
     """
@@ -35,8 +44,10 @@ def split_without_empty(strs: str) -> List[str]:
 def split2int(strs: List[str]) -> List[int]:
     """
     文字列型のlistを数値型のlistに変換する
+
     Args:
         strs: 数値が文字列型のlist
+
     Returns: 数値型のlist
     Examples: ['100', '200'] -> [100, 200]
     """
@@ -46,8 +57,10 @@ def split2int(strs: List[str]) -> List[int]:
 def split2str(ints: List[int]) -> List[str]:
     """
     数値型のlistを文字列型のlistに変換する
+
     Args:
         ints: 数値型のlist
+
     Returns: 文字列型のlist
     Examples: [100, 200] -> ['100', '200']
     """
@@ -83,6 +96,7 @@ def read_str() -> str:
 def read_strs() -> List[str]:
     """
     文字列、複数単語
+
     Returns: List[str]
     Examples:
         foo, boo
@@ -113,9 +127,11 @@ def read_nums() -> Union[List[int], List[float]]:
 def aCb(a, b: int) -> int:
     """
     二項定理
+
     Args:
         a (int)
         b (int)
+
     Returns:
         二項定理の値
     """
@@ -132,9 +148,11 @@ def aCb(a, b: int) -> int:
 def get_distance(p1, p2: List[int]) -> Union[int, float]:
     """
     2点間距離
+
     Args:
         p1(List[int]): 座標
         p2(List[int]): 座標
+
     Returns:
         距離
     """
