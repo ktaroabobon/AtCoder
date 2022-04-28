@@ -1,43 +1,27 @@
 """
-問題URL:
+問題URL: https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DPL_1_C&lang=ja
 """
+
 import math
 import sys
 from typing import Union, List
 
 INF = 2 * 10 ** 14
-CONST = 10000
+CONST = 998244353
 
 
 def main():
-    N, K = read_nums()
-    KS = [0] * (N + 1)
+    N, W = read_nums()
+    dp = [0] * (W + 1)
+    items = [tuple(read_nums()) for _ in range(N)]
 
-    for _ in range(K):
-        d, v = read_nums()
-        KS[d] = v
+    for v, w in items:
+        for i in range(W, 1, -1):
+            if i - w < 0:
+                continue
+            dp[i] = max(dp[i], dp[i - w] + v)
 
-    dp = [[[0] * 4 for _ in range(4)] for _ in range(N + 1)]
-
-    dp[0][0][0] = 1
-
-    for n in range(1, N + 1):
-        for i in range(1, 4):
-            for j in range(4):
-                for k in range(4):
-                    if KS[n] != 0 and KS[n] != i:
-                        continue
-                    if i == j and j == k:
-                        continue
-
-                    dp[n][i][j] += dp[n - 1][j][k]
-
-    ans = 0
-
-    for i in range(4):
-        ans += sum(dp[N][i])
-
-    print(ans % CONST)
+    print(max(dp))
 
 
 def split_without_empty(strs: str) -> List[str]:
