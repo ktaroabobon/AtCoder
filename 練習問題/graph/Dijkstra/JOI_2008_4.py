@@ -1,17 +1,17 @@
 """
 問題URL:
 """
+
 import math
 import sys
 from typing import Union, List
-from collections import deque
 
 INF = 2 * 10 ** 14
-CONST = 10000
+CONST = 998244353
 
 global g
-global q
 global dist
+global q
 
 
 class Edge(object):
@@ -20,38 +20,8 @@ class Edge(object):
         self.weight = weight
 
 
-def bfs(i, g, dist, q: deque):
-    dist[i] = 0
-    q.append(i)
-
-    while len(q) > 0:
-        v = q.popleft()
-
-        for nv in g[v]:
-            if dist[nv.to] > nv.weight + dist[v]:
-                dist[nv.to] = nv.weight + dist[v]
-                q.append(nv.to)
-
-
 def main():
-    V, E, r = read_nums()
-
-    g = [[] for _ in range(V)]
-    dist = [INF] * V
-
-    for _ in range(E):
-        s, t, d = read_nums()
-        g[s].append(Edge(t, d))
-
-    q = deque()
-
-    bfs(r, g, dist, q)
-
-    for i in range(V):
-        if dist[i] != INF:
-            print(dist[i])
-        else:
-            print("INF")
+    N, K = read_nums()
 
 
 def split_without_empty(strs: str) -> List[str]:

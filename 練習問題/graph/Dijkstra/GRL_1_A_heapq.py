@@ -1,13 +1,15 @@
 """
 問題URL:
 """
+
 import math
 import sys
 from typing import Union, List
 from collections import deque
+import heapq
 
 INF = 2 * 10 ** 14
-CONST = 10000
+CONST = 998244353
 
 global g
 global q
@@ -19,8 +21,13 @@ class Edge(object):
         self.to = to
         self.weight = weight
 
+    def __lt__(self, other):
+        if isinstance(other, Edge):
+            return NotImplemented
+        return (self.weight, self.to) < (other.weight, other.to)
 
-def bfs(i, g, dist, q: deque):
+
+def bfs(i, g, q: deque, dist):
     dist[i] = 0
     q.append(i)
 
@@ -28,24 +35,22 @@ def bfs(i, g, dist, q: deque):
         v = q.popleft()
 
         for nv in g[v]:
-            if dist[nv.to] > nv.weight + dist[v]:
-                dist[nv.to] = nv.weight + dist[v]
+            if dist[nv.to] > dist[v] + nv.weight:
+                dist[nv.to] = dist[v] + nv.weight
                 q.append(nv.to)
 
 
 def main():
-    V, E, r = read_nums()
-
+    V, E, sp = read_nums()
     g = [[] for _ in range(V)]
-    dist = [INF] * V
-
     for _ in range(E):
         s, t, d = read_nums()
         g[s].append(Edge(t, d))
 
     q = deque()
+    dist = [INF] * V
 
-    bfs(r, g, dist, q)
+    bfs(sp, g, q, dist)
 
     for i in range(V):
         if dist[i] != INF:
