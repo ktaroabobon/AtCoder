@@ -147,5 +147,6 @@ def get_distance(p1, p2: List[int]) -> Union[int, float]:
         d += (x1 - x2) ** 2
     return math.sqrt(d)
 
+
 if __name__ == "__main__":
     main()

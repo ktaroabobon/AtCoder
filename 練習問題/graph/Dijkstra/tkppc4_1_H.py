@@ -1,5 +1,32 @@
 """
 問題URL:
+
+Examples1:
+3 2 8
+2
+1 2 3 4
+2 3 1 2
+
+Examples2:
+5 5 8
+2
+1
+2
+1 2 2 3
+1 3 2 3
+2 5 4 5
+3 4 1 2
+4 5 1 3
+
+Examples3:
+6 2 8
+1
+1
+1
+1
+2 4 2 3
+5 1 1 2
+
 """
 
 import math
@@ -11,75 +38,55 @@ INF = 2 * 10 ** 14
 CONST = 998244353
 
 global g
-global yen_dist
-global snk_dist
+global dist
 global q
 
 
 class Edge(object):
-    def __init__(self, to, yen, snk):
+    def __init__(self, to, weight, departure, change):
         self.to = to
-        self.yen = yen
-        self.snk = snk
-
-    def __lt__(self, other):
-        if isinstance(other, Edge):
-            return
-        return self.to < other.to
+        self.weight = weight
+        self.departure = departure
+        self.change = change
 
 
-def bfs(sp, g, dist, q: deque, yen=True):
-    dist[sp] = 0
-    q.append(sp)
+def bfs(i, g, dist, q: deque):
+    dist[i] = 0
+    q.append(i)
 
     while len(q) > 0:
         v = q.popleft()
 
         for nv in g[v]:
-            if yen:
-                if dist[nv.to] > dist[v] + nv.yen:
-                    dist[nv.to] = dist[v] + nv.yen
-                    q.append(nv.to)
-            else:
-                if dist[nv.to] > dist[v] + nv.snk:
-                    dist[nv.to] = dist[v] + nv.snk
-                    q.append(nv.to)
-
-    return dist
+            wait_time = (nv.departure - (dist[v] % nv.departure)) % nv.departure
+            if dist[nv.to] > dist[v] + wait_time + nv.weight + nv.change:
+                dist[nv.to] = dist[v] + wait_time + nv.weight + nv.change
+                q.append(nv.to)
 
 
 def main():
-    N, M, s, t = read_nums()
+    N, M, K = read_nums()
+    TS = [0] * N
     g = [[] for _ in range(N)]
+    for i in range(N - 2):
+        t = read_num()
+        TS[i + 1] = t
 
     for _ in range(M):
-        u, v, a, b = read_nums()
-        g[u - 1].append(Edge(v - 1, a, b))
-        g[v - 1].append(Edge(u - 1, a, b))
+        a, b, c, d = read_nums()
+        g[a - 1].append(Edge(b - 1, c, d, TS[b - 1]))
+        g[b - 1].append(Edge(a - 1, c, d, TS[a - 1]))
 
-    yen_dist = [INF] * N
-    snk_dist = [INF] * N
-
+    dist = [INF] * N
     q = deque()
-    yen_dist = bfs(s - 1, g, yen_dist, q)
+    sp = 0
 
-    q = deque()
-    snk_dist = bfs(t - 1, g, snk_dist, q, yen=False)
+    bfs(sp, g, dist, q)
 
-    total = list()
-
-    for y, s in zip(yen_dist, snk_dist):
-        total.append(y + s)
-
-    ans = []
-    tmp = INF
-    init = int(1e15)
-    for t in reversed(total):
-        tmp = min(tmp, t)
-        ans.append(init - tmp)
-
-    for a in ans.__reversed__():
-        print(a)
+    if dist[N - 1] == INF or dist[N - 1] > K:
+        print(-1)
+    else:
+        print(dist[N - 1])
 
 
 def split_without_empty(strs: str) -> List[str]:
