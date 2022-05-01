@@ -1,32 +1,66 @@
 """
 問題URL:
 """
+
 import math
 import sys
 from typing import Union, List
 from collections import deque
 
 INF = 2 * 10 ** 14
-CONST = 10000
+CONST = 998244353
+
+global g
+global dist
+global q
+
+
+class Edge(object):
+    def __init__(self, to, y_weight, s_weight):
+        self.to = to
+        self.y_weight = y_weight
+        self.s_weight = s_weight
+
+
+def bfs(i, x, g, dist, q: deque):
+    dist[i] = 0
+    q.append(i)
+
+    while len(q) > 0:
+        v = q.popleft()
+
+        for nv in g[v]:
+            if nv.to <= x:
+                w = nv.s_weight
+            else:
+                w = min(nv.s_weight, nv.y_weight)
+
+            if dist[nv.to] > dist[v] + w:
+                dist[nv.to] = dist[v] + w
+                q.append(nv.to)
 
 
 def main():
-    N = read_num()
-    info = read_nums()
+    N, M, s, t = read_nums()
+    s -= 1
+    t -= 1
+    g = [[] for _ in range(N)]
 
-    dp = [[0] * 21 for _ in range(N - 1)]
+    for _ in range(M):
+        n, v, a, b = read_nums()
+        n -= 1
+        v -= 1
 
-    dp[0][info[0]] = 1
+        g[n].append(Edge(v, a, b))
+        g[v].append(Edge(n, a, b))
 
-    for i in range(1, N - 1):
-        v = info[i]
-        for j in range(21):
-            if j + v <= 20:
-                dp[i][j + v] += dp[i - 1][j]
-            if j - v >= 0:
-                dp[i][j - v] += dp[i - 1][j]
+    for i in range(N):
+        dist = [INF] * N
+        q = deque()
 
-    print(dp[N - 2][info[-1]])
+        bfs(s, i + 1, g, dist, q)
+
+        print(int(1e15) - dist[t])
 
 
 def split_without_empty(strs: str) -> List[str]:
