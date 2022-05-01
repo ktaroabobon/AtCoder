@@ -5,6 +5,7 @@
 import math
 import sys
 from typing import Union, List
+from collections import deque
 
 INF = 2 * 10 ** 14
 CONST = 998244353
@@ -20,8 +21,42 @@ class Edge(object):
         self.weight = weight
 
 
+def bfs(i, g, dist, q: deque):
+    dist[i] = 0
+    q.append(i)
+
+    while len(q) > 0:
+        v = q.popleft()
+
+        for nv in g[v]:
+            if dist[nv.to] > dist[v] + nv.weight:
+                dist[nv.to] = dist[v] + nv.weight
+                q.append(nv.to)
+
+
 def main():
     N, K = read_nums()
+    g = [[] for _ in range(N)]
+
+    for _ in range(K):
+        info = read_nums()
+        if info[0] == 0:
+            sp, gp = info[1:]
+            sp -= 1
+            gp -= 1
+            q = deque()
+            dist = [INF] * N
+
+            bfs(sp, g, dist, q)
+
+            if dist[gp] == INF:
+                print(-1)
+            else:
+                print(dist[gp])
+        else:
+            s, t, d = info[1:]
+            g[s - 1].append(Edge(t - 1, d))
+            g[t - 1].append(Edge(s - 1, d))
 
 
 def split_without_empty(strs: str) -> List[str]:
