@@ -25,7 +25,8 @@ def bfs(i, g, dist, q: deque):
         v = q.popleft()
 
         for nv in g[v]:
-            if ichmin(dist[nv.to], dist[v] + nv.weight):
+            if dist[nv.to] > dist[v] + nv.weight:
+                dist[nv.to] = dist[v] + nv.weight
                 q.append(nv.to)
 
 
@@ -39,6 +40,7 @@ def main():
             s -= 1
             t -= 1
             g[s].append(Edge(t, d))
+            g[t].append(Edge(s, d))
         else:
             sp, gp = info[1:]
             sp -= 1
@@ -175,7 +177,6 @@ def get_distance(p1, p2: List[int]) -> Union[int, float]:
     for x1, x2 in zip(p1, p2):
         d += (x1 - x2) ** 2
     return math.sqrt(d)
-
 
 
 if __name__ == "__main__":
