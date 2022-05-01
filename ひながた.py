@@ -148,5 +148,19 @@ def get_distance(p1, p2: List[int]) -> Union[int, float]:
     return math.sqrt(d)
 
 
+def ichmax(t, x):
+    if t < x:
+        t = x
+        return True
+    return False
+
+
+def ichmin(t, x):
+    if t > x:
+        t = x
+        return True
+    return False
+
+
 if __name__ == "__main__":
     main()
