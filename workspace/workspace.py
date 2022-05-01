@@ -1,28 +1,57 @@
 import math
 import sys
+from collections import deque
 from typing import Union, List
 
 INF = 2 * 10 ** 14
 CONST = 998244353
 
+global g
+global dist
+global q
+
+
+class Edge(object):
+    def __init__(self, to, weight):
+        self.to = to
+        self.weight = weight
+
+
+def bfs(i, g, dist, q: deque):
+    dist[i] = 0
+    q.append(i)
+
+    while len(q) > 0:
+        v = q.popleft()
+
+        for nv in g[v]:
+            if ichmin(dist[nv.to], dist[v] + nv.weight):
+                q.append(nv.to)
+
 
 def main():
-    N = read_num()
+    N, K = read_nums()
+    g = [[] for _ in range(N)]
+    for _ in range(K):
+        info = read_nums()
+        if info[0] == 1:
+            s, t, d = info[1:]
+            s -= 1
+            t -= 1
+            g[s].append(Edge(t, d))
+        else:
+            sp, gp = info[1:]
+            sp -= 1
+            gp -= 1
+            dist = [INF] * N
+            q = deque()
 
-    for _ in range(N):
-        x = read_str()
-        y = read_str()
+            bfs(sp, g, dist, q)
 
-        dp = [[0] * (len(y) + 1) for _ in range(len(x) + 1)]
-
-        for i in range(1, len(x) + 1):
-            for j in range(1, len(y) + 1):
-                if x[i - 1] == y[j - 1]:
-                    dp[i][j] = dp[i - 1][j - 1] + 1
-                else:
-                    dp[i][j] = max(dp[i][j - 1], dp[i - 1][j])
-
-        print(dp[len(x)][len(y)])
+            if dist[gp] != INF:
+                print(dist[gp])
+            else:
+                print(-1)
 
 
 def split_without_empty(strs: str) -> List[str]:
@@ -147,19 +176,6 @@ def get_distance(p1, p2: List[int]) -> Union[int, float]:
         d += (x1 - x2) ** 2
     return math.sqrt(d)
 
-
-def ichmax(t, x):
-    if t < x:
-        t = x
-        return True
-    return False
-
-
-def ichmin(t, x):
-    if t > x:
-        t = x
-        return True
-    return False
 
 
 if __name__ == "__main__":
