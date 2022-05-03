@@ -1,5 +1,5 @@
 """
-問題URL:
+問題URL: https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_1_C&lang=ja
 """
 
 import math
@@ -8,8 +8,6 @@ from typing import Union, List
 
 INF = 2 * 10 ** 14
 CONST = 998244353
-
-global g
 
 
 def main():
@@ -41,7 +39,6 @@ def main():
                 else:
                     s += "INF "
             print(s)
-
 
 
 def split_without_empty(strs: str) -> List[str]:

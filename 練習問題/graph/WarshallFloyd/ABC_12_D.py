@@ -1,42 +1,42 @@
+"""
+問題URL:
+"""
+
 import math
 import sys
-from collections import deque
 from typing import Union, List
 
 INF = 2 * 10 ** 14
-CONST = 10000
+CONST = 998244353
 
 
 def main():
-    V, E = read_nums()
-    dp = [[INF] * V for _ in range(V)]
+    N, M = read_nums()
+    dp = [[INF] * N for _ in range(N)]
 
-    for _ in range(E):
-        s, t, d = read_nums()
-        dp[s][t] = d
+    for _ in range(M):
+        a, b, t = read_nums()
+        dp[a - 1][b - 1] = t
 
-    for i in range(V):
+    for i in range(N):
         dp[i][i] = 0
 
-    for i in range(V):
-        for j in range(V):
-            for k in range(V):
-                if dp[i][j] != INF and dp[j][k] != INF:
-                    dp[i][k] = min(dp[i][k], dp[i][j] + dp[j][k])
+    for i in range(N):
+        for j in range(N):
+            for k in range(N):
+                dp[i][k] = min(dp[i][k], dp[i][j] + dp[j][k])
 
-    if any(dp[i][i] < 0 for i in range(V)):
-        print('NEGATIVE CYCLE')
-    else:
-        ans = [['INF'] * V for _ in range(V)]
+    ans = INF
 
-        for i in range(V):
-            for j in range(V):
+    for i in range(N):
+        tmp = 0
+        for j in range(N):
+            if i == j:
+                continue
+            tmp = max(tmp, min(dp[i][j], dp[j][i]))
+        ans = min(ans, tmp)
 
-                if dp[i][j] != INF:
-                    ans[i][j] = str(dp[i][j])
-
-        for i in range(V):
-            print(' '.join(ans[i]))
+    print(ans)
 
 
 def split_without_empty(strs: str) -> List[str]:
@@ -44,6 +44,7 @@ def split_without_empty(strs: str) -> List[str]:
     文字列を分割してlistに格納し返す
     Args:
         strs: 複数の文字
+
     Returns: listに複数の文字列を格納されたもの
     Examples: foo boo -> [foo, boo]
     """
@@ -53,8 +54,10 @@ def split_without_empty(strs: str) -> List[str]:
 def split2int(strs: List[str]) -> List[int]:
     """
     文字列型のlistを数値型のlistに変換する
+
     Args:
         strs: 数値が文字列型のlist
+
     Returns: 数値型のlist
     Examples: ['100', '200'] -> [100, 200]
     """
@@ -64,8 +67,10 @@ def split2int(strs: List[str]) -> List[int]:
 def split2str(ints: List[int]) -> List[str]:
     """
     数値型のlistを文字列型のlistに変換する
+
     Args:
         ints: 数値型のlist
+
     Returns: 文字列型のlist
     Examples: [100, 200] -> ['100', '200']
     """
@@ -101,6 +106,7 @@ def read_str() -> str:
 def read_strs() -> List[str]:
     """
     文字列、複数単語
+
     Returns: List[str]
     Examples:
         foo, boo
@@ -131,9 +137,11 @@ def read_nums() -> Union[List[int], List[float]]:
 def aCb(a, b: int) -> int:
     """
     二項定理
+
     Args:
         a (int)
         b (int)
+
     Returns:
         二項定理の値
     """
@@ -150,9 +158,11 @@ def aCb(a, b: int) -> int:
 def get_distance(p1, p2: List[int]) -> Union[int, float]:
     """
     2点間距離
+
     Args:
         p1(List[int]): 座標
         p2(List[int]): 座標
+
     Returns:
         距離
     """
