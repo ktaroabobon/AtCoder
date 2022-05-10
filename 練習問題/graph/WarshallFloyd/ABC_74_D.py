@@ -1,43 +1,45 @@
-import bisect
+"""
+問題URL: https://atcoder.jp/contests/abc074/tasks/arc083_b
+"""
+
 import math
 import sys
-from collections import deque
 from typing import Union, List
 
 INF = 2 * 10 ** 14
 CONST = 998244353
 
-global g
-global dist
-global q
-
 
 def main():
-    H, W = read_nums()
-    CS = [read_nums() for _ in range(10)]
-    AS = [read_nums() for _ in range(H)]
+    N = read_num()
+    AS = [read_nums() for _ in range(N)]
+    cnt = [[0] * N for _ in range(N)]
 
-    for k in range(10):
-        for i in range(10):
-            for j in range(10):
-                CS[i][j] = min(CS[i][j], CS[i][k] + CS[k][j])
+    for i in range(N):
+        for j in range(N):
+            road_is = True
+            for k in range(N):
+                if AS[i][j] > AS[i][k] + AS[k][j]:
+                    print(-1)
+                    return
+                elif AS[i][j] == AS[i][k] + AS[k][j] and i != j and j != k and k != i:
+                    road_is = False
+            if road_is:
+                cnt[i][j] += AS[i][j]
 
     ans = 0
 
-    for i in range(H):
-        for j in range(W):
-            v = AS[i][j]
-            if v >= 0:
-                ans += CS[v][1]
+    for i in range(N):
+        ans += sum(cnt[i])
 
-    print(ans)
+    print(ans // 2)
 
 
 def split_without_empty(strs: str) -> List[str]:
     """
     文字列を分割してlistに格納し返す
     Args:
-        strs: 複数の文字v
+        strs: 複数の文字
     Returns: listに複数の文字列を格納されたもの
     Examples: foo boo -> [foo, boo]
     """

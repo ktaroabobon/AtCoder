@@ -1,43 +1,43 @@
+"""
+問題URL: https://atcoder.jp/contests/abc250/tasks/abc250_c
+"""
 import bisect
 import math
 import sys
-from collections import deque
 from typing import Union, List
 
 INF = 2 * 10 ** 14
 CONST = 998244353
 
-global g
-global dist
-global q
-
 
 def main():
-    H, W = read_nums()
-    CS = [read_nums() for _ in range(10)]
-    AS = [read_nums() for _ in range(H)]
+    N, Q = read_nums()
+    vals = [i for i in range(N)]
+    pos = [i for i in range(N)]
 
-    for k in range(10):
-        for i in range(10):
-            for j in range(10):
-                CS[i][j] = min(CS[i][j], CS[i][k] + CS[k][j])
+    for _ in range(Q):
+        x = read_num() - 1
+        idx = pos[x]
+        if idx == N - 1:
+            y = vals[idx - 1]
+            vals[idx], vals[idx - 1] = vals[idx - 1], vals[idx]
+            pos[x] = idx - 1
+            pos[y] = idx
+        else:
+            y = vals[idx + 1]
+            vals[idx], vals[idx + 1] = vals[idx + 1], vals[idx]
+            pos[x] = idx + 1
+            pos[y] = idx
 
-    ans = 0
-
-    for i in range(H):
-        for j in range(W):
-            v = AS[i][j]
-            if v >= 0:
-                ans += CS[v][1]
-
-    print(ans)
+    print(" ".join([str(i + 1) for i in vals]))
 
 
 def split_without_empty(strs: str) -> List[str]:
     """
     文字列を分割してlistに格納し返す
     Args:
-        strs: 複数の文字v
+        strs: 複数の文字
+
     Returns: listに複数の文字列を格納されたもの
     Examples: foo boo -> [foo, boo]
     """
@@ -47,8 +47,10 @@ def split_without_empty(strs: str) -> List[str]:
 def split2int(strs: List[str]) -> List[int]:
     """
     文字列型のlistを数値型のlistに変換する
+
     Args:
         strs: 数値が文字列型のlist
+
     Returns: 数値型のlist
     Examples: ['100', '200'] -> [100, 200]
     """
@@ -58,8 +60,10 @@ def split2int(strs: List[str]) -> List[int]:
 def split2str(ints: List[int]) -> List[str]:
     """
     数値型のlistを文字列型のlistに変換する
+
     Args:
         ints: 数値型のlist
+
     Returns: 文字列型のlist
     Examples: [100, 200] -> ['100', '200']
     """
@@ -95,6 +99,7 @@ def read_str() -> str:
 def read_strs() -> List[str]:
     """
     文字列、複数単語
+
     Returns: List[str]
     Examples:
         foo, boo
@@ -125,9 +130,11 @@ def read_nums() -> Union[List[int], List[float]]:
 def aCb(a, b: int) -> int:
     """
     二項定理
+
     Args:
         a (int)
         b (int)
+
     Returns:
         二項定理の値
     """
@@ -144,9 +151,11 @@ def aCb(a, b: int) -> int:
 def get_distance(p1, p2: List[int]) -> Union[int, float]:
     """
     2点間距離
+
     Args:
         p1(List[int]): 座標
         p2(List[int]): 座標
+
     Returns:
         距離
     """
