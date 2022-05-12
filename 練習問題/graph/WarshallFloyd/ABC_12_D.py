@@ -4,82 +4,39 @@
 
 import math
 import sys
-from collections import deque
 from typing import Union, List
 
 INF = 2 * 10 ** 14
 CONST = 998244353
 
-global g
-global yen_dist
-global snk_dist
-global q
-
-
-class Edge(object):
-    def __init__(self, to, yen, snk):
-        self.to = to
-        self.yen = yen
-        self.snk = snk
-
-    def __lt__(self, other):
-        if isinstance(other, Edge):
-            return
-        return self.to < other.to
-
-
-def bfs(sp, g, dist, q: deque, yen=True):
-    dist[sp] = 0
-    q.append(sp)
-
-    while len(q) > 0:
-        v = q.popleft()
-
-        for nv in g[v]:
-            if yen:
-                if dist[nv.to] > dist[v] + nv.yen:
-                    dist[nv.to] = dist[v] + nv.yen
-                    q.append(nv.to)
-            else:
-                if dist[nv.to] > dist[v] + nv.snk:
-                    dist[nv.to] = dist[v] + nv.snk
-                    q.append(nv.to)
-
-    return dist
-
 
 def main():
-    N, M, s, t = read_nums()
-    g = [[] for _ in range(N)]
+    N, M = read_nums()
+    dp = [[INF] * N for _ in range(N)]
 
     for _ in range(M):
-        u, v, a, b = read_nums()
-        g[u - 1].append(Edge(v - 1, a, b))
-        g[v - 1].append(Edge(u - 1, a, b))
+        a, b, t = read_nums()
+        dp[a - 1][b - 1] = t
 
-    yen_dist = [INF] * N
-    snk_dist = [INF] * N
+    for i in range(N):
+        dp[i][i] = 0
 
-    q = deque()
-    yen_dist = bfs(s - 1, g, yen_dist, q)
+    for i in range(N):
+        for j in range(N):
+            for k in range(N):
+                dp[i][k] = min(dp[i][k], dp[i][j] + dp[j][k])
 
-    q = deque()
-    snk_dist = bfs(t - 1, g, snk_dist, q, yen=False)
+    ans = INF
 
-    total = list()
+    for i in range(N):
+        tmp = 0
+        for j in range(N):
+            if i == j:
+                continue
+            tmp = max(tmp, min(dp[i][j], dp[j][i]))
+        ans = min(ans, tmp)
 
-    for y, s in zip(yen_dist, snk_dist):
-        total.append(y + s)
-
-    ans = []
-    tmp = INF
-    init = int(1e15)
-    for t in reversed(total):
-        tmp = min(tmp, t)
-        ans.append(init - tmp)
-
-    for a in ans.__reversed__():
-        print(a)
+    print(ans)
 
 
 def split_without_empty(strs: str) -> List[str]:
