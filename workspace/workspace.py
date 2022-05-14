@@ -7,30 +7,25 @@ from typing import Union, List
 INF = 2 * 10 ** 14
 CONST = 998244353
 
-global g
-global dist
-global q
-
 
 def main():
-    H, W = read_nums()
-    CS = [read_nums() for _ in range(10)]
-    AS = [read_nums() for _ in range(H)]
+    N = read_num()
+    info = read_nums()
 
-    for k in range(10):
-        for i in range(10):
-            for j in range(10):
-                CS[i][j] = min(CS[i][j], CS[i][k] + CS[k][j])
+    t = info[:N - 1]
+    a = info[N - 1]
 
-    ans = 0
+    dp = [[0] * 21 for _ in range(N - 1)]
+    dp[0][t[0]] = 1
+    for i in range(1, N - 1):
+        for j in range(21):
+            v = t[i]
+            if j + v <= 20:
+                dp[i][j + v] += dp[i - 1][j]
+            if j - v >= 0:
+                dp[i][j - v] += dp[i - 1][j]
 
-    for i in range(H):
-        for j in range(W):
-            v = AS[i][j]
-            if v >= 0:
-                ans += CS[v][1]
-
-    print(ans)
+    print(dp[N - 2][a])
 
 
 def split_without_empty(strs: str) -> List[str]:
