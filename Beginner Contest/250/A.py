@@ -1,7 +1,9 @@
-import bisect
+"""
+問題URL: https://atcoder.jp/contests/abc250/tasks/abc250_a
+"""
+
 import math
 import sys
-from collections import deque
 from typing import Union, List
 
 INF = 2 * 10 ** 14
@@ -9,30 +11,32 @@ CONST = 998244353
 
 
 def main():
-    N = read_num()
-    info = read_nums()
+    H, W = read_nums()
+    R, C = read_nums()
 
-    t = info[:N - 1]
-    a = info[N - 1]
+    ans = 0
 
-    dp = [[0] * 21 for _ in range(N - 1)]
-    dp[0][t[0]] = 1
-    for i in range(1, N - 1):
-        for j in range(21):
-            v = t[i]
-            if j + v <= 20:
-                dp[i][j + v] += dp[i - 1][j]
-            if j - v >= 0:
-                dp[i][j - v] += dp[i - 1][j]
+    dxs = [0, 1, 0, -1]
+    dys = [-1, 0, 1, 0]
 
-    print(dp[N - 2][a])
+    for dx, dy in zip(dxs, dys):
+        x = C + dx
+        y = R + dy
+        if x <= 0 or x > W:
+            continue
+        if y <= 0 or y > H:
+            continue
+        ans += 1
+
+    print(ans)
 
 
 def split_without_empty(strs: str) -> List[str]:
     """
     文字列を分割してlistに格納し返す
     Args:
-        strs: 複数の文字v
+        strs: 複数の文字
+
     Returns: listに複数の文字列を格納されたもの
     Examples: foo boo -> [foo, boo]
     """
@@ -42,8 +46,10 @@ def split_without_empty(strs: str) -> List[str]:
 def split2int(strs: List[str]) -> List[int]:
     """
     文字列型のlistを数値型のlistに変換する
+
     Args:
         strs: 数値が文字列型のlist
+
     Returns: 数値型のlist
     Examples: ['100', '200'] -> [100, 200]
     """
@@ -53,8 +59,10 @@ def split2int(strs: List[str]) -> List[int]:
 def split2str(ints: List[int]) -> List[str]:
     """
     数値型のlistを文字列型のlistに変換する
+
     Args:
         ints: 数値型のlist
+
     Returns: 文字列型のlist
     Examples: [100, 200] -> ['100', '200']
     """
@@ -90,6 +98,7 @@ def read_str() -> str:
 def read_strs() -> List[str]:
     """
     文字列、複数単語
+
     Returns: List[str]
     Examples:
         foo, boo
@@ -120,9 +129,11 @@ def read_nums() -> Union[List[int], List[float]]:
 def aCb(a, b: int) -> int:
     """
     二項定理
+
     Args:
         a (int)
         b (int)
+
     Returns:
         二項定理の値
     """
@@ -139,9 +150,11 @@ def aCb(a, b: int) -> int:
 def get_distance(p1, p2: List[int]) -> Union[int, float]:
     """
     2点間距離
+
     Args:
         p1(List[int]): 座標
         p2(List[int]): 座標
+
     Returns:
         距離
     """

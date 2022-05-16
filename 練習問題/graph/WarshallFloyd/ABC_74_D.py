@@ -1,7 +1,9 @@
-import bisect
+"""
+問題URL: https://atcoder.jp/contests/abc074/tasks/arc083_b
+"""
+
 import math
 import sys
-from collections import deque
 from typing import Union, List
 
 INF = 2 * 10 ** 14
@@ -10,29 +12,34 @@ CONST = 998244353
 
 def main():
     N = read_num()
-    info = read_nums()
+    AS = [read_nums() for _ in range(N)]
+    cnt = [[0] * N for _ in range(N)]
 
-    t = info[:N - 1]
-    a = info[N - 1]
+    for i in range(N):
+        for j in range(N):
+            road_is = True
+            for k in range(N):
+                if AS[i][j] > AS[i][k] + AS[k][j]:
+                    print(-1)
+                    return
+                elif AS[i][j] == AS[i][k] + AS[k][j] and i != j and j != k and k != i:
+                    road_is = False
+            if road_is:
+                cnt[i][j] += AS[i][j]
 
-    dp = [[0] * 21 for _ in range(N - 1)]
-    dp[0][t[0]] = 1
-    for i in range(1, N - 1):
-        for j in range(21):
-            v = t[i]
-            if j + v <= 20:
-                dp[i][j + v] += dp[i - 1][j]
-            if j - v >= 0:
-                dp[i][j - v] += dp[i - 1][j]
+    ans = 0
 
-    print(dp[N - 2][a])
+    for i in range(N):
+        ans += sum(cnt[i])
+
+    print(ans // 2)
 
 
 def split_without_empty(strs: str) -> List[str]:
     """
     文字列を分割してlistに格納し返す
     Args:
-        strs: 複数の文字v
+        strs: 複数の文字
     Returns: listに複数の文字列を格納されたもの
     Examples: foo boo -> [foo, boo]
     """
