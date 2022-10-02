@@ -190,3 +190,5 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# extra files
+2022-final-selection/*.py
